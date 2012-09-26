@@ -1,0 +1,32 @@
+{
+  "name": "nodeweibo",
+  "version": "0.1.1",
+  "description": "Simple weibo app built with nodejs.",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "~0.8.2",
+    "ejs-locals": "~0.2.5",
+    "express": "~3.0.0rc5",
+    "express-partials": "~0.0.6",
+    "lru-cache": "~2.0.2",
+    "markdown-js": "~0.0.3",
+    "moment": "~1.7.0",
+    "validator": "~0.4.11",
+    "mongoose": "~3.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdg-sysdev/nodeweibo.git"
+  },
+  "keywords": [
+    "node",
+    "weibo",
+    "express"
+  ],
+  "author": "nomospace",
+  "license": "BSD"
+}
