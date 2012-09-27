@@ -1,13 +1,13 @@
 exports.config = {
   debug: true,
-  name: 'nodeweibo',
-  description: '简易 weibo 应用',
+  name: 'waybo',
+  description: 'A simple web-weibo base on nodejs.',
   version: 0.1,
 
-  sessionSecret: 'nodeweibo',
-  authCookieName: 'nodeweibo',
+  sessionSecret: 'waybo',
+  authCookieName: 'waybo',
   host: '127.0.0.1',
-  port: 3002
+  port: 3001
 
 //  db: 'mongodb://127.0.0.1/nodeweibo'
 };

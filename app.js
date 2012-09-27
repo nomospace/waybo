@@ -6,7 +6,6 @@ var markdown = require('markdown-js');
 var partials = require('express-partials');
 var ejs = require('ejs');
 var fs = require('fs');
-var authUser = require('./controllers/sign').authUser;
 
 var app = express();
 
@@ -21,7 +20,6 @@ app.configure('development', function() {
   app.engine('html', ejs.renderFile);
 
   app.engine('md', function(path, options, fn) {
-    console.log(path);
     fs.readFile(path, 'utf8', function(err, str) {
       if (err) return fn(err);
       str = markdown.parse(str).toString();
@@ -34,7 +32,6 @@ app.configure('development', function() {
   app.use(express.session({
     secret: config.sessionSecret
   }));
-  app.use(authUser);
   app.use(partials());
 });
 
