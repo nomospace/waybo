@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name='description' content='<%= config.description %>'>
+    <!--<meta property="wb:webmaster" content="9d4b91032648dbe0" />-->
     <%
     var headers = config.site_headers || [];
     for (var i = 0, l = headers.length; i < l; i++) { 
@@ -12,13 +13,13 @@
     <!-- style -->
     <link rel="stylesheet" type="text/css" href="/libs/bootstrap/css/bootstrap.css" />
     <!-- <link rel="stylesheet" type="text/css" href="/libs/bootstrap/css/docs.css" /> -->
-    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
-    <link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />    
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
     <!-- script -->
-    <script src='/libs/jquery/jquery.js'></script>
+    <script src='/libs/jquery.js'></script>
     <script src='/libs/bootstrap/js/bootstrap.js'></script>
-    <script src='/libs/handlebars/handlebars.js'></script>
-    <script src='/javascripts/main.js'></script>
+    <script src='/libs/handlebars.js'></script>
+    <script src='/js/main.js'></script>
     <% if (locals.topic) { %>
     <title><%= topic.title %> - <%= config.name %></title>
     <% } else { %>
@@ -32,7 +33,7 @@
         <div class='container'>
           <a class='brand' href='/mail'><%- config.site_logo || config.name %></a>
           <form id='search_form' class='navbar-search' action="/" style="display: none;">
-            <input type='text' id='q' name='q' class='search-query span3' value='<%= locals.keyword || '' %>'/>
+            <input type='text' id='q' name='q' class='search-query span3' value='<%= locals.keyword || "" %>'/>
           </form>
           <ul class='nav pull-right'>
             <li><a href='/mail'>首页</a></li> 
@@ -51,8 +52,8 @@
             <li><a href='/signin'>登录</a></li> 
             <% } %>
           </ul>
-          <a class="fork2github" href="https://github.com/sdg-sysdev/nodeweibo">
-            <img style="position: absolute; top: 0; right: 0; border: 0;" src="/images/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+          <a class="fork2github" href="https://github.com/sdg-sysdev/waybo">
+            <img src="/images/octocat-icon.png" alt="Fork me on GitHub">
           </a>
         </div>
       </div>
