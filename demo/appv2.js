@@ -1,4 +1,4 @@
-var W2 = require('./lib/weibo_v2.js');
+var W2 = require('../libs/weibo-vzhishu.js');
 
 var api = new W2.WeiboApi({
     app_key: '3873930736',

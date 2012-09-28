@@ -1,9 +1,11 @@
 # nodeweibo
-simple sina-weibo toy
+A simple web-weibo base on nodejs.
 
 ## Reference
-[https://github.com/fengmk2/node-weibo]()  
-[https://github.com/rockdai/WeiboAPI]()  
+[https://github.com/vzhishu/node-weibo-v2]()
+[https://github.com/samxxu/node-sina-weibo]()
+[https://github.com/fengmk2/node-weibo]()
+[https://github.com/rockdai/WeiboAPI]()
 
 
 ## License 

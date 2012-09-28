@@ -4,7 +4,9 @@
   "description": "A simple web-weibo base on nodejs.",
   "main": "app.js",
   "dependencies": {
-    "weibo": "~0.5.1",
+    "oauth": "~0.9.8",
+    "form-data": "~0.0.4",
+    "request": "~2.11.4",
     "ejs": "~0.8.2",
     "ejs-locals": "~0.2.5",
     "express": "~3.0.0rc5",
