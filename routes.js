@@ -10,15 +10,15 @@ module.exports = function(app) {
 
   // url routes
   app.get('/', site.index);
-  app.get('/signin', site.index);
+//  app.get('/signin', site.index);
 
   // ajax
   app.get('/ajax/index', site.index);
 
-  app.get('*', function(req, res) {
-    res.render('index.html', {});
-    // throw new NotFound;
-  });
+//  app.get('*', function(req, res) {
+//    res.render('index.html', {});
+//    // throw new NotFound;
+//  });
 };
 
 function NotFound(msg) {
