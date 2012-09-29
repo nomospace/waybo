@@ -174,10 +174,8 @@ body {
   width: 120px;
 }
 
-#J_toolbar {
-  width: 100%;
-  background-color: #FFF;
-  z-index: 9;
+.wrapper-body {
+  padding: 50px 10px 0;
 }
 
 .controls label.error {

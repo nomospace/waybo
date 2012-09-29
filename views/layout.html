@@ -4,15 +4,8 @@
     <meta charset="utf-8" />
     <meta name='description' content='<%= config.description %>'>
     <!--<meta property="wb:webmaster" content="9d4b91032648dbe0" />-->
-    <%
-    var headers = config.site_headers || [];
-    for (var i = 0, l = headers.length; i < l; i++) { 
-    %>
-    <%- headers[i] %>
-    <% } %>
     <!-- style -->
     <link rel="stylesheet" type="text/css" href="/assets/js/libs/bootstrap/css/bootstrap.css" />
-    <!-- <link rel="stylesheet" type="text/css" href="/libs/bootstrap/css/docs.css" /> -->
     <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
     <!-- script -->
@@ -43,13 +36,6 @@
             <li><a href="#">收藏</a></li>
             <li><a href="#">粉丝</a></li>
             <li><a href="#">微博</a></li>
-            <%
-            var site_navs = config.site_navs || [];
-            for (var i = 0, l = site_navs.length; i < l; i++) {
-              var nav = site_navs[i];
-            %>
-            <li><a href="<%- nav[0] %>" target="<%- nav[2] %>"><%- nav[1] %></a></li> 
-            <% } %>
             <% locals %>
             <% if (locals.currentUser) { %>
             <li><a href='/mail'>邮箱</a></li>  
@@ -67,9 +53,8 @@
     <!-- wrapper -->  
     <div id='wrapper'>
       <div>
-        <!--<%- body %>-->
         <!-- Main container. -->
-        <div role="main" id="main"></div>
+        <div role="main" id="main"><%- body %></div>
         <!-- Application source. -->
         <script data-main="/app/config" src="/assets/js/libs/require.js"></script>
       </div>

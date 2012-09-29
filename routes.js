@@ -1,30 +1,18 @@
-var site = require('./controllers/site');
-
 var express = require('express');
 var path = require('path');
 
 module.exports = function(app) {
-
-  var staticDir = path.join(__dirname, 'public');
-  app.use(express.static(staticDir));
+  app.use(express.static(path.join(__dirname, 'public')));
 
   // url routes
-  app.get('/', site.index);
-//  app.get('/signin', site.index);
+  app.get('/api/statuses/public_timeline', function(req, res) {
+    res.send('hello');
+  });
 
   // ajax
-  app.get('/ajax/index', site.index);
+  //app.get('/ajax/index', site.index);
 
-//  app.get('*', function(req, res) {
-//    res.render('index.html', {});
-//    // throw new NotFound;
-//  });
+  app.get('*', function(req, res) {
+    res.render('index.html');
+  });
 };
-
-function NotFound(msg) {
-  this.name = 'NotFound';
-  Error.call(this, msg);
-  Error.captureStackTrace(this, arguments.callee);
-}
-
-NotFound.prototype.__proto__ = Error.prototype;
