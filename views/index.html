@@ -1,79 +1,70 @@
+<%var page=page||''%>
+<!--TODO partial-->
+<!--<%if(page=='index'){%>-->
+<!--<pre><%=include ../README.md%></pre>-->
+<!--<%}%>-->
+
 <script type="text/tpl" id="J_weibo">
   {{#each this}}
-  <dl diss-data="group_source=group_all" class="feed_list W_linecolor" mid="{{mid}}" isforward="1"
-      action-type="feed_list_item"
-      msign="3495760441764753-1348937700-3495744058892401-1348933859-24-1-3495760114594856">
+  <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
-      <a href="/{{profile_url}}" title="{{name}}">
-        <img usercard="id=1916825084" title="{{name}}" alt="" width="50" height="50" src="{{profile_image_url}}">
+      <a href="/statuses/user_timeline/1760951922" title="{{name}}">
+        <img title="{{name}}" alt="{{name}}" width="50" height="50" src="{{profile_image_url}}">
       </a>
       {{/user}}
     </dt>
     <dd class="content">
-      <a href="javascript:;" suda-data="key=close_feed&amp;value=close"
-         action-data="is_new_filter=1&amp;uid=1916825084&amp;nickname=GeniusVczh&amp;gender=m&amp;mid=3495760114594856&amp;appname=新浪微博&amp;isactive=0&amp;mblogsorttype=1&amp;member_type=0"
-         title="展开屏蔽选项" action-type="feed_list_shield" class="W_blkarrow W_bglinka hover"><cite
-              class="arr_m"></cite></a>
-
-      <p node-type="feed_list_content">
+      <p class="feed_list_content" node-type="feed_list_content">
         {{#user}}
-        <a nick-name="{{user.name}}" title="{{user.screen_name}}" href="{{profile_url}}" usercard="">{{user.screen_name}}</a>
-        {{/user}}：<em>{{text}}</em>
+        <a title="{{name}}" href="/statuses/user_timeline/{{id}}">{{name}}</a>
+        {{#verified}}
+        <a target="_blank" href="http://verified.weibo.com/verify" title="新浪个人认证">V</a>
+        {{/verified}}：
+        {{/user}}{{{text}}}
       </p>
+      {{#retweeted_status}}
       <dl class="comment W_textc W_linecolor W_bgcolor">
-        <dd class="arrow W_bgcolor_arrow"><em class="W_arrline">◆</em><span>◆</span></dd>
-        <dt node-type="feed_list_forwardContent">
-          <a nick-name="粤生活粤滋味" href="/u/2127619960" title="粤生活粤滋味" usercard="id=2127619960">
-            @粤生活粤滋味</a>：<em><a class="a_topic"
-                               href="http://huati.weibo.com/k/%E5%B9%BF%E4%B8%9C%E7%BE%8E%E9%A3%9F?from=501">#广东美食#</a>45种潮州小吃！你都吃过吗？<img
-                src="http://img.t.sinajs.cn/t35/style/images/common/face/ext/normal/8c/hsa_org.gif" title="[花心]"
-                alt="[花心]" type="face"><img
-                src="http://img.t.sinajs.cn/t35/style/images/common/face/ext/normal/a5/cza_org.gif" title="[馋嘴]"
-                alt="[馋嘴]" type="face">（转）</em>
+        <dt>
+          {{#user}}
+          <a href="/statuses/user_timeline/{{id}}" title="{{name}}">{{name}}</a>
+          {{#verified}}
+          <a target="_blank" href="http://verified.weibo.com/verify" title="新浪个人认证">V</a>
+          {{/verified}}：
+          {{/user}}{{{text}}}
         </dt>
-        <dd node-type="feed_list_media_prev">
+        {{#unless deleted}}
+        {{#thumbnail_pic}}
+        <dd>
           <ul class="piclist">
             <li>
-              <div class="chePicMin W_bgcolor_mini bigcursor" action-type="feed_list_media_img"
-                   action-data="uid=2127619960&amp;mid=3494813049557026"
-                   suda-uatrack="key=smart_feed&amp;value=zoomin_pic"><img class="bigcursor"
-                                                                           node-type="feed_list_media_bgimg"
-                                                                           src="http://ww1.sinaimg.cn/thumbnail/7ed0e778jw1dxauuet8ckj.jpg"
-                                                                           alt=""><img
-                      style="left: 39.5px; top: 52px; display: none;"
-                      src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif" class="loading_gif"></div>
+              <div class="chePicMin W_bgcolor_mini bigcursor">
+                <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
+                <img class="bigcursor_loading" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif" class="loading_gif">
+              </div>
             </li>
           </ul>
         </dd>
+        {{/thumbnail_pic}}
         <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
         <dd class="info W_linkb W_textb">
-	<span>
-	<a href="/2127619960/yDMwgE6dA?type=repost"
-     suda-uatrack="key=smart_feed&amp;value=details_feed">转发({{reposts_count}})</a>
-	<i class="W_vline">|</i>
-		<a href="/2127619960/yDMwgE6dA" suda-uatrack="key=smart_feed&amp;value=details_feed">评论({{comments_count}})</a>
-	</span>
-          <a class="date" href="/2127619960/yDMwgE6dA" title="2012-09-27 10:10" date="1348711822000"
-             node-type="feed_list_item_date" suda-uatrack="key=smart_feed&amp;value=details_feed">{{created_at}}</a> 来自<a
-                target="_blank" href="http://app.yesweibo.com/" rel="nofollow">{{source}}</a>
+            <span>
+              <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
+              <a href="/2127619960/yDMwgE6dA">评论({{comments_count}})</a>
+            </span>
+          <a class="date" href="/2127619960/yDMwgE6dA">{{dateFormat created_at}}</a> 来自 {{{source}}
         </dd>
+        {{/unless}}
       </dl>
+      {{/retweeted_status}}
       <p class="info W_linkb W_textb">
-		<span>
-		<a suda-data="key=smart_feed&amp;value=repost_by_genius" href="javascript:void(0);" action-type="feed_list_forward"
-       action-data="allowForward=1&amp;rootmid=3494813049557026&amp;rootname=粤生活粤滋味&amp;rootuid=2127619960&amp;rooturl=http://weibo.com/2127619960/yDMwgE6dA&amp;url=http://weibo.com/1916825084/yEb9NjhkA&amp;mid=3495760114594856&amp;name=GeniusVczh&amp;uid=1916825084&amp;domain=2127619960&amp;pid=7ed0e778jw1dxauuet8ckj">转发</a><i
-            class="W_vline">|</i>
-		<a suda-data="key=smart_feed&amp;value=fav_by_genius" href="javascript:void(0);" diss-data="fuid=1916825084"
-       action-type="feed_list_favorite">收藏</a><i class="W_vline">|</i>
-		<a suda-data="key=smart_feed&amp;value=comment_by_genius" href="javascript:void(0);" action-type="feed_list_comment"
-       action-data="ouid=1916825084">评论</a>
-		</span>
-        <a href="/1916825084/yEb9NjhkA" title="2012-09-30 00:53" date="1348937622000" class="date"
-           node-type="feed_list_item_date" suda-uatrack="key=smart_feed&amp;value=details_feed">{{created_at}}</a> 来自<a
-              target="_blank" href="http://weibo.com" rel="nofollow">{{source}}</a>
+        <span>
+          <a href="javascript:void(0);">转发</a>
+          <a href="javascript:void(0);">收藏</a>
+          <a href="javascript:void(0);">评论</a>
+        </span>
+        <a href="/1916825084/yEb9NjhkA" class="date">{{dateFormat created_at}}</a> 来自 {{{source}}}
       </p>
-      <div node-type="feed_list_repeat" class="repeat W_textc W_linecolor W_bgcolor" style="display:none;"></div>
     </dd>
     <dd class="clear"></dd>
   </dl>

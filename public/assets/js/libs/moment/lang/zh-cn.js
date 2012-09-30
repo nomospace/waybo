@@ -31,9 +31,9 @@
             calendar : {
                 sameDay : '[今天]LT',
                 nextDay : '[明天]LT',
-                nextWeek : '[下]ddddLT', 
+                nextWeek : '[下]ddddLT',
                 lastDay : '[昨天]LT',
-                lastWeek : '[上]ddddLT', 
+                lastWeek : '[上]ddddLT',
                 sameElse : 'L'
             },
             relativeTime : {

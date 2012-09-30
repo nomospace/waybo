@@ -4,6 +4,9 @@ var config = require('./config').config;
 var routes = require('./routes');
 var partials = require('express-partials');
 var ejs = require('ejs');
+var markdown = require('markdown');
+var fs = require('fs');
+
 var appRoot = __dirname;
 var app = express();
 
@@ -18,6 +21,13 @@ app.configure('development', function() {
   app.set('views engine', 'html');
   app.set('view cache', false);
   app.engine('html', ejs.renderFile);
+  app.engine('md', function(path, options, fn) {
+    fs.readFile(path, 'utf8', function(err, str) {
+      if (err) return fn(err);
+      str = markdown.parse(str).toString();
+      fn(null, str);
+    });
+  });
   app.locals({config: config});
 });
 

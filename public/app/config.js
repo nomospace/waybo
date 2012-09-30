@@ -13,8 +13,9 @@ require.config({
     // Libraries.
     jquery: "../assets/js/libs/jquery",
     lodash: "../assets/js/libs/lodash",
-    handlebars: "../assets/js/libs/handlebars",
     backbone: "../assets/js/libs/backbone",
+    handlebars: "../assets/js/libs/handlebars",
+    moment: "../assets/js/libs/moment/moment",
     bootstrap: "../assets/js/libs/bootstrap/js/bootstrap"
   },
 
@@ -23,6 +24,9 @@ require.config({
     backbone: {
       deps: ["lodash", "jquery"],
       exports: "Backbone"
+    },
+    bootstrap: {
+      deps: ["jquery"]
     },
 
     // Backbone.LayoutManager depends on Backbone.

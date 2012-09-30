@@ -4,6 +4,7 @@ define([
   "lodash",
   "backbone",
   "handlebars",
+  "moment",
   "bootstrap",
   // Plugins.
   "plugins/backbone.layoutmanager"
