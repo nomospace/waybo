@@ -52,25 +52,27 @@ define(['app'], function(app) {
       });
     },
     'statuses/home_timeline': function(uid) {
+      // TODO backbone 自动回收容器资源
+      $main.html('');
       var url = 'statuses/home_timeline/' + uid;
       beforeRender(this, url, function(page) {
-        if (page == 1) {
-          // TODO backbone 自动回收容器资源
-          $main.html('');
-        }
         fetch(url, {page: page}).done(function(result) {
           $main.append(statusContext(result.statuses));
         });
       });
     },
     'statuses/user_timeline': function(uid) {
-      fetch('statuses/user_timeline/' + uid).done(function(result) {
-        $main.html(statusContext(result.statuses));
+      $main.html('');
+      var url = 'statuses/user_timeline/' + uid;
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(statusContext(result.statuses));
+        });
       });
     },
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
-        $main.html(statusContext([result]));
+        $main.append(statusContext([result]));
       });
     },
     'friendships/friends': function(uid) {

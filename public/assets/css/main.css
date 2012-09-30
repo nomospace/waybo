@@ -182,3 +182,9 @@ body {
   color: red;
   font-size: 12px;
 }
+
+.check-more {
+  margin-bottom: 20px;
+  padding: 10px 0;
+  width: 100%;
+}

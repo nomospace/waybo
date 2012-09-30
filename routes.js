@@ -17,17 +17,17 @@ module.exports = function(app) {
   });
 
   app.get('/api/statuses/public_timeline', function(req, res) {
-    weibo.GET('statuses/public_timeline', {}, callback.bind(null, res));
+    weibo.GET('statuses/public_timeline', {count: 200}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/home_timeline/:uid', function(req, res) {
-    var uid = req.params.uid;
-    weibo.GET('statuses/home_timeline', {uid: uid}, callback.bind(null, res));
+    var uid = req.params.uid, page = req.query.page;
+    weibo.GET('statuses/home_timeline', {uid: uid, page: page}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/user_timeline/:uid', function(req, res) {
-    var uid = req.params.uid;
-    weibo.GET('statuses/user_timeline', {uid: uid}, callback.bind(null, res));
+    var uid = req.params.uid, page = req.query.page;
+    weibo.GET('statuses/user_timeline', {uid: uid, page: page}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/show/:id', function(req, res) {
@@ -38,6 +38,11 @@ module.exports = function(app) {
   app.get('/api/friendships/friends/:uid', function(req, res) {
     var uid = req.params.uid;
     weibo.GET('friendships/friends', {uid: uid}, callback.bind(null, res));
+  });
+
+  app.get('/api/friendships/followers/:uid', function(req, res) {
+    var uid = req.params.uid;
+    weibo.GET('friendships/followers', {uid: uid}, callback.bind(null, res));
   });
 
   app.get('/', function(req, res) {
