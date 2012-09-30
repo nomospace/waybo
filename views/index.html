@@ -48,22 +48,22 @@
         {{/thumbnail_pic}}
         <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
         <dd class="info W_linkb W_textb">
-            <span>
+            <span class="action_list">
               <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
               <a href="/2127619960/yDMwgE6dA">评论({{comments_count}})</a>
             </span>
-          <a class="date" href="/2127619960/yDMwgE6dA">{{dateFormat created_at}}</a> 来自 {{{source}}
+          <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
         </dd>
         {{/unless}}
       </dl>
       {{/retweeted_status}}
       <p class="info W_linkb W_textb">
-        <span>
+        <span class="action_list">
           <a href="javascript:void(0);">转发</a>
           <a href="javascript:void(0);">收藏</a>
           <a href="javascript:void(0);">评论</a>
         </span>
-        <a href="/1916825084/yEb9NjhkA" class="date">{{dateFormat created_at}}</a> 来自 {{{source}}}
+        <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
       </p>
     </dd>
     <dd class="clear"></dd>

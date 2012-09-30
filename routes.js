@@ -17,26 +17,22 @@ module.exports = function(app) {
   });
 
   app.get('/api/statuses/public_timeline', function(req, res) {
-    weibo.GET('statuses/public_timeline', {}, function(err, data) {
-      if (err) {
-        console.log(err);
-      }
-      else {
-        res.send(data);
-      }
-    });
+    weibo.GET('statuses/public_timeline', {}, callback.bind(null, res));
+  });
+
+  app.get('/api/statuses/home_timeline/:uid', function(req, res) {
+    var uid = req.params.uid;
+    weibo.GET('statuses/home_timeline', {uid: uid}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/user_timeline/:uid', function(req, res) {
     var uid = req.params.uid;
-    weibo.GET('statuses/user_timeline', {uid: uid}, function(err, data) {
-      if (err) {
-        console.log(err);
-      }
-      else {
-        res.send(data);
-      }
-    });
+    weibo.GET('statuses/user_timeline', {uid: uid}, callback.bind(null, res));
+  });
+
+  app.get('/api/statuses/show/:id', function(req, res) {
+    var id = req.params.id;
+    weibo.GET('statuses/show', {id: id}, callback.bind(null, res));
   });
 
   app.get('/', function(req, res) {
@@ -48,3 +44,12 @@ module.exports = function(app) {
     res.render('index.html');
   });
 };
+
+function callback(res, err, data) {
+  if (err) {
+    console.log(err);
+  }
+  else {
+    res.send(data);
+  }
+}

@@ -19,7 +19,9 @@ define(['app'], function(app) {
     routes: {
       '': 'index',
       'statuses/public_timeline': 'statuses/public_timeline',
-      'statuses/user_timeline/:uid': 'statuses/user_timeline'
+      'statuses/home_timeline/:uid': 'statuses/home_timeline',
+      'statuses/user_timeline/:uid': 'statuses/user_timeline',
+      'statuses/show/:id': 'statuses/show'
     },
     index: function() {
       fetch('index').done(function(result) {
@@ -31,9 +33,19 @@ define(['app'], function(app) {
         $main.html(context(result.statuses));
       });
     },
+    'statuses/home_timeline': function(uid) {
+      fetch('statuses/home_timeline/' + uid).done(function(result) {
+        $main.html(context(result.statuses));
+      });
+    },
     'statuses/user_timeline': function(uid) {
       fetch('statuses/user_timeline/' + uid).done(function(result) {
         $main.html(context(result.statuses));
+      });
+    },
+    'statuses/show': function(id) {
+      fetch('statuses/show/' + id).done(function(result) {
+        $main.html(context([result]));
       });
     }
   });
