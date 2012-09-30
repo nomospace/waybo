@@ -36,13 +36,13 @@ module.exports = function(app) {
   });
 
   app.get('/api/friendships/friends/:uid', function(req, res) {
-    var uid = req.params.uid;
-    weibo.GET('friendships/friends', {uid: uid}, callback.bind(null, res));
+    var uid = req.params.uid, page = req.query.page;
+    weibo.GET('friendships/friends', {uid: uid, page: page}, callback.bind(null, res));
   });
 
   app.get('/api/friendships/followers/:uid', function(req, res) {
-    var uid = req.params.uid;
-    weibo.GET('friendships/followers', {uid: uid}, callback.bind(null, res));
+    var uid = req.params.uid, page = req.query.page;
+    weibo.GET('friendships/followers', {uid: uid, page: page}, callback.bind(null, res));
   });
 
   app.get('/', function(req, res) {

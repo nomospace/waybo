@@ -72,17 +72,25 @@ define(['app'], function(app) {
     },
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
-        $main.append(statusContext([result]));
+        $main.html(statusContext([result]));
       });
     },
     'friendships/friends': function(uid) {
-      fetch('friendships/friends/' + uid).done(function(result) {
-        $main.html(followContext(result));
+      $main.html('');
+      var url = 'friendships/friends/' + uid;
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(followContext(result));
+        });
       });
     },
     'friendships/followers': function(uid) {
-      fetch('friendships/followers/' + uid).done(function(result) {
-        $main.html(followContext(result));
+      $main.html('');
+      var url = 'friendships/followers/' + uid;
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(followContext(result));
+        });
       });
     }
   });

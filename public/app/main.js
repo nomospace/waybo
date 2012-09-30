@@ -31,12 +31,16 @@ require(["app", "router"], function(app, Router) {
     }
   });
 
-  $doc.on("click", "img.bigcursor", function(evt) {
-    var $img = $(this), $next = $img.next();
+  $doc.on("click", "img.bigcursor", function() {
+    var $img = $(this),
+      $next = $img.next(),
+      murl = $img.data('middle');
     $next.show();
-    $img.attr('src', $img.data('middle')).load(function() {
-      $next.remove();
-    })
+    if (murl) {
+      var $new = $('<img src="' + murl + '">').load(function() {
+        $img.parent().html($new);
+      });
+    }
   });
 
 });

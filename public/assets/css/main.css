@@ -184,7 +184,8 @@ body {
 }
 
 .check-more {
-  margin-bottom: 20px;
+  display: block;
+  margin: 0 auto 20px;
   padding: 10px 0;
-  width: 100%;
+  width: 400px;
 }

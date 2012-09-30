@@ -71,9 +71,12 @@
       {{/retweeted_status}}
       <p class="info W_linkb W_textb">
         <span class="action_list">
-          <a href="javascript:void(0);">转发</a>
+          <a href="javascript:void(0);">转发({{reposts_count}})</a>
+          {{#favorited}}已收藏{{/favorited}}
+          {{^favorited}}
           <a href="javascript:void(0);">收藏</a>
-          <a href="javascript:void(0);">评论</a>
+          {{/favorited}}
+          <a href="javascript:void(0);">评论({{comments_count}})</a>
         </span>
         <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
       </p>
