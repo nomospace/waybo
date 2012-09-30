@@ -11,7 +11,7 @@
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
-      <a href="/statuses/user_timeline/1760951922" title="{{name}}">
+      <a href="/statuses/user_timeline/{{id}}" title="{{name}}">
         <img title="{{name}}" alt="{{name}}" width="50" height="50" src="{{profile_image_url}}">
       </a>
       {{/user}}
@@ -25,6 +25,16 @@
         {{/verified}}：
         {{/user}}{{{text}}}
       </p>
+      {{#thumbnail_pic}}
+      <ul class="piclist">
+      	<li>
+      		<div class="chePicMin W_bgcolor_mini bigcursor">
+            <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
+            <img class="bigcursor_loading loading_gif" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif">
+          </div>
+      	</li>
+      </ul>
+      {{/thumbnail_pic}}
       {{#retweeted_status}}
       <dl class="comment W_textc W_linecolor W_bgcolor">
         <dt>
@@ -42,8 +52,7 @@
             <li>
               <div class="chePicMin W_bgcolor_mini bigcursor">
                 <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
-                <img class="bigcursor_loading" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif"
-                     class="loading_gif">
+                <img class="bigcursor_loading loading_gif" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif">
               </div>
             </li>
           </ul>
