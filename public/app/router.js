@@ -9,14 +9,28 @@ define(['app'], function(app) {
   });
 
   var $main = $('#main');
+//  var moreTpl = $('#J_more').html();
   var statusTpl = $('#J_status').html(),
     statusContext = Handlebars.compile(statusTpl);
   var followTpl = $('#J_follow').html(),
     followContext = Handlebars.compile(followTpl);
+
   var fetch = function(url, options) {
     return $.get(api + url, options);
   };
+
   var api = '/api/';
+
+  var beforeRender = function(ctx, key, callback) {
+    var $btn = $('#J_btn_more');
+    $btn.off('click').on('click', function() {
+      callback(ctx[key].page++);
+    });
+    ctx[key] = ctx[key] || {};
+    ctx[key].page = 1;
+    $btn.click();
+  };
+
   var Router = Backbone.Router.extend({
     routes: {
       '': 'index',
@@ -24,7 +38,8 @@ define(['app'], function(app) {
       'statuses/home_timeline/:uid': 'statuses/home_timeline',
       'statuses/user_timeline/:uid': 'statuses/user_timeline',
       'statuses/show/:id': 'statuses/show',
-      'friendships/friends/:uid': 'friendships/friends'
+      'friendships/friends/:uid': 'friendships/friends',
+      'friendships/followers/:uid': 'friendships/followers'
     },
     index: function() {
       fetch('index').done(function(result) {
@@ -37,8 +52,15 @@ define(['app'], function(app) {
       });
     },
     'statuses/home_timeline': function(uid) {
-      fetch('statuses/home_timeline/' + uid).done(function(result) {
-        $main.html(statusContext(result.statuses));
+      var url = 'statuses/home_timeline/' + uid;
+      beforeRender(this, url, function(page) {
+        if (page == 1) {
+          // TODO backbone 自动回收容器资源
+          $main.html('');
+        }
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(statusContext(result.statuses));
+        });
       });
     },
     'statuses/user_timeline': function(uid) {
@@ -55,7 +77,13 @@ define(['app'], function(app) {
       fetch('friendships/friends/' + uid).done(function(result) {
         $main.html(followContext(result));
       });
+    },
+    'friendships/followers': function(uid) {
+      fetch('friendships/followers/' + uid).done(function(result) {
+        $main.html(followContext(result));
+      });
     }
   });
+
   return Router;
 });
