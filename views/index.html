@@ -4,7 +4,7 @@
 <!--<pre><%=include ../README.md%></pre>-->
 <!--<%}%>-->
 
-<script type="text/tpl" id="J_weibo">
+<script type="text/tpl" id="J_status">
   {{#each this}}
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
@@ -40,7 +40,8 @@
             <li>
               <div class="chePicMin W_bgcolor_mini bigcursor">
                 <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
-                <img class="bigcursor_loading" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif" class="loading_gif">
+                <img class="bigcursor_loading" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif"
+                     class="loading_gif">
               </div>
             </li>
           </ul>
@@ -69,4 +70,53 @@
     <dd class="clear"></dd>
   </dl>
   {{/each}}
+</script>
+<script type="text/tpl" id="J_follow">
+  <ul class="cnfList">
+    {{#each users}}
+    <li class="clearfix W_linecolor">
+      <div class="left">
+        <p class="face mbspace">
+          <a target="_blank" title="{{name}}" href="/izlmichael">
+            <img width="50" height="50" alt="{{name}}" src="{{profile_image_url}}">
+          </a>
+        </p>
+      </div>
+      <div class="con clearfix">
+        <div class="con_right">
+          <p class="addbtn mbspace">
+            {{#follow_me}}
+            <img class="icon_connect" title="已相互关注" src="http://img.t.sinajs.cn/t4/style/images/common/transparent.gif">
+            {{/follow_me}}
+          </p>
+          <p class="txt mbspace">
+            <a href="javascript:;"><em item-func="unFollow">取消关注</em></a>
+          </p>
+        </div>
+        <div class="con_left">
+          <p class="name mbspace">
+            <a target="_blank" href="/statuses/home_timeline/{{id}}" class="W_f14">{{name}}</a>
+            {{#verified}}
+            <a target="_blank" href="http://verified.weibo.com/verify">V</a>
+            <span class="addr">{{location}}</span>
+            {{/verified}}
+          </p>
+          <p class="connect mbspace">
+            关注 <a target="_blank" href="/friendships/friends/{{id}}/follow">{{friends_count}}</a>
+            粉丝 <a target="_blank" href="/friendships/followers/{{id}}">{{followers_count}}</a>
+            微博 <a target="_blank" href="/statuses/user_timeline/{{id}}">{{statuses_count}}</a>
+            收藏 <a target="_blank" href="/favorites/{{id}}">{{favourites_count}}</a>
+          </p>
+          <p class="info mbspace">简介：{{description}}</p>
+          <p class="weibo mbspace"><a href="/statuses/user_timeline/{{id}}" class="W_linkb">{{{status}}</a></p>
+          <p class="more_info">
+            <a href="javascript:;" class="W_moreup" title="更多资料">
+              更多资料<span class="more">{{remark}}</span>
+            </a>
+          </p>
+        </div>
+      </div>
+    </li>
+    {{/each}}
+  </ul>
 </script>

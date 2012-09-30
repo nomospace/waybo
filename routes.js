@@ -35,6 +35,11 @@ module.exports = function(app) {
     weibo.GET('statuses/show', {id: id}, callback.bind(null, res));
   });
 
+  app.get('/api/friendships/friends/:uid', function(req, res) {
+    var uid = req.params.uid;
+    weibo.GET('friendships/friends', {uid: uid}, callback.bind(null, res));
+  });
+
   app.get('/', function(req, res) {
     res.render('index.html', {page: 'index'});
   });
