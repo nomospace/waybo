@@ -48,7 +48,7 @@ define(['app'], function(app) {
     },
     'statuses/public_timeline': function() {
       fetch('statuses/public_timeline').done(function(result) {
-        $main.html(statusContext(result.statuses));
+        $main.html(statusContext(result));
       });
     },
     'statuses/home_timeline': function(uid) {
@@ -57,7 +57,7 @@ define(['app'], function(app) {
       var url = 'statuses/home_timeline/' + uid;
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
-          $main.append(statusContext(result.statuses));
+          $main.append(statusContext(result));
         });
       });
     },
@@ -66,7 +66,7 @@ define(['app'], function(app) {
       var url = 'statuses/user_timeline/' + uid;
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
-          $main.append(statusContext(result.statuses));
+          $main.append(statusContext(result));
         });
       });
     },

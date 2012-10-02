@@ -7,7 +7,8 @@
   <button id="J_btn_more" class="btn btn-large btn-block check-more" type="button">查看更多</button>
 </script>
 <script type="text/tpl" id="J_status">
-  {{#each this}}
+  {{#error}}<div class="alert alert-error">{{.}}</div>{{/error}}
+  {{#each statuses}}
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
@@ -86,6 +87,7 @@
   {{/each}}
 </script>
 <script type="text/tpl" id="J_follow">
+  {{#error}}<div class="alert alert-error">{{.}}</div>{{/error}}
   <ul class="cnfList">
     {{#each users}}
     <li class="clearfix W_linecolor">

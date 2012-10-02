@@ -4,7 +4,7 @@ var Weibo = require('./libs/weibo-samxxu.js');
 
 var app_key = '3873930736',
   app_secret = '358e312b72543e91404806e599cb6125',
-  access_token = '2.003CmKvBo2cKOE6791b250a7FSHPGB'; // token 有效时间为 24 小时
+  access_token = '2.003CmKvBwOnOBBa5eae88cc40v2lSb'; // token 有效时间为 24 小时
 
 var weibo = new Weibo(app_key, app_secret, access_token);
 
@@ -58,6 +58,7 @@ module.exports = function(app) {
 function callback(res, err, data) {
   if (err) {
     console.log(err);
+    res.send(err.data);
   }
   else {
     res.send(data);
