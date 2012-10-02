@@ -5,9 +5,9 @@ A simple web-weibo base on nodejs.
 ![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)
 
 ## Reference
-[https://github.com/vzhishu/node-weibo-v2](https://github.com/vzhishu/node-weibo-v2])  
 [https://github.com/samxxu/node-sina-weibo](https://github.com/samxxu/node-sina-weibo)  
-[https://github.com/fengmk2/node-weibo](https://github.com/fengmk2/node-weibo])  
+[https://github.com/vzhishu/node-weibo-v2](https://github.com/vzhishu/node-weibo-v2)  
+[https://github.com/fengmk2/node-weibo](https://github.com/fengmk2/node-weibo)  
 [https://github.com/rockdai/WeiboAPI](https://github.com/rockdai/WeiboAPI)  
 
 

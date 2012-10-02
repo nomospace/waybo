@@ -14,6 +14,7 @@ define(['app'], function(app) {
     statusContext = Handlebars.compile(statusTpl);
   var followTpl = $('#J_follow').html(),
     followContext = Handlebars.compile(followTpl);
+  var $btnMore = $('#J_btn_more');
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -22,18 +23,18 @@ define(['app'], function(app) {
   var api = '/api/';
 
   var beforeRender = function(ctx, key, callback) {
-    var $btn = $('#J_btn_more');
-    $btn.off('click').on('click', function() {
+    $btnMore.off('click').on('click', function() {
       callback(ctx[key].page++);
     });
     ctx[key] = ctx[key] || {};
     ctx[key].page = 1;
-    $btn.click();
+    $btnMore.click();
   };
 
   var Router = Backbone.Router.extend({
     routes: {
       '': 'index',
+      'signin': 'signin',
       'statuses/public_timeline': 'statuses/public_timeline',
       'statuses/home_timeline/:uid': 'statuses/home_timeline',
       'statuses/user_timeline/:uid': 'statuses/user_timeline',
@@ -46,8 +47,14 @@ define(['app'], function(app) {
         $main.html(result);
       });
     },
+    signin: function() {
+      fetch('signin').done(function(result) {
+        location.href = result;
+      });
+    },
     'statuses/public_timeline': function() {
       fetch('statuses/public_timeline').done(function(result) {
+        if (!result.error) $btnMore.show();
         $main.html(statusContext(result));
       });
     },

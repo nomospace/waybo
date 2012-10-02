@@ -40,12 +40,9 @@
             <li><a href="/friendships/followers/1760951922">粉丝</a></li>
             <li><a href="/friendships/friends/1760951922">关注</a></li>
             <li><a href="#">微博</a></li>
-            <% locals %>
-            <% if (locals.currentUser) { %>
-            <li><a href='/mail'>邮箱</a></li>  
-            <li><a href='/signout'>退出</a></li>  
-            <% } else { %>
-            <li><a href='/signin'>登录</a></li> 
+            <% var accessToken = locals.accessToken||'' %>
+            <% if (!accessToken) { %>
+            <li><a href='/signin'>登录</a></li>
             <% } %>
           </ul>
           <a class="fork2github" href="https://github.com/sdg-sysdev/waybo">
@@ -59,7 +56,12 @@
       <div>
         <!-- Main container. -->
         <div role="main" id="main"><%- body %></div>
-        <button id="J_btn_more" class="btn btn-large btn-block check-more" type="button">查看更多</button>
+        <% if (!accessToken) { %>
+        <div class="signin-main">
+          <a href='/signin'><button class="btn btn-large btn-primary" type="button">登录</button></a>
+        </div>
+        <% } %>
+        <button id="J_btn_more" style="display: none" class="btn btn-large btn-block check-more" type="button">查看更多</button>
         <!-- Application source. -->
         <script data-main="/app/config" src="/assets/js/libs/require.js"></script>
       </div>
