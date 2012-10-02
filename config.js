@@ -4,8 +4,8 @@ module.exports = {
   description: 'A simple web-weibo base on nodejs.',
   version: 0.1,
 
-  app_key: 'you key',
-  app_secret: 'you secret',
+  app_key: '934435042',
+  app_secret: '223057e0575e38f202c54f673c032e31',
 
   sessionSecret: 'waybo',
   authCookieName: 'waybo',

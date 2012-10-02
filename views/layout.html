@@ -36,13 +36,15 @@
             <% if (uid&&accessToken) { %>
             <li><a href='/statuses/public_timeline'>看大家在聊什么</a></li>
             <li><a href='/statuses/home_timeline/1760951922'>首页</a></li>
-            <li><a href="/statuses/mentions">@我</a></li>
-            <li><a href="/comments/by_me">评论</a></li>
+            <li><a href="/statuses/mentions">@我的微博</a></li>
+            <li><a href="/comments/mentions">@我的评论</a></li>
+            <li><a href="/comments/by_me">我收到的评论</a></li>
+            <li><a href="/comments/to_me">我发出的评论</a></li>
             <li><a href="#">私信</a></li>
-            <li><a href="#">收藏</a></li>
+            <li><a href="/favorites/<%=uid%>">收藏</a></li>
             <li><a href="/friendships/followers/<%=uid%>">粉丝</a></li>
             <li><a href="/friendships/friends/<%=uid%>">关注</a></li>
-            <li><a href="/<%=uid%>">微博</a></li>
+            <li><a href="/statuses/user_timeline/<%=uid%>">微博</a></li>
             <% } else { %>
             <li><a href='/signin'>登录</a></li>
             <% } %>

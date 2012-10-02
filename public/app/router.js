@@ -16,6 +16,8 @@ define(['app'], function(app) {
     commentContext = Handlebars.compile(commentTpl);
   var followTpl = $('#J_follow').html(),
     followContext = Handlebars.compile(followTpl);
+  var favoritesTpl = $('#J_favorites').html(),
+    favoritesContext = Handlebars.compile(favoritesTpl);
   var $btnMore = $('#J_btn_more');
 
   var fetch = function(url, options) {
@@ -41,7 +43,10 @@ define(['app'], function(app) {
       'statuses/home_timeline/:uid': 'statuses/home_timeline',
       'statuses/user_timeline/:uid': 'statuses/user_timeline',
       'statuses/show/:id': 'statuses/show',
+      'favorites/:id': 'favorites',
       'comments/by_me': 'comments/by_me',
+      'comments/to_me': 'comments/to_me',
+      'comments/mentions': 'comments/mentions',
       'statuses/mentions': 'statuses/mentions',
       'friendships/friends/:uid': 'friendships/friends',
       'friendships/followers/:uid': 'friendships/followers'
@@ -64,8 +69,8 @@ define(['app'], function(app) {
     },
     'statuses/home_timeline': function(uid) {
       // TODO backbone 自动回收容器资源
-      $main.html('');
       var url = 'statuses/home_timeline/' + uid;
+      $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
           $main.append(statusContext(result));
@@ -73,8 +78,8 @@ define(['app'], function(app) {
       });
     },
     'statuses/user_timeline': function(uid) {
-      $main.html('');
       var url = 'statuses/user_timeline/' + uid;
+      $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
           $main.append(statusContext(result));
@@ -86,21 +91,48 @@ define(['app'], function(app) {
         $main.html(statusContext([result]));
       });
     },
-    'comments/by_me': function() {
+    'favorites': function(id) {
+      var url = 'favorites/' + id;
       $main.html('');
-      var url = 'comments/by_me';
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
-          $main.html(commentContext(result));
+          $main.html(favoritesContext(result));
+        });
+      });
+    },
+    'comments/by_me': function() {
+      var url = 'comments/by_me';
+      $main.html('');
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(commentContext(result));
+        });
+      });
+    },
+    'comments/to_me': function() {
+      var url = 'comments/to_me';
+      $main.html('');
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(commentContext(result));
+        });
+      });
+    },
+    'comments/mentions': function() {
+      var url = 'comments/mentions';
+      $main.html('');
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.append(commentContext(result));
         });
       });
     },
     'statuses/mentions': function() {
-      $main.html('');
       var url = 'statuses/mentions';
+      $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
-          $main.html(statusContext(result));
+          $main.append(statusContext(result));
         });
       });
     },
