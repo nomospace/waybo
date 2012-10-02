@@ -12,6 +12,8 @@ define(['app'], function(app) {
 //  var moreTpl = $('#J_more').html();
   var statusTpl = $('#J_status').html(),
     statusContext = Handlebars.compile(statusTpl);
+  var commentTpl = $('#J_comment').html(),
+    commentContext = Handlebars.compile(commentTpl);
   var followTpl = $('#J_follow').html(),
     followContext = Handlebars.compile(followTpl);
   var $btnMore = $('#J_btn_more');
@@ -39,6 +41,7 @@ define(['app'], function(app) {
       'statuses/home_timeline/:uid': 'statuses/home_timeline',
       'statuses/user_timeline/:uid': 'statuses/user_timeline',
       'statuses/show/:id': 'statuses/show',
+      'comments/by_me': 'comments/by_me',
       'statuses/mentions': 'statuses/mentions',
       'friendships/friends/:uid': 'friendships/friends',
       'friendships/followers/:uid': 'friendships/followers'
@@ -81,6 +84,15 @@ define(['app'], function(app) {
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
         $main.html(statusContext([result]));
+      });
+    },
+    'comments/by_me': function() {
+      $main.html('');
+      var url = 'comments/by_me';
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.html(commentContext(result));
+        });
       });
     },
     'statuses/mentions': function() {

@@ -64,6 +64,10 @@ module.exports = function(app) {
     weibo.GET('statuses/show', {id: id}, callback.bind(null, res));
   });
 
+  app.get('/api/comments/by_me', function(req, res) {
+    weibo.GET('comments/by_me', {}, callback.bind(null, res));
+  });
+
   app.get('/api/statuses/mentions', function(req, res) {
     var page = req.query.page;
     weibo.GET('statuses/mentions', {page: page}, callback.bind(null, res));
