@@ -1,14 +1,10 @@
 var express = require('express');
 var path = require('path');
 var Weibo = require('./libs/weibo-samxxu.js');
-var config = require('./config').config;
+var config = require('./config');
 var appInstance;
 
-var app_key = '934435042',
-  app_secret = '223057e0575e38f202c54f673c032e31',
-  access_token = '2.003CmKvBwOnOBBa5eae88cc40v2lSb'; // token 有效时间为 24 小时
-
-var weibo = new Weibo(app_key, app_secret);
+var weibo = new Weibo(config.app_key, config.app_secret);
 var redirect_uri = 'http://nomospace.github.com/';
 var authorize_url = weibo.getAuthorizeUrl({
   redirect_uri: redirect_uri,
@@ -38,7 +34,10 @@ module.exports = function(app) {
       }, function(err, result, accessToken) {
         if (err) res.send(err);
         else {
-          app.locals.accessToken = accessToken;
+          app.locals({
+            'accessToken': accessToken,
+            'uid': result.uid
+          });
           console.log(accessToken);
           res.redirect('/statuses/public_timeline');
         }
@@ -63,6 +62,11 @@ module.exports = function(app) {
   app.get('/api/statuses/show/:id', function(req, res) {
     var id = req.params.id;
     weibo.GET('statuses/show', {id: id}, callback.bind(null, res));
+  });
+
+  app.get('/api/statuses/mentions', function(req, res) {
+    var page = req.query.page;
+    weibo.GET('statuses/mentions', {page: page}, callback.bind(null, res));
   });
 
   app.get('/api/friendships/friends/:uid', function(req, res) {

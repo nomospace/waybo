@@ -31,17 +31,19 @@
             <input type='text' id='q' name='q' class='search-query span3' value='<%= locals.keyword || "" %>'/>
           </form>
           <ul class='nav pull-right'>
+            <% var uid = uid||'' %>
+            <% var accessToken = accessToken||'' %>
+            <% if (uid&&accessToken) { %>
             <li><a href='/statuses/public_timeline'>看大家在聊什么</a></li>
             <li><a href='/statuses/home_timeline/1760951922'>首页</a></li>
-            <li><a href="#">@我</a></li>
+            <li><a href="/statuses/mentions">@我</a></li>
             <li><a href="#">评论</a></li>
             <li><a href="#">私信</a></li>
             <li><a href="#">收藏</a></li>
-            <li><a href="/friendships/followers/1760951922">粉丝</a></li>
-            <li><a href="/friendships/friends/1760951922">关注</a></li>
-            <li><a href="#">微博</a></li>
-            <% var accessToken = locals.accessToken||'' %>
-            <% if (!accessToken) { %>
+            <li><a href="/friendships/followers/<%=uid%>">粉丝</a></li>
+            <li><a href="/friendships/friends/<%=uid%>">关注</a></li>
+            <li><a href="/<%=uid%>">微博</a></li>
+            <% } else { %>
             <li><a href='/signin'>登录</a></li>
             <% } %>
           </ul>
@@ -56,11 +58,11 @@
       <div>
         <!-- Main container. -->
         <div role="main" id="main"><%- body %></div>
-        <% if (!accessToken) { %>
-        <div class="signin-main">
-          <a href='/signin'><button class="btn btn-large btn-primary" type="button">登录</button></a>
-        </div>
-        <% } %>
+        <!--<% if (!accessToken) { %>-->
+        <!--<div class="signin-main">-->
+          <!--<a href='/signin'><button class="btn btn-small btn-primary" type="button">登录</button></a>-->
+        <!--</div>-->
+        <!--<% } %>-->
         <button id="J_btn_more" style="display: none" class="btn btn-large btn-block check-more" type="button">查看更多</button>
         <!-- Application source. -->
         <script data-main="/app/config" src="/assets/js/libs/require.js"></script>

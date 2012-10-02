@@ -1,6 +1,6 @@
 var path = require('path');
 var express = require('express');
-var config = require('./config').config;
+var config = require('./config');
 var routes = require('./routes');
 var partials = require('express-partials');
 var ejs = require('ejs');

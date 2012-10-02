@@ -39,6 +39,7 @@ define(['app'], function(app) {
       'statuses/home_timeline/:uid': 'statuses/home_timeline',
       'statuses/user_timeline/:uid': 'statuses/user_timeline',
       'statuses/show/:id': 'statuses/show',
+      'statuses/mentions': 'statuses/mentions',
       'friendships/friends/:uid': 'friendships/friends',
       'friendships/followers/:uid': 'friendships/followers'
     },
@@ -80,6 +81,15 @@ define(['app'], function(app) {
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
         $main.html(statusContext([result]));
+      });
+    },
+    'statuses/mentions': function() {
+      $main.html('');
+      var url = 'statuses/mentions';
+      beforeRender(this, url, function(page) {
+        fetch(url, {page: page}).done(function(result) {
+          $main.html(statusContext(result));
+        });
       });
     },
     'friendships/friends': function(uid) {
