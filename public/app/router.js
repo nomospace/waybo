@@ -91,7 +91,9 @@ define(['app'], function(app) {
     },
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
-        $main.html(statusContext([result]));
+        result.statuses = [result];
+        $main.html(statusContext(result));
+        $main.find('a[data-action="repeat"]').click();
       });
     },
     'favorites': function(id) {
@@ -178,10 +180,12 @@ define(['app'], function(app) {
     }
   }).on("click", "a[data-action=repeat]",
     function() {
-      var $a = $(this);
+      var $a = $(this),
+        $info = $a.closest('.info');
+      $info.next().remove();
       fetch('comments/show/' + $a.data('id'), {count: 200}).done(function(result) {
         if (result) {
-          $a.closest('.info').after(repeatContext(result));
+          $info.after(repeatContext(result));
         }
       });
     }).on("click", "button[data-action=repeat]",

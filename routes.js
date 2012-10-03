@@ -5,13 +5,11 @@ var config = require('./config');
 var appInstance;
 
 var weibo = new Weibo(config.app_key, config.app_secret);
-var redirect_uri = 'http://nomospace.github.com/';
+var redirect_uri = config.redirect_uri;
 var authorize_url = weibo.getAuthorizeUrl({
   redirect_uri: redirect_uri,
   response_type: 'code'
 });
-
-console.log(authorize_url);
 
 module.exports = function(app) {
   appInstance = app;
@@ -38,7 +36,6 @@ module.exports = function(app) {
             'accessToken': accessToken,
             'uid': result.uid
           });
-          console.log(accessToken);
           res.redirect('/statuses/public_timeline');
         }
       }
@@ -119,6 +116,7 @@ module.exports = function(app) {
             'accessToken': '',
             'uid': ''
           });
+          weibo = new Weibo(config.app_key, config.app_secret);
         }
         callback(res, err, data);
       });
@@ -129,14 +127,12 @@ module.exports = function(app) {
   });
 
   app.get('*', function(req, res) {
-    console.log('*');
     res.render('index.html');
   });
 };
 
 function callback(res, err, data) {
   if (err) {
-    console.log(err);
     appInstance.locals.error = err;
     res.send(err.data);
   }

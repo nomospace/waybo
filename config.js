@@ -6,6 +6,7 @@ module.exports = {
 
   app_key: '934435042',
   app_secret: '223057e0575e38f202c54f673c032e31',
+  redirect_uri: 'http://nomospace.github.com/',
 
   sessionSecret: 'waybo',
   authCookieName: 'waybo',
