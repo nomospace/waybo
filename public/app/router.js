@@ -21,6 +21,7 @@ define(['app'], function(app) {
   var repeatTpl = $('#J_repeat').html(),
     repeatContext = Handlebars.compile(repeatTpl);
   var $btnMore = $('#J_btn_more');
+  var $statusUpdate = $('#J_status_update_btn');
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -209,6 +210,9 @@ define(['app'], function(app) {
           }
         });
     });
+  $statusUpdate.click(function() {
+
+  });
 
   return Router;
 });
