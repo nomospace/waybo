@@ -18,6 +18,8 @@ define(['app'], function(app) {
     followContext = Handlebars.compile(followTpl);
   var favoritesTpl = $('#J_favorites').html(),
     favoritesContext = Handlebars.compile(favoritesTpl);
+  var repeatTpl = $('#J_repeat').html(),
+    repeatContext = Handlebars.compile(repeatTpl);
   var $btnMore = $('#J_btn_more');
 
   var fetch = function(url, options) {
@@ -163,6 +165,25 @@ define(['app'], function(app) {
       });
     }
   });
+
+  $(document).on("click", "img.bigcursor",function() {
+    var $img = $(this),
+      $next = $img.next(),
+      murl = $img.data('middle');
+    $next.show();
+    if (murl) {
+      var $new = $('<img src="' + murl + '">').load(function() {
+        $img.parent().html($new);
+      });
+    }
+  }).on("click", "a[data-action=repeat]", function() {
+      var $a = $(this);
+      fetch('comments/show/' + $a.data('id'), {count: 200}).done(function(result) {
+        if (result) {
+          $a.closest('.info').after(repeatContext(result));
+        }
+      });
+    });
 
   return Router;
 });

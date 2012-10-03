@@ -193,3 +193,24 @@ body {
 .signin-main {
   padding: 0 20px;
 }
+
+.dropdown-toggle, a[data-action] {
+  cursor: pointer;
+}
+
+.feed_list,
+.comment_list,
+.feed_list .comment,
+.feed_list .repeat {
+  border-color: #e6e6e6;
+}
+
+.feed_list .comment {
+  background-color: #f7f7f9;
+  color: #777;
+}
+
+.comment_date {
+  padding-left: 10px;
+  color: #aaa;
+}

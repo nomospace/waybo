@@ -99,6 +99,11 @@ module.exports = function(app) {
     weibo.GET('friendships/followers', {uid: uid, page: page}, callback.bind(null, res));
   });
 
+  app.get('/api/comments/show/:id', function(req, res) {
+    var id = req.params.id, count = req.query.count;
+    weibo.GET('comments/show', {id: id, count: count}, callback.bind(null, res));
+  });
+
   app.get('/api/account/end_session', function(req, res) {
     weibo.GET('account/end_session', {},
       function(err, data) {

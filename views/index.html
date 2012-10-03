@@ -9,6 +9,7 @@
 <script type="text/tpl" id="J_status">
   {{#error}}<div class="alert alert-error">{{.}}</div>{{/error}}
   {{#each statuses}}
+  {{^deleted}}
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
@@ -63,7 +64,7 @@
         <dd class="info W_linkb W_textb">
             <span class="action_list">
               <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
-              <a href="/2127619960/yDMwgE6dA">评论({{comments_count}})</a>
+              <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
             </span>
           <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
         </dd>
@@ -77,19 +78,21 @@
           {{^favorited}}
           <a href="javascript:void(0);">收藏</a>
           {{/favorited}}
-          <a href="javascript:void(0);">评论({{comments_count}})</a>
+          <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
         </span>
         <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
       </p>
     </dd>
     <dd class="clear"></dd>
   </dl>
+  {{/deleted}}
   {{/each}}
 </script>
 <script type="text/tpl" id="J_favorites">
   {{#error}}<div class="alert alert-error">{{.}}</div>{{/error}}
   {{#each favorites}}
   {{#status}}
+  {{^deleted}}
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
@@ -144,7 +147,7 @@
         <dd class="info W_linkb W_textb">
             <span class="action_list">
               <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
-              <a href="/2127619960/yDMwgE6dA">评论({{comments_count}})</a>
+              <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
             </span>
           <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
         </dd>
@@ -155,13 +158,14 @@
         <span class="action_list">
           <a href="javascript:void(0);">转发({{reposts_count}})</a>
           <a href="javascript:void(0);">取消收藏</a>
-          <a href="javascript:void(0);">评论({{comments_count}})</a>
+          <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
         </span>
         <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
       </p>
     </dd>
     <dd class="clear"></dd>
   </dl>
+  {{/deleted}}
   {{/status}}
   {{/each}}
 </script>
@@ -232,7 +236,7 @@
           <dd class="info W_linkb W_textb">
               <span class="action_list">
                 <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
-                <a href="/2127619960/yDMwgE6dA">评论({{comments_count}})</a>
+                <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
               </span>
             <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
           </dd>
@@ -246,7 +250,7 @@
             {{^favorited}}
             <a href="javascript:void(0);">收藏</a>
             {{/favorited}}
-            <a href="javascript:void(0);">评论({{comments_count}})</a>
+            <a data-action="repeat">评论({{comments_count}})</a>
           </span>
           <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
         </p>
@@ -306,4 +310,37 @@
     </li>
     {{/each}}
   </ul>
+</script>
+<script type="text/tpl" id="J_repeat">
+  <div class="repeat W_textc W_linecolor W_bgcolor">
+    <!-- 评论框 -->
+    <div class="input clearfix">
+      <div><textarea></textarea></div>
+      <div class="action clearfix" node-type="widget">
+        <label><input class="W_checkbox" type="checkbox" name="forward">同时转发到我的微博</label>
+        <button class="btn btn-primary" type="button">评论</button>
+      </div>
+    </div>
+    <!-- 已有评论列表 -->
+    <div class="comment_lists" node-type="feed_list_commentList">
+      {{#each comments}}
+      <dl class="comment_list W_linecolor">
+        {{#user}}
+        <dt>
+          <a href="/statuses/user_timeline/{{id}}"><img width="30" height="30" alt="{{name}}" src="{{profile_image_url}}"></a>
+        </dt>
+        <dd>
+        <a href="/statuses/user_timeline/{{id}}">{{name}}</a>：{{{../text}}}<span class="comment_date">{{dateFormat ../created_at}}</span>
+        {{/user}}
+        <p class="info W_textb">
+          <span class="W_linkb">
+            <a href="javascript:void(0);">回复</a>
+          </span>
+        </p>
+        </dd>
+        <dd class="clear"></dd>
+      </dl>
+      {{/each}}
+    </div>
+  </div>
 </script>
