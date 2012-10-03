@@ -214,3 +214,8 @@ body {
   padding-left: 10px;
   color: #aaa;
 }
+
+.modal-body textarea {
+  width: 100%;
+  box-sizing: border-box;
+}

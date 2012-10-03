@@ -61,6 +61,21 @@ module.exports = function(app) {
     weibo.GET('statuses/show', {id: id}, callback.bind(null, res));
   });
 
+  app.get('/api/statuses/update', function(req, res) {
+    var status = req.query.status;
+    weibo.POST('statuses/update', {status: status}, callback.bind(null, res));
+  });
+
+  app.get('/api/favorites/create', function(req, res) {
+    var id = req.query.id;
+    weibo.POST('favorites/create', {id: id}, callback.bind(null, res));
+  });
+
+  app.get('/api/favorites/destroy', function(req, res) {
+    var id = req.query.id;
+    weibo.POST('favorites/destroy', {id: id}, callback.bind(null, res));
+  });
+
   app.get('/api/favorites/:id', function(req, res) {
     var id = req.params.id, page = req.query.page;
     weibo.GET('favorites', {id: id, page: page}, callback.bind(null, res));
@@ -127,6 +142,7 @@ module.exports = function(app) {
   });
 
   app.get('*', function(req, res) {
+    console.log('*');
     res.render('index.html');
   });
 };

@@ -21,7 +21,8 @@ define(['app'], function(app) {
   var repeatTpl = $('#J_repeat').html(),
     repeatContext = Handlebars.compile(repeatTpl);
   var $btnMore = $('#J_btn_more');
-  var $statusUpdate = $('#J_status_update_btn');
+  var $statusUpdate = $('#J_status_update'),
+    $statusUpdateTextarea = $('#J_status_update_textarea');
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -182,11 +183,23 @@ define(['app'], function(app) {
   }).on("click", "a[data-action=repeat]",
     function() {
       var $a = $(this),
+        id = $a.closest('.feed_list').attr('mid'),
         $info = $a.closest('.info');
       $info.next().remove();
-      fetch('comments/show/' + $a.data('id'), {count: 200}).done(function(result) {
+      fetch('comments/show/' + id, {count: 200}).done(function(result) {
         if (result) {
           $info.after(repeatContext(result));
+        }
+      });
+    }).on("click", "a[data-action=favorite]",
+    function() {
+      var $a = $(this),
+        isCreate = $a.data('create'),
+        url = 'favorites/' + (isCreate ? 'create' : 'destroy'),
+        id = $a.closest('.feed_list').attr('mid');
+      fetch(url, {id: id}).done(function(result) {
+        if (result) {
+          $a.text(isCreate ? '已收藏' : '收藏');
         }
       });
     }).on("click", "button[data-action=repeat]",
@@ -211,7 +224,15 @@ define(['app'], function(app) {
         });
     });
   $statusUpdate.click(function() {
-
+    fetch('statuses/update', {status: $.trim($statusUpdateTextarea.val())}).done(
+      function(result) {
+        var err = result.error;
+        if (err) {
+          alert(err);
+        } else {
+          location.href = '/statuses/user_timeline/' + result.user.id;
+        }
+      });
   });
 
   return Router;

@@ -36,7 +36,7 @@
             <% var uid = uid||'' %>
             <% var accessToken = accessToken||'' %>
             <% if (uid&&accessToken) { %>
-            <li><button id="J_status_update_btn" type="button" class="btn btn-success" data-target="#J_status_update_body">发微博</button></li>
+            <li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#J_status_update_body">发微博</button></li>
             <li><a href='/statuses/public_timeline'>看大家在聊什么</a></li>
             <li><a href='/statuses/home_timeline/1760951922'>首页</a></li>
             <li class="dropdown">
@@ -79,6 +79,21 @@
           <!--<a href='/signin'><button class="btn btn-small btn-primary" type="button">登录</button></a>-->
         <!--</div>-->
         <!--<% } %>-->
+
+        <div class="modal hide fade" id="J_status_update_body" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>有什么新鲜事想告诉大家？</h3>
+          </div>
+          <div class="modal-body">
+            <div class="input clearfix">
+              <textarea rows="3" id="J_status_update_textarea"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-primary" id="J_status_update">发布</a>
+          </div>
+        </div>
         <button id="J_btn_more" style="display: none" class="btn btn-large btn-block check-more" type="button">查看更多</button>
         <!-- Application source. -->
         <script data-main="/app/config" src="/assets/js/libs/require.js"></script>
