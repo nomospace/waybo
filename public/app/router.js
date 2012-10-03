@@ -49,7 +49,8 @@ define(['app'], function(app) {
       'comments/mentions': 'comments/mentions',
       'statuses/mentions': 'statuses/mentions',
       'friendships/friends/:uid': 'friendships/friends',
-      'friendships/followers/:uid': 'friendships/followers'
+      'friendships/followers/:uid': 'friendships/followers',
+      'account/end_session': 'account/end_session'
     },
     index: function() {
       fetch('index').done(function(result) {
@@ -152,6 +153,13 @@ define(['app'], function(app) {
         fetch(url, {page: page}).done(function(result) {
           $main.append(followContext(result));
         });
+      });
+    },
+    'account/end_session': function() {
+      fetch('account/end_session').done(function(result) {
+        if (result) {
+          location.replace('/');
+        }
       });
     }
   });

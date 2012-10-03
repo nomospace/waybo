@@ -99,6 +99,19 @@ module.exports = function(app) {
     weibo.GET('friendships/followers', {uid: uid, page: page}, callback.bind(null, res));
   });
 
+  app.get('/api/account/end_session', function(req, res) {
+    weibo.GET('account/end_session', {},
+      function(err, data) {
+        if (!err) {
+          app.locals({
+            'accessToken': '',
+            'uid': ''
+          });
+        }
+        callback(res, err, data);
+      });
+  });
+
   app.get('/', function(req, res) {
     res.render('index.html', {page: 'index'});
   });
