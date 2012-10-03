@@ -79,6 +79,13 @@ module.exports = function(app) {
     weibo.GET('comments/to_me', {page: page}, callback.bind(null, res));
   });
 
+  app.get('/api/comments/create', function(req, res) {
+    var comment = req.query.comment,
+      id = req.query.id,
+      comment_ori = req.query.comment_ori || 0;
+    weibo.POST('comments/create', {comment: comment, id: id, comment_ori: comment_ori}, callback.bind(null, res));
+  });
+
   app.get('/api/comments/mentions', function(req, res) {
     var page = req.query.page;
     weibo.GET('comments/mentions', {page: page}, callback.bind(null, res));

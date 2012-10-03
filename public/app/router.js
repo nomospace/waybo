@@ -176,13 +176,34 @@ define(['app'], function(app) {
         $img.parent().html($new);
       });
     }
-  }).on("click", "a[data-action=repeat]", function() {
+  }).on("click", "a[data-action=repeat]",
+    function() {
       var $a = $(this);
       fetch('comments/show/' + $a.data('id'), {count: 200}).done(function(result) {
         if (result) {
           $a.closest('.info').after(repeatContext(result));
         }
       });
+    }).on("click", "button[data-action=repeat]",
+    function() {
+      var $btn = $(this),
+        $content = $btn.closest('.content'),
+        $repeat = $content.find('a[data-action=repeat]'),
+        $input = $btn.closest('.input'),
+        $main = $btn.closest('.repeat'),
+        id = $btn.closest('.feed_list').attr('mid'),
+        comment_ori = $input.find('.W_checkbox').prop('checked') ? 1 : 0,
+        comment = $input.find('textarea').val();
+      fetch('comments/create', {id: id, comment: comment, comment_ori: comment_ori}).done(
+        function(result) {
+          var err = result.error;
+          if (err) {
+            alert(err);
+          } else {
+            $main.remove();
+            $repeat.click();
+          }
+        });
     });
 
   return Router;
