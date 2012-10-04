@@ -123,6 +123,16 @@ module.exports = function(app) {
     weibo.GET('friendships/followers', {uid: uid, page: page}, callback.bind(null, res));
   });
 
+  app.get('/api/friendships/create', function(req, res) {
+    var uid = req.query.uid;
+    weibo.POST('friendships/create', {uid: uid}, callback.bind(null, res));
+  });
+
+  app.get('/api/friendships/destroy', function(req, res) {
+    var uid = req.query.uid;
+    weibo.POST('friendships/destroy', {uid: uid}, callback.bind(null, res));
+  });
+
   app.get('/api/comments/show/:id', function(req, res) {
     var id = req.params.id, count = req.query.count;
     weibo.GET('comments/show', {id: id, count: count}, callback.bind(null, res));

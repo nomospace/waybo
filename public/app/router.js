@@ -249,7 +249,17 @@ define(['app'], function(app) {
             $repeat.click();
           }
         });
+    }).on("click", "[data-action=friend-create]",
+    function() {
+      var $this = $(this),
+        id = $this.data('id'),
+        create = $this.data('create');
+      fetch('friendships/' + (create ? 'create' : 'destroy'), {uid: id}).done(
+        function(result) {
+          result.error ? alert(result.error) : $this.html(create ? '已关注' : '关注');
+        });
     });
+
   $statusUpdate.click(function() {
     fetch('statuses/update', {status: $.trim($statusUpdateTextarea.val())}).done(
       function(result) {

@@ -282,7 +282,7 @@
             {{/follow_me}}
           </p>
           <p class="txt mbspace">
-            <a><em item-func="unFollow">取消关注</em></a>
+            <a data-action="friend-create" data-id="{{id}}">取消关注</a>
           </p>
         </div>
         <div class="con_left">
@@ -368,10 +368,12 @@
       <p>{{description}}</p>
       <div class="concern clearfix">
         <div class="handle_btn">
-          {{#follow_me}}<span class="muted">已关注</span>{{/follow_me}}
-          {{^follow_me}}
-          <button class="btn">关注</button>
-          {{/follow_me}}
+          {{#following}}
+          <button class="btn" data-id={{id}} data-action="friend-create">取消关注</button>
+          {{/following}}
+          {{^following}}
+          <button class="btn" data-id={{id}} data-action="friend-create" data-create="true">关注</button>
+          {{/following}}
         </div>
         <!--<div class="handle_more">-->
           <!--<span>-->
