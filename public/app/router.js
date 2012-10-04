@@ -108,7 +108,7 @@ define(['app'], function(app) {
       fetch('statuses/show/' + id).done(function(result) {
         result.statuses = [result];
         $main.html(statusContext(result));
-        $main.find('a[data-action="repeat"]').click();
+        $main.find('.content > .info a[data-action="repeat"]').click();
       });
     },
     'favorites': function(id) {

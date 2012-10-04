@@ -346,6 +346,7 @@
   </div>
 </script>
 <script type="text/tpl" id="J_user_profile">
+  {{^error}}
   <div class="perAll_info clearfix">
   	<div class="face">
       <a class="face" href="/statuses/user_timeline/{{id}}" title="{{name}}">
@@ -381,4 +382,5 @@
   	</div>
   	<div class="clear"></div>
   </div>
+  {{/error}}
 </script>

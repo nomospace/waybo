@@ -656,7 +656,8 @@ div[class$=part] {
 }
 
 #J_profile {
-  margin: 50px 20px -30px;
+  min-height: 1px;
+  margin: 50px 20px -40px;
 }
 
 .perAll_info .detail p {
@@ -672,5 +673,10 @@ dl.comment dt {
 }
 
 .comment .feed_list_content {
+  margin-top: 4px;
   font-size: 12px;
+}
+
+.feed_list .comment {
+  padding: 2px 10px 10px;
 }

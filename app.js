@@ -12,7 +12,7 @@ var app = express();
 
 app.configure('development', function() {
   app.use(partials());
-//  app.use(app.router);
+//  app.use(express.logger({format: ':method :url :status'}));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.static(path.join(appRoot, 'public')));
@@ -31,11 +31,16 @@ app.configure('development', function() {
     });
   });
   app.locals({config: config});
+//  app.error = function(err, req, res) {
+//    console.log('500:' + err + ' file:' + req.url);
+//  }
 });
 
 routes(app);
-
 app.listen(config.port);
+//process.on('uncaughtException', function(err) {
+//  console.log(err);
+//});
 console.log(config.host + ':' + config.port);
 
 module.exports = app;
