@@ -63,8 +63,8 @@
         {{/thumbnail_pic}}
         <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
         <dd class="info W_linkb W_textb">
-            <span class="action_list">
-              <a>转发({{reposts_count}})</a>
+            <span class="action_list" data-id="{{id}}">
+              <a data-action="repost">转发({{reposts_count}})</a>
               <a data-action="repeat">评论({{comments_count}})</a>
             </span>
           <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
@@ -73,8 +73,8 @@
       </dl>
       {{/retweeted_status}}
       <p class="info W_linkb W_textb">
-        <span class="action_list">
-          <a href="javascript:void(0);">转发({{reposts_count}})</a>
+        <span class="action_list" data-id={{id}}>
+          <a data-action="repost">转发({{reposts_count}})</a>
           {{#favorited}}已收藏{{/favorited}}
           {{^favorited}}
           <a data-action="favorite" data-create="true">收藏</a>
@@ -146,8 +146,8 @@
         {{/thumbnail_pic}}
         <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
         <dd class="info W_linkb W_textb">
-            <span class="action_list">
-              <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
+            <span class="action_list" data-id={{id}}>
+              <a data-action="repost">转发({{reposts_count}})</a>
               <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
             </span>
           <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
@@ -156,10 +156,10 @@
       </dl>
       {{/retweeted_status}}
       <p class="info W_linkb W_textb">
-        <span class="action_list">
-          <a href="javascript:void(0);">转发({{reposts_count}})</a>
+        <span class="action_list" data-id={{id}}>
+          <a data-action="repost">转发({{reposts_count}})</a>
           <a data-action="favorite">取消收藏</a>
-          <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
+          <a data-action="repeat">评论({{comments_count}})</a>
         </span>
         <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
       </p>
@@ -235,9 +235,9 @@
           {{/thumbnail_pic}}
           <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
           <dd class="info W_linkb W_textb">
-              <span class="action_list">
-                <a href="/2127619960/yDMwgE6dA?type=repost">转发({{reposts_count}})</a>
-                <a data-action="repeat" data-id={{id}}>评论({{comments_count}})</a>
+              <span class="action_list" data-id={{id}}>
+                <a data-action="repost">转发({{reposts_count}})</a>
+                <a data-action="repeat">评论({{comments_count}})</a>
               </span>
             <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
           </dd>
@@ -245,15 +245,15 @@
         </dl>
         {{/retweeted_status}}
         <p class="info W_linkb W_textb">
-          <span class="action_list">
-            <a href="javascript:void(0);">转发({{reposts_count}})</a>
+          <span class="action_list" data-id={{id}}>
+            <a data-action="repost">转发({{reposts_count}})</a>
             {{#favorited}}已收藏{{/favorited}}
             {{^favorited}}
             <a data-action="favorite" data-create="true">收藏</a>
             {{/favorited}}
             <a data-action="repeat">评论({{comments_count}})</a>
           </span>
-          <a href="/statuses/show/{{mid}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
+          <a href="/statuses/show/{{id}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
         </p>
       </div>
       {{/status}}
@@ -333,11 +333,11 @@
         <dd>
         <a href="/statuses/user_timeline/{{id}}">{{name}}</a>：{{{../text}}}<span class="comment_date">{{dateFormat ../created_at}}</span>
         {{/user}}
-        <p class="info W_textb">
-          <span class="W_linkb">
-            <a href="javascript:void(0);">回复</a>
-          </span>
-        </p>
+        <!--<p class="info W_textb">-->
+          <!--<span class="W_linkb">-->
+            <!--<a href="javascript:void(0);">回复</a>-->
+          <!--</span>-->
+        <!--</p>-->
         </dd>
         <dd class="clear"></dd>
       </dl>

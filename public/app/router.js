@@ -198,11 +198,23 @@ define(['app'], function(app) {
   }).on("click", "a[data-action=repeat]",
     function() {
       var $a = $(this),
-        id = $a.closest('.feed_list').attr('mid'),
+        id = $a.closest('.action_list').data('id'),
         $info = $a.closest('.info');
       $info.next().remove();
       fetch('comments/show/' + id, {count: 200}).done(function(result) {
         if (result) {
+          $info.after(repeatContext(result));
+        }
+      });
+    }).on("click", "a[data-action=repost]",
+    function() {
+      var $a = $(this),
+        id = $a.closest('.action_list').data('id'),
+        $info = $a.closest('.info');
+      $info.next().remove();
+      fetch('statuses/repost_timeline/' + id, {count: 200}).done(function(result) {
+        if (result) {
+          result.comments = result.reposts;
           $info.after(repeatContext(result));
         }
       });

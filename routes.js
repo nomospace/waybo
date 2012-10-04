@@ -61,6 +61,11 @@ module.exports = function(app) {
     weibo.GET('statuses/show', {id: id}, callback.bind(null, res));
   });
 
+  app.get('/api/statuses/repost_timeline/:id', function(req, res) {
+    var id = req.params.id, count = req.query.count;
+    weibo.GET('statuses/repost_timeline', {id: id, count: count}, callback.bind(null, res));
+  });
+
   app.get('/api/statuses/update', function(req, res) {
     var status = req.query.status;
     weibo.POST('statuses/update', {status: status}, callback.bind(null, res));
