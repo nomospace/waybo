@@ -1,6 +1,7 @@
 var express = require('express');
 var path = require('path');
-var Weibo = require('./libs/weibo-samxxu.js');
+var Weibo = require('./libs/weibo-samxxu');
+var emotions = require('./libs/emotions');
 var config = require('./config');
 var appInstance;
 
@@ -141,6 +142,10 @@ module.exports = function(app) {
   app.get('/api/users/show/:uid', function(req, res) {
     var uid = req.params.uid;
     weibo.GET('users/show', {uid: uid}, callback.bind(null, res));
+  });
+
+  app.get('/api/emotions', function(req, res) {
+    res.send(emotions);
   });
 
   app.get('/api/account/end_session', function(req, res) {

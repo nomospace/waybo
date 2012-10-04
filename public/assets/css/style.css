@@ -318,7 +318,7 @@ a.tag_big:hover {
 	margin-left: 50px;
 }
 .reply2_area .cell {
-	border-top: 1px solid #e2e2e2;	
+	border-top: 1px solid #e2e2e2;
 	border-bottom: none;
 }
 .reply2_editor {
@@ -380,7 +380,7 @@ a.count:hover {
 
 /* single */
 #create_topic_btn {
-	margin-top: -10px;	
+	margin-top: -10px;
 }
 .board {
 	margin-top: 10px;
@@ -397,7 +397,7 @@ a.count:hover {
 	clear: left;
 }
 #collect_btn {
-	margin-top: -10px;	
+	margin-top: -10px;
 }
 #backtotop {
 	width:16px;
@@ -451,12 +451,12 @@ a.count:hover {
 	display: inline-block;
 }
 .wmd-spacer {
-	width: 1px; 
-	height: 20px; 
+	width: 1px;
+	height: 20px;
 	margin-left: 14px;
 	position: absolute;
 	background-color: Silver;
-	display: inline-block; 
+	display: inline-block;
 	list-style: none;
 }
 .wmd-spacer1 {
@@ -549,12 +549,12 @@ textarea[id^=wmd-input] {
 	padding: 4px 5px 4px 22px;
 	color: #000;
 }
-.navbar .nav>li>a{		
+.navbar .nav>li>a{
 	font-weight: bold;
 }
 .navbar .nav .divider-vertical {
 	background-color:#2b3741;
-	border-right: 1px solid #2f3b46; 
+	border-right: 1px solid #2f3b46;
 }
 .form-actions {
 	border-top: none;
@@ -583,7 +583,7 @@ textarea.span8 {
 .nav-pills>li>a {
 	padding: 2px 10px;
 	line-height: 22px;
-} 
+}
 .pagination {
 	height: 40px;
 	margin: 10px 0px 10px 10px;
@@ -634,7 +634,7 @@ div[class$=content] > blockquote > p {
 /* about score on sidebar */
 .top_score {
 	color: gray;
-	padding: 2px;	
+	padding: 2px;
 }
 .inner ol {
 	margin: 4px 0px;
@@ -679,4 +679,42 @@ dl.comment dt {
 
 .feed_list .comment {
   padding: 2px 10px 10px;
+}
+
+.the-icons {
+  margin: 5px;
+}
+
+.the-icons li {
+  float: left;
+  width: 40px;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.faces_list {
+  margin-left: 0;
+}
+
+.faces_list li {
+  cursor: pointer;
+  float: left;
+  border: 1px solid #e8e8e8;
+  height: 22px;
+  width: 26px;
+  overflow: hidden;
+  margin: -1px 0 0 -1px;
+  padding: 4px 2px;
+  text-align: center;
+}
+
+.faces_list li:hover {
+  border: 1px solid #0095cd;
+  background: #fff9ec;
+  position: relative;
+  z-index: 2;
+}
+
+ul li {
+  list-style: none;
 }

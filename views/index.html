@@ -386,3 +386,10 @@
   </div>
   {{/error}}
 </script>
+<script type="text/tpl" id="J_emotions">
+  <ul class="faces_list faces_list_hot clearfix">
+    {{#each this}}
+    <li><img src="{{url}}" alt="{{value}}" title="{{value}}" data-action="choose-emotion"></li>
+    {{/each}}
+  </ul>
+</script>

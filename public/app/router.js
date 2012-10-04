@@ -23,6 +23,8 @@ define(['app'], function(app) {
     repeatContext = Handlebars.compile(repeatTpl);
   var userProfileTpl = $('#J_user_profile').html(),
     userProfileContext = Handlebars.compile(userProfileTpl);
+  var emotionTpl = $('#J_emotions').html(),
+    emotionContext = Handlebars.compile(emotionTpl);
   var $btnMore = $('#J_btn_more');
   var $statusUpdate = $('#J_status_update'),
     $statusUpdateTextarea = $('#J_status_update_textarea');
@@ -258,6 +260,25 @@ define(['app'], function(app) {
         function(result) {
           result.error ? alert(result.error) : $this.html(create ? '已关注' : '关注');
         });
+    }).on("click", "[data-action=emotions]",
+    function() {
+      var $this = $(this);
+      fetch('emotions').done(
+        function(result) {
+          // too many emotions
+          result = result.slice(0, 8 * 6);
+          $this.data('emotions', result);
+          $this.popover({
+            title: '表情', delay: {show: 200},
+            placement: 'bottom', trigger: 'click', content: emotionContext(result)
+          });
+          $this.popover('toggle');
+        });
+    }).on("click", "[data-action=choose-emotion]",
+    function() {
+      var $this = $(this),
+        status = $statusUpdateTextarea.val();
+      $statusUpdateTextarea.val(status + $this.attr('title'));
     });
 
   $statusUpdate.click(function() {
