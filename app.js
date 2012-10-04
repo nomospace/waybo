@@ -17,7 +17,7 @@ app.configure('development', function() {
   app.use(express.methodOverride());
   app.use(express.static(path.join(appRoot, 'public')));
   app.use(express.cookieParser());
-  app.use(express.session({secret: config.sessionSecret}));
+  app.use(express.session({secret: config.session_secret}));
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true}));
   app.set('views', path.join(appRoot, 'views'));
   app.set('views engine', 'html');
@@ -31,9 +31,6 @@ app.configure('development', function() {
     });
   });
   app.locals({config: config});
-//  app.error = function(err, req, res) {
-//    console.log('500:' + err + ' file:' + req.url);
-//  }
 });
 
 routes(app);

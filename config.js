@@ -8,8 +8,8 @@ module.exports = {
   app_secret: '223057e0575e38f202c54f673c032e31',
   redirect_uri: 'http://nomospace.github.com/weibo/',
 
-  sessionSecret: 'waybo',
-  authCookieName: 'waybo',
+  session_secret: 'waybo',
+  auth_cookie_name: 'waybo',
   host: '127.0.0.1',
   port: 3002
 //  db: 'mongodb://127.0.0.1/nodeweibo'

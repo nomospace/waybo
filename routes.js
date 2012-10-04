@@ -1,4 +1,5 @@
 var express = require('express');
+var crypto = require('crypto');
 var path = require('path');
 var Weibo = require('./libs/weibo-samxxu');
 var emotions = require('./libs/emotions');
@@ -33,14 +34,32 @@ module.exports = function(app) {
       }, function(err, result, accessToken) {
         if (err) res.send(err);
         else {
+          var uid = result.uid;
           app.locals({
             'accessToken': accessToken,
-            'uid': result.uid
+            'uid': uid
           });
+          genSession({token: accessToken, uid: uid}, res);
           res.redirect('/statuses/public_timeline');
         }
       }
     );
+  });
+
+  app.get('/api/account/end_session', function(req, res) {
+    weibo.GET('account/end_session', {},
+      function(err, data) {
+        if (!err) {
+          app.locals({
+            'accessToken': '',
+            'uid': ''
+          });
+          req.session.destroy();
+          res.clearCookie(config.auth_cookie_name, {path: '/'});
+          weibo = new Weibo(config.app_key, config.app_secret);
+        }
+        callback(res, err, data);
+      });
   });
 
   app.get('/api/statuses/public_timeline', function(req, res) {
@@ -148,27 +167,11 @@ module.exports = function(app) {
     res.send(emotions);
   });
 
-  app.get('/api/account/end_session', function(req, res) {
-    weibo.GET('account/end_session', {},
-      function(err, data) {
-        if (!err) {
-          req.session.destroy();
-          app.locals({
-            'accessToken': '',
-            'uid': ''
-          });
-          weibo = new Weibo(config.app_key, config.app_secret);
-        }
-        callback(res, err, data);
-      });
-  });
-
   app.get('/', function(req, res) {
     res.render('index.html', {page: 'index'});
   });
 
   app.get('*', function(req, res) {
-    console.log('*');
     res.render('index.html');
   });
 };
@@ -181,4 +184,20 @@ function callback(res, err, data) {
   else {
     res.send(data);
   }
+}
+
+function genSession(data, res) {
+  var token = encrypt(data.accessToken + '\t' + data.uid, config.session_secret);
+  // cookie 有效期 10 天
+  res.cookie(config.auth_cookie_name, token, {
+    path: '/',
+    maxAge: 1000 * 60 * 60 * 24 * 10
+  });
+}
+
+function encrypt(str, secret) {
+  var cipher = crypto.createCipher('aes192', secret);
+  var enc = cipher.update(str, 'utf8', 'hex');
+  enc += cipher.final('hex');
+  return enc;
 }
