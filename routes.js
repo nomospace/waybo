@@ -123,6 +123,11 @@ module.exports = function(app) {
     weibo.GET('comments/show', {id: id, count: count}, callback.bind(null, res));
   });
 
+  app.get('/api/users/show/:uid', function(req, res) {
+    var uid = req.params.uid;
+    weibo.GET('users/show', {uid: uid}, callback.bind(null, res));
+  });
+
   app.get('/api/account/end_session', function(req, res) {
     weibo.GET('account/end_session', {},
       function(err, data) {

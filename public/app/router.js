@@ -9,6 +9,7 @@ define(['app'], function(app) {
   });
 
   var $main = $('#main');
+  var $profile = $('#J_profile');
 //  var moreTpl = $('#J_more').html();
   var statusTpl = $('#J_status').html(),
     statusContext = Handlebars.compile(statusTpl);
@@ -20,6 +21,8 @@ define(['app'], function(app) {
     favoritesContext = Handlebars.compile(favoritesTpl);
   var repeatTpl = $('#J_repeat').html(),
     repeatContext = Handlebars.compile(repeatTpl);
+  var userProfileTpl = $('#J_user_profile').html(),
+    userProfileContext = Handlebars.compile(userProfileTpl);
   var $btnMore = $('#J_btn_more');
   var $statusUpdate = $('#J_status_update'),
     $statusUpdateTextarea = $('#J_status_update_textarea');
@@ -37,6 +40,12 @@ define(['app'], function(app) {
     ctx[key] = ctx[key] || {};
     ctx[key].page = 1;
     $btnMore.click();
+  };
+
+  var fetchProfile = function(uid) {
+    fetch('users/show/' + uid).done(function(result) {
+      $profile.html(userProfileContext(result)).show();
+    });
   };
 
   var Router = Backbone.Router.extend({
@@ -57,6 +66,7 @@ define(['app'], function(app) {
       'account/end_session': 'account/end_session'
     },
     index: function() {
+      $profile.hide();
       fetch('index').done(function(result) {
         $main.html(result);
       });
@@ -67,6 +77,7 @@ define(['app'], function(app) {
       });
     },
     'statuses/public_timeline': function() {
+      $profile.hide();
       fetch('statuses/public_timeline').done(function(result) {
         if (!result.error) $btnMore.show();
         $main.html(statusContext(result));
@@ -81,6 +92,7 @@ define(['app'], function(app) {
           $main.append(statusContext(result));
         });
       });
+      fetchProfile(uid);
     },
     'statuses/user_timeline': function(uid) {
       var url = 'statuses/user_timeline/' + uid;
@@ -90,6 +102,7 @@ define(['app'], function(app) {
           $main.append(statusContext(result));
         });
       });
+      fetchProfile(uid);
     },
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
@@ -151,6 +164,7 @@ define(['app'], function(app) {
           $main.append(followContext(result));
         });
       });
+      fetchProfile(uid);
     },
     'friendships/followers': function(uid) {
       $main.html('');
@@ -160,6 +174,7 @@ define(['app'], function(app) {
           $main.append(followContext(result));
         });
       });
+      fetchProfile(uid);
     },
     'account/end_session': function() {
       fetch('account/end_session').done(function(result) {

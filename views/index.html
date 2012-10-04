@@ -182,7 +182,7 @@
       {{/user}}
     </dt>
     <dd class="content">
-      <p class="feed_list_content" node-type="feed_list_content">
+      <p class="feed_list_content">
         {{#user}}
         <a title="{{name}}" href="/statuses/user_timeline/{{id}}">{{name}}</a>
         {{#verified}}
@@ -192,7 +192,7 @@
       </p>
       {{#status}}
       <div class="comment">
-        <p class="feed_list_content" node-type="feed_list_content">
+        <p class="feed_list_content">
           {{#user}}
           <a title="{{name}}" href="/statuses/user_timeline/{{id}}">{{name}}</a>
           {{#verified}}
@@ -282,22 +282,22 @@
             {{/follow_me}}
           </p>
           <p class="txt mbspace">
-            <a href="javascript:;"><em item-func="unFollow">取消关注</em></a>
+            <a><em item-func="unFollow">取消关注</em></a>
           </p>
         </div>
         <div class="con_left">
           <p class="name mbspace">
-            <a target="_blank" href="/statuses/home_timeline/{{id}}" class="W_f14">{{name}}</a>
+            <a target="_blank" href="/statuses/user_timeline/{{id}}" class="W_f14">{{name}}</a>
             {{#verified}}
             <a target="_blank" href="http://verified.weibo.com/verify">V</a>
             <span class="addr">{{location}}</span>
             {{/verified}}
           </p>
           <p class="connect mbspace">
-            关注 <a target="_blank" href="/friendships/friends/{{id}}/follow">{{friends_count}}</a>
+            关注 <a target="_blank" href="/friendships/friends/{{id}}">{{friends_count}}</a>
             粉丝 <a target="_blank" href="/friendships/followers/{{id}}">{{followers_count}}</a>
             微博 <a target="_blank" href="/statuses/user_timeline/{{id}}">{{statuses_count}}</a>
-            收藏 <a target="_blank" href="/favorites/{{id}}">{{favourites_count}}</a>
+            收藏 {{favourites_count}}
           </p>
           <p class="info mbspace">简介：{{description}}</p>
           <p class="weibo mbspace"><a href="/statuses/user_timeline/{{id}}" class="W_linkb">{{{status}}</a></p>
@@ -343,5 +343,42 @@
       </dl>
       {{/each}}
     </div>
+  </div>
+</script>
+<script type="text/tpl" id="J_user_profile">
+  <div class="perAll_info clearfix">
+  	<div class="face">
+      <a class="face" href="/statuses/user_timeline/{{id}}" title="{{name}}">
+        <img src="{{avatar_large}}" alt="{{name}}">
+      </a>
+    </div>
+  	<div class="detail">
+      <div class="name clearfix">
+        <div class="left" title="{{profile_url}}">{{name}}</div>
+      </div>
+      <p>{{location}}</p>
+      {{#url}}
+      <p>博客：<a href="{{.}}" target="_blank">{{.}}</a></p>
+      {{/url}}
+      关注 <a href="/friendships/friends/{{id}}">{{friends_count}}</a>
+      粉丝 <a href="/friendships/followers/{{id}}">{{followers_count}}</a>
+      微博 <a href="/statuses/user_timeline/{{id}}">{{statuses_count}}</a>
+      收藏 {{favourites_count}}
+      <p>{{description}}</p>
+      <div class="concern clearfix">
+        <div class="handle_btn">
+          {{#follow_me}}<span class="muted">已关注</span>{{/follow_me}}
+          {{^follow_me}}
+          <button class="btn">关注</button>
+          {{/follow_me}}
+        </div>
+        <!--<div class="handle_more">-->
+          <!--<span>-->
+            <!--<a class="rec_friend" action-type="addQuietFollow">悄悄关注</a>-->
+          <!--</span>-->
+        <!--</div>-->
+      </div>
+  	</div>
+  	<div class="clear"></div>
   </div>
 </script>

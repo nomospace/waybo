@@ -515,6 +515,7 @@ textarea[id^=wmd-input] {
 	position: fixed;
 	top: 0;
 	width: 100%;
+  min-width: 800px;
 	margin-bottom: 0px;
 	background-color: #323f4b;
 }
@@ -652,4 +653,12 @@ div[class$=part] {
 }
 .reply_part {
 	width: 200px;
+}
+
+#J_profile {
+  margin: 50px 20px -30px;
+}
+
+.perAll_info .detail p {
+  margin-bottom: 0;
 }
