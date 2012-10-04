@@ -662,3 +662,15 @@ div[class$=part] {
 .perAll_info .detail p {
   margin-bottom: 0;
 }
+
+dl.comment dt {
+  font-weight: normal;
+}
+
+.feed_list_content {
+  line-height: 22px;
+}
+
+.comment .feed_list_content {
+  font-size: 12px;
+}

@@ -1,6 +1,6 @@
 {
   "name": "waybo",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple web-weibo base on nodejs.",
   "main": "app.js",
   "dependencies": {

@@ -137,6 +137,7 @@ module.exports = function(app) {
     weibo.GET('account/end_session', {},
       function(err, data) {
         if (!err) {
+          req.session.destroy();
           app.locals({
             'accessToken': '',
             'uid': ''

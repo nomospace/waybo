@@ -1,5 +1,5 @@
 define(['app'], function(app) {
-  console.log(app);
+  'use strict';
 
   Handlebars.registerHelper('dateFormat', function(date) {
     return date && moment(date).format('LLL');
