@@ -180,7 +180,10 @@ define(['app'], function(app) {
     },
     'account/end_session': function() {
       fetch('account/end_session').done(function(result) {
-        if (result) {
+        if (result && result.error) {
+          alert(result.error);
+        }
+        else {
           location.replace('/');
         }
       });
