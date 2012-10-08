@@ -13,6 +13,7 @@
     "express-partials": "~0.0.6",
     "lru-cache": "~2.0.2",
     "moment": "~1.7.0",
+    "markdown-js": "~0.0.3",
     "validator": "~0.4.11"
   },
   "devDependencies": {},
