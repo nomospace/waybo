@@ -687,7 +687,7 @@ dl.comment dt {
 
 .the-icons li {
   float: left;
-  width: 40px;
+  width: 50px;
   padding-right: 10px;
   cursor: pointer;
 }
@@ -717,4 +717,20 @@ dl.comment dt {
 
 ul li {
   list-style: none;
+}
+
+.pic-upload {
+  position: relative;
+}
+
+.pic-upload-form {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.pic-upload-form input {
+  font-size: 100px;
+  width: 100%;
+  opacity: 0;
 }

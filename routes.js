@@ -91,6 +91,11 @@ module.exports = function(app) {
     weibo.POST('statuses/update', {status: status}, callback.bind(null, res));
   });
 
+  app.get('/api/statuses/upload', function(req, res) {
+    var status = req.query.status, pic = req.query.pic;
+    weibo.UPLOAD('statuses/upload', {status: status}, {pic: pic}, callback.bind(null, res));
+  });
+
   app.get('/api/favorites/create', function(req, res) {
     var id = req.query.id;
     weibo.POST('favorites/create', {id: id}, callback.bind(null, res));

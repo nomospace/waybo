@@ -10,6 +10,9 @@ define(['app'], function(app) {
 
   var $main = $('#main');
   var $profile = $('#J_profile');
+  var $picUpload = $('#J_pic_upload'),
+    $picUploadFile = $('#J_pic_upload_file'),
+    $picUploadForm = $('#J_pic_upload_form');
 //  var moreTpl = $('#J_more').html();
   var statusTpl = $('#J_status').html(),
     statusContext = Handlebars.compile(statusTpl);
@@ -277,6 +280,9 @@ define(['app'], function(app) {
           });
           $this.popover('toggle');
         });
+    }).on("click", "[data-action=pictures]",
+    function() {
+      $picUpload.toggle();
     }).on("click", "[data-action=choose-emotion]",
     function() {
       var $this = $(this),
@@ -294,6 +300,23 @@ define(['app'], function(app) {
           location.href = '/statuses/user_timeline/' + result.user.id;
         }
       });
+  });
+
+  $picUploadForm.change(function() {
+    var status = $statusUpdateTextarea.val();
+    fetch('statuses/upload', {status: status, pic: $picUploadFile[0].files}).done(
+      function(result) {
+        console.log(result);
+      });
+//    $.ajax({
+//      url: api + 'statuses/upload',
+//      data: 'abcd' || $picUploadFile[0].files,
+//      contentType: 'multipart/form-data',
+//      type: 'POST',
+//      success: function(data) {
+//        alert(data);
+//      }
+//    });
   });
 
   return Router;

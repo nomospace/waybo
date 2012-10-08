@@ -91,12 +91,18 @@
             <div class="input clearfix">
               <textarea rows="3" id="J_status_update_textarea"></textarea>
               <ul class="the-icons clearfix">
-                <li data-action="emotions"><i class="icon-list-alt"></i>表情</li>
-                <!--<li><i class="icon-picture"></i>图片</li>-->
+                <li data-action="emotions"><i class="icon-list-alt"></i> 表情</li>
+                <!--<li data-action="pictures"><i class="icon-picture"></i> 图片</li>-->
                 <!--<li><i class="icon-facetime-video"></i>视频</li>-->
                 <!--<li><i class="icon-music"></i>音乐</li>-->
                 <!--<li><i class="icon-tags"></i>话题</li>-->
               </ul>
+              <div id="J_pic_upload" class="pic-upload" style="display: none;">
+                <div class="alert alert-success">点此选择文件或图片，或直接将文件拖放至此绿框内</div>
+                <form id="J_pic_upload_form" class="pic-upload-form" enctype="multipart/form-data">
+                  <input id="J_pic_upload_file" type="file" name="pic">
+                </form>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
