@@ -172,6 +172,10 @@ module.exports = function(app) {
     res.send(emotions);
   });
 
+  app.get('/api/trends/hourly', function(req, res) {
+    weibo.GET('trends/hourly', {}, callback.bind(null, res));
+  });
+
   app.get('/', function(req, res) {
     res.render('index.html', {page: 'index'});
   });

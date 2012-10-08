@@ -1,4 +1,4 @@
-define(['app'], function(app) {
+define(['app', 'util'], function(app, util) {
   'use strict';
 
   Handlebars.registerHelper('dateFormat', function(date) {
@@ -6,6 +6,18 @@ define(['app'], function(app) {
   });
   Handlebars.registerHelper('textFormat', function(text) {
     return text;
+  });
+  Handlebars.registerHelper('trendsFormat', function(trends) {
+    for (var t in trends) {
+      if (t) {
+        var dom = '', name = '';
+        $.each(trends[util.format(t, 'yyyy-MM-dd hh:mm')], function(i, d) {
+          name = '#' + d.name + '#';
+          dom += '<li data-action="choose-trend" title="' + name + '">' + name + '</li>';
+        });
+        return dom;
+      }
+    }
   });
 
   var $main = $('#main');
@@ -28,6 +40,8 @@ define(['app'], function(app) {
     userProfileContext = Handlebars.compile(userProfileTpl);
   var emotionTpl = $('#J_emotions').html(),
     emotionContext = Handlebars.compile(emotionTpl);
+  var trendTpl = $('#J_trends').html(),
+    trendsContext = Handlebars.compile(trendTpl);
   var $btnMore = $('#J_btn_more');
   var $statusUpdate = $('#J_status_update'),
     $statusUpdateTextarea = $('#J_status_update_textarea');
@@ -280,14 +294,27 @@ define(['app'], function(app) {
           });
           $this.popover('toggle');
         });
+    }).on("click", "[data-action=trends]",
+    function() {
+      var $this = $(this);
+      fetch('trends/hourly').done(
+        function(result) {
+          console.log(result);
+          $this.data('trends', result);
+          $this.popover({
+            title: '话题', delay: {show: 200},
+            placement: 'bottom', trigger: 'click', content: trendsContext(result)
+          });
+          $this.popover('toggle');
+        });
     }).on("click", "[data-action=pictures]",
     function() {
       $picUpload.toggle();
-    }).on("click", "[data-action=choose-emotion]",
+    }).on("click", "[data-action=choose-emotion],[data-action=choose-trend]",
     function() {
       var $this = $(this),
         status = $statusUpdateTextarea.val();
-      $statusUpdateTextarea.val(status + $this.attr('title'));
+      $statusUpdateTextarea.val(status + ' ' + $this.attr('title'));
     });
 
   $statusUpdate.click(function() {

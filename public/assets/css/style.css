@@ -692,7 +692,7 @@ dl.comment dt {
   cursor: pointer;
 }
 
-.faces_list {
+.faces_list, .trends_list {
   margin-left: 0;
 }
 
@@ -733,4 +733,11 @@ ul li {
   font-size: 100px;
   width: 100%;
   opacity: 0;
+}
+
+.trends_list li {
+  float: left;
+  width: 125px;
+  cursor: pointer;
+  color: #369;
 }
