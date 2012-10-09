@@ -39,7 +39,7 @@
             <% if (uid&&accessToken) { %>
             <li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#J_status_update_body">发微博</button></li>
             <li><a href='/statuses/public_timeline'>看大家在聊什么</a></li>
-            <li><a href='/statuses/home_timeline/1760951922'>首页</a></li>
+            <li><a href='/statuses/home_timeline/<%=uid%>'>首页</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown">评论<b class="caret"></b></a>
               <ul class="dropdown-menu">

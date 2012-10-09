@@ -1,10 +1,31 @@
 # waybo
 A simple web-weibo base on nodejs.
 
-## Screenshot
+## 应用截图
 ![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)
 
-## Reference
+## 安装部署  
+
+```sh
+$ git clone https://github.com/sdg-sysdev/waybo.git  
+$ cd waybo  
+$ npm install  
+$ node app.js  
+```  
+
+或者 
+ 
+```sh
+$ npm install waybo   
+$ cd waybo  
+$ node app.js
+```
+
+## 备注
+应用目前还未通过审核，不能大范围推广（无法使用你自己的帐号），在此提供一个测试帐号来测试：
+qatest2@163.com 123456789  
+
+## Resources  
 [https://github.com/samxxu/node-sina-weibo](https://github.com/samxxu/node-sina-weibo)  
 [https://github.com/vzhishu/node-weibo-v2](https://github.com/vzhishu/node-weibo-v2)  
 [https://github.com/fengmk2/node-weibo](https://github.com/fengmk2/node-weibo)  
@@ -15,7 +36,7 @@ A simple web-weibo base on nodejs.
 
 (The MIT License)
 
-Copyright (c) 2011-2012 sdg-sysdev
+Copyright (c) 2011-2012 nomospace
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
