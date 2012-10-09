@@ -56,7 +56,7 @@ module.exports = function(app) {
           });
           req.session.destroy();
           res.clearCookie(config.auth_cookie_name, {path: '/'});
-//          weibo = new Weibo(config.app_key, config.app_secret);
+          weibo = new Weibo(config.app_key, config.app_secret);
         }
         callback(res, err, data);
       });
