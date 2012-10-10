@@ -2,28 +2,30 @@
 A simple web-weibo base on nodejs.
 
 ## 应用截图
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)  
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot2.png)
 
 ## 安装部署  
 
-```sh
-$ git clone https://github.com/sdg-sysdev/waybo.git  
+```sh  
+$ git clone https://github.com/sdg-sysdev/waybo.git   
 $ cd waybo  
 $ npm install  
-$ node app.js  
-```  
+$ node app.js
+```
 
-或者 
- 
+或者
+
 ```sh
 $ npm install waybo   
 $ cd waybo  
 $ node app.js
 ```
 
-## 备注
-应用目前还未通过审核，不能大范围推广（无法使用你自己的帐号），在此提供一个测试帐号来测试：
-qatest2@163.com 123456789  
+## 说明
+* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com 123456789```。也可以通过该帐号先登录微博，[并手动添加一个测试帐号](http://open.weibo.com/apps/2645619356/info/test)
+* 为了确保可以正常登录，在登录前请先退出[新浪微博](http://t.sina.com.cn/logout.php?backurl=/)
+
 
 ## Resources  
 [https://github.com/samxxu/node-sina-weibo](https://github.com/samxxu/node-sina-weibo)  
