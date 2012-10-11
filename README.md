@@ -1,6 +1,6 @@
 # waybo
+A simple web-weibo base on nodejs.  
 ![logo](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/waybo.png)   
-A simple web-weibo base on nodejs.
 
 ## 应用截图
 ![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)    
@@ -22,8 +22,8 @@ $ cd waybo
 $ node app.js
 ```  
 或者  
-先安装 [node-webkit](https://github.com/rogerwang/node-webkit)  
 ```bash
+$ // 先安装 node-webkit https://github.com/rogerwang/node-webkit 
 $ git clone https://github.com/sdg-sysdev/waybo.git   
 $ cd waybo  
 $ npm install  
