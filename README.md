@@ -1,5 +1,5 @@
 # waybo
-![logo](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/logo.png)   
+![logo](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/waybo.png)   
 A simple web-weibo base on nodejs.
 
 ## 应用截图
