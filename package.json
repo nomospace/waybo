@@ -5,7 +5,7 @@
   "author": "nomospace",
   "main": "index.html",
   "window": {
-    "icon": "public/assets/images/logo.jpeg",
+    "icon": "public/assets/images/waybo.png",
     "toolbar": false,
     "width": 770,
     "height": 630,
@@ -30,7 +30,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/index.js"
   },
   "repository": {
     "type": "git",
