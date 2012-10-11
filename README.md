@@ -2,8 +2,9 @@
 A simple web-weibo base on nodejs.
 
 ## 应用截图
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)  
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot2.png)
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)    
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot2.png)  
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot3.png)
 
 ## 安装部署  
 
@@ -12,14 +13,17 @@ $ git clone https://github.com/sdg-sysdev/waybo.git
 $ cd waybo  
 $ npm install  
 $ node app.js
-```
-
-或者
-
+```  
+或者  
 ```sh
 $ npm install waybo   
 $ cd waybo  
 $ node app.js
+```  
+或者  
+```bash
+// 安装 [node-webkit](https://github.com/rogerwang/node-webkit)
+$ make dev
 ```
 
 ## 说明
@@ -28,10 +32,11 @@ $ node app.js
 
 
 ## Resources  
-[https://github.com/samxxu/node-sina-weibo](https://github.com/samxxu/node-sina-weibo)  
-[https://github.com/vzhishu/node-weibo-v2](https://github.com/vzhishu/node-weibo-v2)  
-[https://github.com/fengmk2/node-weibo](https://github.com/fengmk2/node-weibo)  
-[https://github.com/rockdai/WeiboAPI](https://github.com/rockdai/WeiboAPI)  
+* [https://github.com/samxxu/node-sina-weibo](https://github.com/samxxu/node-sina-weibo)  
+* [https://github.com/fengmk2/node-weibo](https://github.com/fengmk2/node-weibo)  
+* [https://github.com/substack/node-browserify](https://github.com/substack/node-browserify)  
+* [node-webkit](https://github.com/rogerwang/node-webkit)  
+* [https://github.com/rockdai/WeiboAPI](https://github.com/rockdai/WeiboAPI)  
 
 
 ## License 

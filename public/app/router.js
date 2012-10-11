@@ -299,7 +299,6 @@ define(['app', 'util'], function(app, util) {
       var $this = $(this);
       fetch('trends/hourly').done(
         function(result) {
-          console.log(result);
           $this.data('trends', result);
           $this.popover({
             title: '话题', delay: {show: 200},

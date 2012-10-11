@@ -7,7 +7,7 @@ var ejs = require('ejs');
 var markdown = require('markdown');
 var fs = require('fs');
 
-var appRoot = __dirname;
+var appRoot = './';
 var app = express();
 
 app.configure('development', function() {
@@ -39,5 +39,3 @@ app.listen(config.port);
 //  console.log(err);
 //});
 console.log(config.host + ':' + config.port);
-
-module.exports = app;

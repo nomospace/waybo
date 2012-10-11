@@ -515,8 +515,8 @@ textarea[id^=wmd-input] {
 	position: fixed;
 	top: 0;
 	width: 100%;
-  min-width: 800px;
-	margin-bottom: 0px;
+  min-width: 730px;
+	margin-bottom: 0;
 	background-color: #323f4b;
 }
 .navbar .container {

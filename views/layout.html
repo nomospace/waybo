@@ -30,9 +30,6 @@
       <div class='navbar-inner'>
         <div class='container'>
           <a class='brand' href='/'><%- config.site_logo || config.name %></a>
-          <form id='search_form' class='navbar-search' action="/" style="display: none;">
-            <input type='text' id='q' name='q' class='search-query span3' value='<%= locals.keyword || "" %>'/>
-          </form>
           <ul class='nav pull-right'>
             <% var uid = uid||'' %>
             <% var accessToken = accessToken||'' %>
