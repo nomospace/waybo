@@ -1,5 +1,6 @@
-# waybo
+# waybo 
 A simple web-weibo base on nodejs.  
+[![Build Status](https://secure.travis-ci.org/sdg-sysdev/waybo.png)](http://travis-ci.org/sdg-sysdev/waybo)  
 ![logo](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/waybo.png)   
 
 ## 应用截图
