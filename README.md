@@ -1,12 +1,11 @@
-# waybo 
+# waybo [![Build Status](https://secure.travis-ci.org/sdg-sysdev/waybo.png)](http://travis-ci.org/sdg-sysdev/waybo)  
 A simple web-weibo base on nodejs.  
-[![Build Status](https://secure.travis-ci.org/sdg-sysdev/waybo.png)](http://travis-ci.org/sdg-sysdev/waybo)  
 ![logo](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/waybo.png)   
 
-## 应用截图
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)    
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot2.png)  
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot3.png)
+## 应用截图  
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot2.png)    
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)   
+![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot3.png)    
 
 ## 安装部署  
 

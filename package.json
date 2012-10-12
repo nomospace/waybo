@@ -26,7 +26,7 @@
     "express": "~3.0.0rc5",
     "express-partials": "~0.0.6",
     "moment": "~1.7.0",
-    "markdown": "~0.4.0"
+    "markdown-js": "~0.0.3"
   },
   "devDependencies": {},
   "scripts": {

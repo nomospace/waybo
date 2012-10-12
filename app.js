@@ -4,7 +4,7 @@ var config = require('./config');
 var routes = require('./routes');
 var partials = require('express-partials');
 var ejs = require('ejs');
-var markdown = require('markdown');
+var markdown = require('markdown-js');
 var fs = require('fs');
 
 var appRoot = './';
