@@ -399,10 +399,13 @@
   </ul>
 </script>
 <script type="text/tpl" id="J_options">
-  <button class="btn btn-primary" data-action="user-add">添加新用户</button>
-  <ul>
+  <div>为了确保可以正常登录，在登录前请先<strong><a href="http://t.sina.com.cn/logout.php?backurl=/" target="_blank">退出新浪微博</a></strong></div>
+  <div style="margin-top:10px;"><a href="/signin"><button class="btn" data-action="user-add">添加新用户</button></a></div>
+  <ul class="user-list">
     {{#each this}}
-    <li>uid:{{uid}} token:{{token}}</li>
+    <li class="profile">
+      <p><img src="{{profile_image_url}}" alt="{{name}}"> {{name}} </p><a href="javascript:;" data-uid="{{uid}}">删除用户</a>
+    </li>
     {{/each}}
   </ul>
 </script>

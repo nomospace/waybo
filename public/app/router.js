@@ -91,6 +91,16 @@ define(['app', 'user', 'patch'], function(App, User) {
     },
     index: function() {
       var user = User.getUser();
+      var users = User.getUserList();
+      if (users.length) {
+        $.each(users, function(i, u) {
+          fetch('users/show/' + u.uid).done(function(result) {
+            $.extend(u, result);
+            User.saveUser(u);
+          });
+        });
+//        User.saveUserList(users);
+      }
       $profile.hide();
       fetch('index', $.isEmptyObject(user) ? {} : {uid: user.uid, token: user.token}).done(function(result) {
         $main.html(result);
@@ -216,6 +226,7 @@ define(['app', 'user', 'patch'], function(App, User) {
     },
     'account/options': function() {
       $profile.hide();
+      $btnMore.hide();
       var userList = User.getUserList();
       $main.html(optionsContext(userList));
     }

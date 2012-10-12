@@ -741,3 +741,12 @@ ul li {
   cursor: pointer;
   color: #369;
 }
+
+.user-list {
+  margin: 10px 0;
+}
+
+.user-list .profile {
+  float: left;
+  width: 200px;
+}
