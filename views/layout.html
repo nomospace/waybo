@@ -32,8 +32,12 @@
           <a class='brand' href='/'><%- config.site_logo || config.name %></a>
           <ul class='nav pull-right'>
             <% var uid = uid||'' %>
-            <% var accessToken = accessToken||'' %>
-            <% if (uid&&accessToken) { %>
+            <% var token = token||'' %>
+            <% if (uid&&token) { %>
+            <script>
+              var uid='<%=uid%>';
+              var token='<%=token%>';
+            </script>
             <li><button type="button" class="btn btn-success" data-toggle="modal" data-target="#J_status_update_body">发微博</button></li>
             <li><a href='/statuses/public_timeline'>看大家在聊什么</a></li>
             <li><a href='/statuses/home_timeline/<%=uid%>'>首页</a></li>
@@ -56,7 +60,15 @@
             <li><a href="/friendships/followers/<%=uid%>">粉丝</a></li>
             <li><a href="/friendships/friends/<%=uid%>">关注</a></li>
             <li><a href="/statuses/user_timeline/<%=uid%>">微博</a></li>
-            <li><a href="/account/end_session">退出</a></li>
+            <li class="divider-vertical"></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown">账户<b class="caret"></b></a>
+              <ul class="dropdown-menu" id="J_user_list">
+                <li><a href="/account/options">选项</a></li>
+                <li class="divider"></li>
+              </ul>
+            </li>
+            <!--<li><a href="/account/end_session">退出</a></li>-->
             <% } else { %>
             <li><a href='/signin'>登录</a></li>
             <% } %>
@@ -73,7 +85,7 @@
         <!-- Main container. -->
         <div id="J_profile"></div>
         <div role="main" id="main"><%- body %></div>
-        <!--<% if (!accessToken) { %>-->
+        <!--<% if (!token) { %>-->
         <!--<div class="signin-main">-->
           <!--<a href='/signin'><button class="btn btn-small btn-primary" type="button">登录</button></a>-->
         <!--</div>-->

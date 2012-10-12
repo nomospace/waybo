@@ -6,7 +6,9 @@ var emotions = require('./libs/emotions');
 var config = require('./config');
 var appInstance;
 
-var weibo = new Weibo(config.app_key, config.app_secret);
+var app_key = config.app_key;
+var app_secret = config.app_secret;
+var weibo = new Weibo(app_key, app_secret);
 var redirect_uri = config.redirect_uri;
 var authorize_url = weibo.getAuthorizeUrl({
   redirect_uri: redirect_uri,
@@ -19,6 +21,11 @@ module.exports = function(app) {
 
   // url routes
   app.get('/api/index', function(req, res) {
+    var token = req.query.token, uid = req.query.uid;
+    if (token) {
+      weibo = new Weibo(app_key, app_secret, token);
+      afterSignin({uid: uid, access_token: token}, res);
+    }
     res.partial('../README.md');
   });
 
@@ -31,15 +38,10 @@ module.exports = function(app) {
         code: req.params.code,
         grant_type: 'authorization_code',
         redirect_uri: redirect_uri
-      }, function(err, result, accessToken) {
+      }, function(err, result) {
         if (err) res.send(err);
         else {
-          var uid = result.uid;
-          app.locals({
-            'accessToken': accessToken,
-            'uid': uid
-          });
-          genSession({token: accessToken, uid: uid}, res);
+          afterSignin(result, res);
           res.redirect('/statuses/public_timeline');
         }
       }
@@ -51,7 +53,7 @@ module.exports = function(app) {
       function(err, data) {
         if (!err) {
           app.locals({
-            'accessToken': '',
+            'token': '',
             'uid': ''
           });
           req.session.destroy();
@@ -63,7 +65,7 @@ module.exports = function(app) {
   });
 
   app.get('/api/statuses/public_timeline', function(req, res) {
-    weibo.GET('statuses/public_timeline', {count: 200}, callback.bind(null, res));
+    weibo.GET('statuses/public_timeline', {count: 50}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/home_timeline/:uid', function(req, res) {
@@ -195,8 +197,17 @@ function callback(res, err, data) {
   }
 }
 
+function afterSignin(result, res) {
+  var uid = result.uid, token = result.access_token;
+  appInstance.locals({
+    'token': token,
+    'uid': uid
+  });
+  genSession({token: token, uid: uid}, res);
+}
+
 function genSession(data, res) {
-  var token = encrypt(data.accessToken + '\t' + data.uid, config.session_secret);
+  var token = encrypt(data.token + '\t' + data.uid, config.session_secret);
   // cookie 有效期 10 天
   res.cookie(config.auth_cookie_name, token, {
     path: '/',

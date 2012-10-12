@@ -1,8 +1,9 @@
-define(['app', 'util'], function(app, util) {
+define(['app', 'user', 'patch'], function(App, User) {
   'use strict';
 
   Handlebars.registerHelper('dateFormat', function(date) {
-    return date && moment(date).format('LLL');
+    return date && new Date(date).format('');
+//    return date && moment(date).format('LLL');
   });
   Handlebars.registerHelper('textFormat', function(text) {
     return text;
@@ -11,7 +12,7 @@ define(['app', 'util'], function(app, util) {
     for (var t in trends) {
       if (t) {
         var dom = '', name = '';
-        $.each(trends[util.format(t, 'yyyy-MM-dd hh:mm')], function(i, d) {
+        $.each(trends[new Date(t).format('yyyy-MM-dd hh:mm')], function(i, d) {
           name = '#' + d.name + '#';
           dom += '<li data-action="choose-trend" title="' + name + '">' + name + '</li>';
         });
@@ -42,9 +43,12 @@ define(['app', 'util'], function(app, util) {
     emotionContext = Handlebars.compile(emotionTpl);
   var trendTpl = $('#J_trends').html(),
     trendsContext = Handlebars.compile(trendTpl);
+  var optionsTpl = $('#J_options').html(),
+    optionsContext = Handlebars.compile(optionsTpl);
   var $btnMore = $('#J_btn_more');
   var $statusUpdate = $('#J_status_update'),
     $statusUpdateTextarea = $('#J_status_update_textarea');
+  var $userList = $('#J_user_list');
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -82,11 +86,13 @@ define(['app', 'util'], function(app, util) {
       'statuses/mentions': 'statuses/mentions',
       'friendships/friends/:uid': 'friendships/friends',
       'friendships/followers/:uid': 'friendships/followers',
-      'account/end_session': 'account/end_session'
+      'account/end_session': 'account/end_session',
+      'account/options': 'account/options'
     },
     index: function() {
+      var user = User.getUser();
       $profile.hide();
-      fetch('index').done(function(result) {
+      fetch('index', $.isEmptyObject(user) ? {} : {uid: user.uid, token: user.token}).done(function(result) {
         $main.html(result);
       });
     },
@@ -96,6 +102,9 @@ define(['app', 'util'], function(app, util) {
       });
     },
     'statuses/public_timeline': function() {
+      if (uid && token) {
+        User.saveUser({uid: uid, token: token});
+      }
       $profile.hide();
       fetch('statuses/public_timeline').done(function(result) {
         if (!result.error) $btnMore.show();
@@ -204,6 +213,11 @@ define(['app', 'util'], function(app, util) {
           location.replace('/');
         }
       });
+    },
+    'account/options': function() {
+      $profile.hide();
+      var userList = User.getUserList();
+      $main.html(optionsContext(userList));
     }
   });
 
