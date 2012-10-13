@@ -91,16 +91,6 @@ define(['app', 'user', 'patch'], function(App, User) {
     },
     index: function() {
       var user = User.getUser();
-      var users = User.getUserList();
-      if (users.length) {
-        $.each(users, function(i, u) {
-          fetch('users/show/' + u.uid).done(function(result) {
-            $.extend(u, result);
-            User.saveUser(u);
-          });
-        });
-//        User.saveUserList(users);
-      }
       $profile.hide();
       fetch('index', $.isEmptyObject(user) ? {} : {uid: user.uid, token: user.token}).done(function(result) {
         $main.html(result);
@@ -114,6 +104,15 @@ define(['app', 'user', 'patch'], function(App, User) {
     'statuses/public_timeline': function() {
       if (uid && token) {
         User.saveUser({uid: uid, token: token});
+      }
+      var users = User.getUserList();
+      if (users.length) {
+        $.each(users, function(i, u) {
+          fetch('users/show/' + u.uid).done(function(result) {
+            $.extend(u, result);
+            User.saveUser(u);
+          });
+        });
       }
       $profile.hide();
       fetch('statuses/public_timeline').done(function(result) {
@@ -334,6 +333,12 @@ define(['app', 'user', 'patch'], function(App, User) {
     }).on("click", "[data-action=pictures]",
     function() {
       $picUpload.toggle();
+    }).on("click", "[data-action=user-remove]",
+    function() {
+      var $this = $(this),
+        uid = $this.data('uid');
+      User.removeUser({uid: uid});
+      location.href = '/account/end_session';
     }).on("click", "[data-action=choose-emotion],[data-action=choose-trend]",
     function() {
       var $this = $(this),

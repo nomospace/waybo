@@ -22,8 +22,20 @@ define(['exports', 'const', 'patch'], function(exports, CONST) {
     } else {
       // 增加帐号
       users.push(user);
+      setUser(user);
       saveUserList(users);
     }
+  }
+
+  function removeUser(user) {
+    var users = getUserList();
+    $.each(users, function(i, u) {
+      if (user.uid == u.uid) {
+        users.splice(i, 1);
+        saveUserList(users);
+        return false;
+      }
+    });
   }
 
   function getUserList() {
@@ -38,6 +50,7 @@ define(['exports', 'const', 'patch'], function(exports, CONST) {
   exports.getUser = getUser;
   exports.setUser = setUser;
   exports.saveUser = saveUser;
+  exports.removeUser = removeUser;
   exports.getUserList = getUserList;
   exports.saveUserList = saveUserList;
 
