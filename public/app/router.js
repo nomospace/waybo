@@ -26,6 +26,7 @@ define(['app', 'user', 'patch'], function(App, User) {
   var $picUpload = $('#J_pic_upload'),
     $picUploadFile = $('#J_pic_upload_file'),
     $picUploadForm = $('#J_pic_upload_form');
+  var $userList = $('#J_user_list_con');
 //  var moreTpl = $('#J_more').html();
   var statusTpl = $('#J_status').html(),
     statusContext = Handlebars.compile(statusTpl);
@@ -48,7 +49,8 @@ define(['app', 'user', 'patch'], function(App, User) {
   var $btnMore = $('#J_btn_more');
   var $statusUpdate = $('#J_status_update'),
     $statusUpdateTextarea = $('#J_status_update_textarea');
-  var $userList = $('#J_user_list');
+  var userListTpl = $('#J_user_list').html(),
+    userListContext = Handlebars.compile(userListTpl);
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -111,6 +113,9 @@ define(['app', 'user', 'patch'], function(App, User) {
           fetch('users/show/' + u.uid).done(function(result) {
             $.extend(u, result);
             User.saveUser(u);
+            if (i == users.length - 1) {
+              $userList.html(userListContext(users));
+            }
           });
         });
       }
@@ -338,6 +343,12 @@ define(['app', 'user', 'patch'], function(App, User) {
       var $this = $(this),
         uid = $this.data('uid');
       User.removeUser({uid: uid});
+      location.href = '/account/end_session';
+    }).on("click", "[data-action=user-switch]",
+    function() {
+      var $this = $(this),
+        uid = $this.data('uid');
+      User.setUser({uid: uid, token: token});
       location.href = '/account/end_session';
     }).on("click", "[data-action=choose-emotion],[data-action=choose-trend]",
     function() {

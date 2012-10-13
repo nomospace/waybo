@@ -398,6 +398,13 @@
     {{#trendsFormat trends}}{{/trendsFormat}}
   </ul>
 </script>
+<script type="text/tpl" id="J_user_list">
+  {{#each this}}
+  <li class="profile">
+    <a href="javascript:;" data-action="user-switch" data-uid="{{uid}}" data-token="{{token}}"><img src="{{profile_image_url}}" alt="{{name}}"> {{name}} </a>
+  </li>
+  {{/each}}
+</script>
 <script type="text/tpl" id="J_options">
   <div>为了确保可以正常登录，在登录前请先<strong><a href="http://t.sina.com.cn/logout.php?backurl=/" target="_blank">退出新浪微博</a></strong></div>
   <div style="margin-top:10px;"><a href="/signin"><button class="btn">添加新用户</button></a></div>
