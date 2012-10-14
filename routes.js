@@ -33,6 +33,13 @@ module.exports = function(app) {
     res.send(authorize_url);
   });
 
+  app.get('/api/switch_user', function(req, res) {
+    var uid = req.query.uid, token = req.query.token;
+    weibo = new Weibo(app_key, app_secret, token);
+    afterSignin({uid: uid, access_token: token}, res);
+    res.send();
+  });
+
   app.get('/api/code/:code', function(req, res) {
     weibo.getAccessToken({
         code: req.params.code,

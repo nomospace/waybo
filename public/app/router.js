@@ -105,19 +105,9 @@ define(['app', 'user', 'patch'], function(App, User) {
     },
     'statuses/public_timeline': function() {
       if (uid && token) {
-        User.saveUser({uid: uid, token: token});
-      }
-      var users = User.getUserList();
-      if (users.length) {
-        $.each(users, function(i, u) {
-          fetch('users/show/' + u.uid).done(function(result) {
-            $.extend(u, result);
-            User.saveUser(u);
-            if (i == users.length - 1) {
-              $userList.html(userListContext(users));
-            }
-          });
-        });
+        var user = {uid: uid, token: token};
+        User.setUser(user);
+        User.saveUser(user);
       }
       $profile.hide();
       fetch('statuses/public_timeline').done(function(result) {
@@ -231,8 +221,18 @@ define(['app', 'user', 'patch'], function(App, User) {
     'account/options': function() {
       $profile.hide();
       $btnMore.hide();
-      var userList = User.getUserList();
-      $main.html(optionsContext(userList));
+      var users = User.getUserList();
+      if (users.length) {
+        $.each(users, function(i, u) {
+          fetch('users/show/' + u.uid).done(function(result) {
+            $.extend(u, result);
+            User.saveUser(u);
+            if (i == users.length - 1) {
+              $main.html(optionsContext(users));
+            }
+          });
+        });
+      }
     }
   });
 
@@ -343,13 +343,42 @@ define(['app', 'user', 'patch'], function(App, User) {
       var $this = $(this),
         uid = $this.data('uid');
       User.removeUser({uid: uid});
-      location.href = '/account/end_session';
+      var users = User.getUserList();
+      if (users.length) {
+        var user = users[0];
+        User.setUser(user);
+        fetch('switch_user', {uid: uid, token: user.token}).done(function() {
+          location.reload();
+        });
+      } else {
+        location.href = '/account/end_session';
+      }
     }).on("click", "[data-action=user-switch]",
     function() {
       var $this = $(this),
         uid = $this.data('uid');
-      User.setUser({uid: uid, token: token});
-      location.href = '/account/end_session';
+      var users = User.getUserList(),
+        user = $.grep(users, function(u) {
+          return u.uid == uid;
+        })[0];
+      User.setUser(user);
+      fetch('switch_user', {uid: uid, token: user.token}).done(function() {
+        location.reload();
+      });
+    }).on("mousedown", "[data-action=popup-users]",
+    function() {
+      var users = User.getUserList();
+      if (users.length) {
+        $.each(users, function(i, u) {
+          fetch('users/show/' + u.uid).done(function(result) {
+            $.extend(u, result);
+            User.saveUser(u);
+            if (i == users.length - 1) {
+              $userList.html(userListContext(users));
+            }
+          });
+        });
+      }
     }).on("click", "[data-action=choose-emotion],[data-action=choose-trend]",
     function() {
       var $this = $(this),

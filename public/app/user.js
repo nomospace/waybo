@@ -12,19 +12,18 @@ define(['exports', 'const', 'patch'], function(exports, CONST) {
 
   function saveUser(user) {
     var users = getUserList();
-    var greped = $.grep(users, function(u) {
-      return u.uid == user.uid;
+    $.each(users, function(i, u) {
+      if (u.uid == user.uid) {
+        u.token = user.token;
+        $.extend(u, user);
+        return false;
+      }
+      if (i == users.length - 1) {
+        users.push(user);
+      }
     });
-    if (greped.length) {
-      // 更新帐号
-      greped.token = user.token;
-      saveUserList([user]);
-    } else {
-      // 增加帐号
-      users.push(user);
-      setUser(user);
-      saveUserList(users);
-    }
+//    setUser(user);
+    saveUserList(users);
   }
 
   function removeUser(user) {

@@ -169,6 +169,9 @@
   {{/deleted}}
   {{/status}}
   {{/each}}
+  {{^each favorites}}
+  <div class="alert alert-error">无数据返回</div>
+  {{/each}}
 </script>
 <script type="text/tpl" id="J_comment">
   {{#error}}<div class="alert alert-error">{{.}}</div>{{/error}}
