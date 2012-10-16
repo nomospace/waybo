@@ -426,3 +426,12 @@
     </ul>
   </div>
 </script>
+<script type="text/tpl" id="J_unread">
+  <ul class="unread-alert alert alert-success">
+    {{#if status}}<li><a href="/statuses/home_timeline/<%=uid%>"><strong>{{status}}</strong> 条新微博</a></li>{{/if}}
+    {{#if cmt}}<li><a href="/comments/to_me"><strong>{{cmt}}</strong> 条评论</a></li>{{/if}}
+    {{#if mention_status}}<li><a href="/statuses/mentions"><strong>{{mention_status}}</strong> 条新提及我的微博</a></li>{{/if}}
+    {{#if mention_cmt}}<li><a href="/comments/mentions"><strong>{{mention_cmt}}</strong> 条新提及我的评论</a></li>{{/if}}
+    {{#if follower}}<li><a href="/friendships/followers/<%=uid%>"><strong>{{follower}}</strong> 个新粉丝</a></li>{{/if}}
+  </ul>
+</script>

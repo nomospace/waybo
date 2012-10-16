@@ -1,4 +1,6 @@
 var express = require('express');
+var http = require('http');
+var sio = require('socket.io');
 var crypto = require('crypto');
 var path = require('path');
 var Weibo = require('./libs/weibo-samxxu');
@@ -16,6 +18,17 @@ var authorize_url = weibo.getAuthorizeUrl({
 });
 
 module.exports = function(app) {
+  var server = http.createServer(app);
+  var io = sio.listen(server);
+  var timeout = 5000;
+  server.listen(config.socketPort);
+
+  io.sockets.on('connection', function(socket) {
+    setInterval(function() {
+      getUnreadCount(socket);
+    }, timeout);
+  });
+
   appInstance = app;
   app.use(express.static(path.join(__dirname, 'public')));
 
@@ -185,6 +198,10 @@ module.exports = function(app) {
     weibo.GET('trends/hourly', {}, callback.bind(null, res));
   });
 
+  app.get('/api/remind/unread_count', function(req, res) {
+    weibo.GET('remind/unread_count', {}, callback.bind(null, res));
+  });
+
   app.get('/', function(req, res) {
     res.render('index.html', {page: 'index'});
   });
@@ -227,4 +244,10 @@ function encrypt(str, secret) {
   var enc = cipher.update(str, 'utf8', 'hex');
   enc += cipher.final('hex');
   return enc;
+}
+
+function getUnreadCount(socket) {
+  weibo.GET('remind/unread_count', {}, function(err, data) {
+    socket.emit('remind/unread_count', data);
+  });
 }

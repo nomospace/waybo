@@ -1,6 +1,6 @@
 {
   "name": "waybo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A simple web-weibo base on nodejs.",
   "author": "nomospace",
   "main": "index.html",
@@ -26,7 +26,8 @@
     "express": "~3.0.0rc5",
     "express-partials": "~0.0.6",
     "moment": "~1.7.0",
-    "markdown-js": "~0.0.3"
+    "markdown-js": "~0.0.3",
+    "socket.io": "~0.9.10"
   },
   "devDependencies": {},
   "scripts": {

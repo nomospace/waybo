@@ -11,5 +11,6 @@ module.exports = {
   session_secret: 'waybo',
   auth_cookie_name: 'waybo',
   host: '127.0.0.1',
-  port: 3002
+  port: 3002,
+  socketPort: 3003
 };

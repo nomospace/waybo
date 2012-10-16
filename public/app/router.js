@@ -51,6 +51,8 @@ define(['app', 'user', 'patch'], function(App, User) {
     $statusUpdateTextarea = $('#J_status_update_textarea');
   var userListTpl = $('#J_user_list').html(),
     userListContext = Handlebars.compile(userListTpl);
+  var unreadTpl = $('#J_unread').html(),
+    unreadContext = Handlebars.compile(unreadTpl);
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -415,6 +417,14 @@ define(['app', 'user', 'patch'], function(App, User) {
 //        alert(data);
 //      }
 //    });
+  });
+
+  var socket = io.connect('http://localhost:3003/');
+  socket.on('remind/unread_count', function(data) {
+    if (data.status || data.follower || data.cmt || data.mention_status || data.mention_cmt) {
+      $('.alert-success').remove();
+      $('body').append(unreadContext(data));
+    }
   });
 
   return Router;

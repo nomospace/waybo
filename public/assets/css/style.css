@@ -790,3 +790,13 @@ ul li {
   width: 30px;
   height: 30px;
 }
+
+.unread-alert {
+  position: fixed;
+  top: 50px;
+  right: 10px;
+  z-index: 100;
+}
+.unread-alert a {
+  color: #468847;
+}
