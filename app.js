@@ -1,5 +1,7 @@
 var path = require('path');
 var express = require('express');
+var http = require('http');
+var sio = require('socket.io');
 var config = require('./config');
 var routes = require('./routes');
 var partials = require('express-partials');
@@ -9,6 +11,10 @@ var fs = require('fs');
 
 var appRoot = './';
 var app = express();
+
+var socketServer = http.createServer(app);
+socketServer.listen(config.socketPort);
+var io = sio.listen(socketServer, {log: false});
 
 app.configure('development', function() {
   app.use(partials());
@@ -33,7 +39,7 @@ app.configure('development', function() {
   app.locals({config: config});
 });
 
-routes(app);
+routes(app, io);
 app.listen(config.port);
 //process.on('uncaughtException', function(err) {
 //  console.log(err);

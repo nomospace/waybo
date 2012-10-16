@@ -1,6 +1,4 @@
 var express = require('express');
-var http = require('http');
-var sio = require('socket.io');
 var crypto = require('crypto');
 var path = require('path');
 var Weibo = require('./libs/weibo-samxxu');
@@ -17,12 +15,8 @@ var authorize_url = weibo.getAuthorizeUrl({
   response_type: 'code'
 });
 
-module.exports = function(app) {
-  var server = http.createServer(app);
-  var io = sio.listen(server);
+module.exports = function(app, io) {
   var timeout = 5000;
-  server.listen(config.socketPort);
-
   io.sockets.on('connection', function(socket) {
     setInterval(function() {
       getUnreadCount(socket);
