@@ -4,6 +4,7 @@ var path = require('path');
 var Weibo = require('./libs/weibo-samxxu');
 var emotions = require('./libs/emotions');
 var config = require('./config');
+var ip = require('./ip');
 var appInstance;
 
 var app_key = config.app_key;
