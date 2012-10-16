@@ -14,8 +14,9 @@
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
-      <a href="/statuses/user_timeline/{{id}}" title="{{name}}">
+      <a href="/statuses/user_timeline/{{id}}" title="{{name}}" class="item-avatar">
         <img title="{{name}}" alt="{{name}}" width="50" height="50" src="{{profile_image_url}}">
+        <i class="mask"></i>
       </a>
       {{/user}}
     </dt>
@@ -97,8 +98,9 @@
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
-      <a href="/statuses/user_timeline/{{id}}" title="{{name}}">
+      <a href="/statuses/user_timeline/{{id}}" title="{{name}}" class="item-avatar">
         <img title="{{name}}" alt="{{name}}" width="50" height="50" src="{{profile_image_url}}">
+        <i class="mask"></i>
       </a>
       {{/user}}
     </dt>
@@ -179,8 +181,9 @@
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
-      <a href="/statuses/user_timeline/{{id}}" title="{{name}}">
+      <a href="/statuses/user_timeline/{{id}}" title="{{name}}" class="item-avatar">
         <img title="{{name}}" alt="{{name}}" width="50" height="50" src="{{profile_image_url}}">
+        <i class="mask"></i>
       </a>
       {{/user}}
     </dt>
@@ -272,8 +275,9 @@
     <li class="clearfix W_linecolor">
       <div class="left">
         <p class="face mbspace">
-          <a target="_blank" title="{{name}}" href="/izlmichael">
+          <a target="_blank" title="{{name}}" href="/izlmichael" class="item-avatar">
             <img width="50" height="50" alt="{{name}}" src="{{profile_image_url}}">
+            <i class="mask"></i>
           </a>
         </p>
       </div>
@@ -331,7 +335,7 @@
       <dl class="comment_list W_linecolor">
         {{#user}}
         <dt>
-          <a href="/statuses/user_timeline/{{id}}"><img width="30" height="30" alt="{{name}}" src="{{profile_image_url}}"></a>
+          <a href="/statuses/user_timeline/{{id}}" class="item-avatar"><img width="30" height="30" alt="{{name}}" src="{{profile_image_url}}" class="item-avatar"><i class="mask"></i></a>
         </dt>
         <dd>
         <a href="/statuses/user_timeline/{{id}}">{{name}}</a>：{{{../text}}}<span class="comment_date">{{dateFormat ../created_at}}</span>
@@ -411,11 +415,14 @@
 <script type="text/tpl" id="J_options">
   <div>为了确保可以正常登录，在登录前请先<strong><a href="http://t.sina.com.cn/logout.php?backurl=/" target="_blank">退出新浪微博</a></strong></div>
   <div style="margin-top:10px;"><a href="/signin"><button class="btn">添加新用户</button></a></div>
-  <ul class="user-list">
-    {{#each this}}
-    <li class="profile">
-      <p><img src="{{profile_image_url}}" alt="{{name}}"> {{name}} </p><a href="javascript:;" data-action="user-remove" data-uid="{{uid}}">删除用户</a>
-    </li>
-    {{/each}}
-  </ul>
+  <div class="form-actions">
+    <ul class="user-list">
+      {{#each this}}
+      <li class="profile">
+        <img src="{{profile_image_url}}" alt="{{name}}" width="50"><span class="name">{{name}}</span>
+        <button class="btn btn-danger btn-mini remove" data-action="user-remove" data-uid="{{uid}}">删除用户</button>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
 </script>

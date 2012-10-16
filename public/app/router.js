@@ -340,6 +340,8 @@ define(['app', 'user', 'patch'], function(App, User) {
       $picUpload.toggle();
     }).on("click", "[data-action=user-remove]",
     function() {
+      var yes = confirm('确定要注销该帐号？');
+      if (!yes) return;
       var $this = $(this),
         uid = $this.data('uid');
       User.removeUser({uid: uid});
