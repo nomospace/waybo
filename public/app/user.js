@@ -12,16 +12,20 @@ define(['exports', 'const', 'patch'], function(exports, CONST) {
 
   function saveUser(user) {
     var users = getUserList();
-    $.each(users, function(i, u) {
-      if (u.uid == user.uid) {
-        u.token = user.token;
-        $.extend(u, user);
-        return false;
-      }
-      if (i == users.length - 1) {
-        users.push(user);
-      }
-    });
+    if (users.length) {
+      $.each(users, function(i, u) {
+        if (u.uid == user.uid) {
+          u.token = user.token;
+          $.extend(u, user);
+          return false;
+        }
+        if (i == users.length - 1) {
+          users.push(user);
+        }
+      });
+    } else {
+      users.push(user);
+    }
 //    setUser(user);
     saveUserList(users);
   }
