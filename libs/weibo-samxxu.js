@@ -3,6 +3,8 @@ var OAuth2 = require('oauth').OAuth2,
   request = require("request"),
   fs = require('fs'),
   FormData = require('form-data'),
+  needle = require('needle'),
+  _ = require('underscore')._,
   API_BASE_URL = 'https://api.weibo.com/',
   API_VERSION = '2';
 
@@ -76,7 +78,11 @@ function makeASinaWeiboResponseHandler(cb) {
 
     var result;
     try {
-      result = JSON.parse(data);
+      if(typeof data === 'string'){
+        result =  JSON.parse(data);
+      }else{
+        result = data;
+      }
     } catch (e) {
       result = querystring.parse(data);
     }
@@ -166,5 +172,22 @@ SinaWeibo.prototype.UPLOAD = function(url, params, files, cb) {
 
   });
 };
+
+//
+SinaWeibo.prototype.POST_PIC = function(url, params, file, cb) {
+  var data = _.extend({
+    'access_token': this._accessToken,
+    'pic': { file: file, content_type: 'image/png' }
+  }, params);
+  var responseHandler = makeASinaWeiboResponseHandler(cb);
+  url = this._makeFullUrl(url);
+
+  needle.post(url, data, { multipart: true }, function(err, res, data){
+    // needle will read the file and include it in the form-data as binary
+    responseHandler(err, data, res);
+  });
+};
+
+
 
 

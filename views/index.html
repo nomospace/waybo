@@ -10,7 +10,7 @@
 <script type="text/tpl" id="J_status">
   {{#error}}<div class="alert alert-error">{{.}}</div>{{/error}}
   {{#each statuses}}
-  {{^deleted}}
+
   <dl class="feed_list W_linecolor" mid="{{mid}}" isforward="1">
     <dt class="face">
       {{#user}}
@@ -87,7 +87,6 @@
     </dd>
     <dd class="clear"></dd>
   </dl>
-  {{/deleted}}
   {{/each}}
 </script>
 <script type="text/tpl" id="J_favorites">

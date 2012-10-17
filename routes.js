@@ -4,6 +4,7 @@ var path = require('path');
 var Weibo = require('./libs/weibo-samxxu');
 var emotions = require('./libs/emotions');
 var config = require('./config');
+var _util = require('util');
 var ip = require('./ip');
 var util = require('./util');
 var appInstance;
@@ -109,9 +110,17 @@ module.exports = function(app, io) {
     weibo.POST('statuses/update', {status: status}, callback.bind(null, res));
   });
 
-  app.get('/api/statuses/upload', function(req, res) {
-    var status = req.query.status, pic = req.query.pic;
-    weibo.UPLOAD('statuses/upload', {status: status}, {pic: pic}, callback.bind(null, res));
+  app.get('/api/statuses/upload_url_text', function(req, res) {
+    var status = req.query.status, url = req.query.url;
+    weibo.POST('statuses/upload_url_text', {status: status, url: url}, callback.bind(null, res));
+  });
+
+  app.post('/api/statuses/upload', function(req, res) {
+    // upload pic
+    console.log('uploaded: \n' + _util.inspect({fields: req.body, files: req.files}));
+    weibo.POST_PIC('statuses/upload', req.body, req.files.pic.path, function(err, data ){
+      res.redirect('/statuses/user_timeline/' + data.user.id);
+    });
   });
 
   app.get('/api/favorites/create', function(req, res) {

@@ -16,7 +16,8 @@ require.config({
     backbone: "../assets/js/libs/backbone",
     handlebars: "../assets/js/libs/handlebars",
     moment: "../assets/js/libs/moment/moment",
-    bootstrap: "../assets/js/libs/bootstrap/js/bootstrap"
+    bootstrap: "../assets/js/libs/bootstrap/js/bootstrap",
+    imagepreview: "../assets/js/libs/imagepreview"
   },
 
   shim: {

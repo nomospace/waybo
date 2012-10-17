@@ -1,4 +1,4 @@
-define(['app', 'user', 'patch'], function(App, User) {
+define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
   'use strict';
 
   Handlebars.registerHelper('dateFormat', function(date) {
@@ -48,7 +48,10 @@ define(['app', 'user', 'patch'], function(App, User) {
     optionsContext = Handlebars.compile(optionsTpl);
   var $btnMore = $('#J_btn_more');
   var $statusUpdate = $('#J_status_update'),
-    $statusUpdateTextarea = $('#J_status_update_textarea');
+    $statusUpdateTextarea = $('#J_status_update_textarea'),
+    $J_pic_online = $('#J_pic_online'),
+    $uploadPicForm = $('#uploadPicForm'),
+    $pic_preview = $('#J_pic_preview');
   var userListTpl = $('#J_user_list').html(),
     userListContext = Handlebars.compile(userListTpl);
   var unreadTpl = $('#J_unread').html(),
@@ -400,24 +403,74 @@ define(['app', 'user', 'patch'], function(App, User) {
       $statusUpdateTextarea.val(status + ' ' + $this.attr('title'));
     });
 
+  //  初始化本地提交图片预览
+  imagepreview($('#J_pic_upload_file')[0], $("#J_pic_preview")[0], function(info){
+    console.log("文件名:" + info.name + "\r\n图片原始高度:" + info.height + "\r\n图片原始宽度:" + info.width);
+    isOnlinePic = false;
+    //这里若return false则不预览图片
+
+    /*$("#preview").css({
+     background: "none"
+     });
+
+     $("#preview").crop( function(e){
+     $("input[type='hidden']").val([e.top, e.left, e.height, e.width].toString());
+     }, ".thumb");*/
+  });
+  //  初始化url图片预览
+  $J_pic_online.on('change', function(e){
+    var $this = $(this),
+      val = $.trim($this.val());
+    if(/^http/.test(val)){
+      isOnlinePic = true;
+      $("#J_pic_preview").empty().html('<img src="' + val +'" />');
+    }else{
+      alert('请输入有效的图片在线地址');
+    }
+  });
+  var isOnlinePic = false;
   $statusUpdate.click(function() {
-    fetch('statuses/update', {status: $.trim($statusUpdateTextarea.val())}).done(
-      function(result) {
-        var err = result.error;
-        if (err) {
-          alert(err);
-        } else {
-          location.href = '/statuses/user_timeline/' + result.user.id;
-        }
-      });
+    var $pic = $pic_preview.find('img'), hasPic = $pic.length!=0;
+    if(hasPic){
+      if(!isOnlinePic){
+        $uploadPicForm.submit();
+      }else{
+        fetch('statuses/upload_url_text', {status: $.trim($statusUpdateTextarea.val()), url: $.trim($J_pic_online.val()) })
+          .done(
+          function(result) {
+            var err = result.error;
+            if (err) {
+              alert(err);
+            } else {
+              location.href = '/statuses/user_timeline/' + result.user.id;
+            }
+          });
+      }
+    }else{
+      fetch('statuses/update', {status: $.trim($statusUpdateTextarea.val()) })
+        .done(
+        function(result) {
+          var err = result.error;
+          if (err) {
+            alert(err);
+          } else {
+            location.href = '/statuses/user_timeline/' + result.user.id;
+          }
+        });
+    }
   });
 
   $picUploadForm.change(function() {
     var status = $statusUpdateTextarea.val();
-    fetch('statuses/upload', {status: status, pic: $picUploadFile[0].files}).done(
+
+    fetch('statuses/upload', {status: status}).done(
       function(result) {
         console.log(result);
       });
+    /*fetch('statuses/upload', {status: status, pic: $picUploadFile[0].files}).done(
+      function(result) {
+        console.log(result);
+      });*/
 //    $.ajax({
 //      url: api + 'statuses/upload',
 //      data: 'abcd' || $picUploadFile[0].files,
