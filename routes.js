@@ -5,6 +5,7 @@ var Weibo = require('./libs/weibo-samxxu');
 var emotions = require('./libs/emotions');
 var config = require('./config');
 var ip = require('./ip');
+var util = require('./util');
 var appInstance;
 
 var app_key = config.app_key;
@@ -212,6 +213,24 @@ function callback(res, err, data) {
     res.send(err.data);
   }
   else {
+    if (data.text) {
+      data.text = util.ubbCode(data.text);
+    } else {
+      for (var i in data) {
+        if (i == 'status') {
+          data[i].text = util.ubbCode(data[i].text);
+        } else if (i == 'statuses' || i == 'comments') {
+          data[i].forEach(function(d) {
+            d.text = util.ubbCode(d.text);
+            if (d['reply_comment']) {
+              d['reply_comment'].text = util.ubbCode(d.text);
+            } else if (d['retweeted_status']) {
+              d['retweeted_status'].text = util.ubbCode(d.text);
+            }
+          });
+        }
+      }
+    }
     res.send(data);
   }
 }
