@@ -123,6 +123,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(statusContext(result));
         });
       });
@@ -133,6 +134,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(statusContext(result));
         });
       });
@@ -140,6 +142,7 @@ define(['app', 'user', 'patch'], function(App, User) {
     },
     'statuses/show': function(id) {
       fetch('statuses/show/' + id).done(function(result) {
+        $btnMore.show();
         result.statuses = [result];
         $main.html(statusContext(result));
         $main.find('.content > .info a[data-action="repeat"]').click();
@@ -150,6 +153,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.html(favoritesContext(result));
         });
       });
@@ -159,6 +163,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(commentContext(result));
         });
       });
@@ -168,6 +173,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(commentContext(result));
         });
       });
@@ -177,6 +183,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(commentContext(result));
         });
       });
@@ -186,6 +193,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       $main.html('');
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(statusContext(result));
         });
       });
@@ -195,6 +203,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       var url = 'friendships/friends/' + uid;
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(followContext(result));
         });
       });
@@ -205,6 +214,7 @@ define(['app', 'user', 'patch'], function(App, User) {
       var url = 'friendships/followers/' + uid;
       beforeRender(this, url, function(page) {
         fetch(url, {page: page}).done(function(result) {
+          $btnMore.show();
           $main.append(followContext(result));
         });
       });
