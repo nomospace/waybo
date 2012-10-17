@@ -196,7 +196,7 @@
         {{/verified}}：
         {{/user}}{{{text}}}
       </p>
-      {{#status}}
+      {{#reply_comment}}
       <div class="comment">
         <p class="feed_list_content">
           {{#user}}
@@ -206,63 +206,77 @@
           {{/verified}}：
           {{/user}}{{{text}}}
         </p>
-        {{#thumbnail_pic}}
-        <ul class="piclist">
-          <li>
-            <div class="chePicMin W_bgcolor_mini bigcursor">
-              <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
-              <img class="bigcursor_loading loading_gif" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif">
-            </div>
-          </li>
-        </ul>
-        {{/thumbnail_pic}}
-        {{#retweeted_status}}
-        <dl class="comment W_textc W_linecolor W_bgcolor">
-          <dt>
+      </div>
+      {{/reply_comment}}
+      {{^reply_comment}}
+      {{#with ../status}}
+        <div class="comment">
+          <p class="feed_list_content">
             {{#user}}
-            <a href="/statuses/user_timeline/{{id}}" title="{{name}}">{{name}}</a>
+            <a title="{{name}}" href="/statuses/user_timeline/{{id}}">{{name}}</a>
             {{#verified}}
             <a target="_blank" href="http://verified.weibo.com/verify" title="新浪个人认证">V</a>
             {{/verified}}：
             {{/user}}{{{text}}}
-          </dt>
-          {{#unless deleted}}
+          </p>
           {{#thumbnail_pic}}
-          <dd>
-            <ul class="piclist">
-              <li>
-                <div class="chePicMin W_bgcolor_mini bigcursor">
-                  <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
-                  <img class="bigcursor_loading loading_gif" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif">
-                </div>
-              </li>
-            </ul>
-          </dd>
+          <ul class="piclist">
+            <li>
+              <div class="chePicMin W_bgcolor_mini bigcursor">
+                <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
+                <img class="bigcursor_loading loading_gif" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif">
+              </div>
+            </li>
+          </ul>
           {{/thumbnail_pic}}
-          <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
-          <dd class="info W_linkb W_textb">
-              <span class="action_list" data-id={{id}}>
-                <a data-action="repost">转发({{reposts_count}})</a>
-                <a data-action="repeat">评论({{comments_count}})</a>
-              </span>
-            <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
-          </dd>
-          {{/unless}}
-        </dl>
-        {{/retweeted_status}}
-        <p class="info W_linkb W_textb">
-          <span class="action_list" data-id={{id}}>
-            <a data-action="repost">转发({{reposts_count}})</a>
-            {{#favorited}}已收藏{{/favorited}}
-            {{^favorited}}
-            <a data-action="favorite" data-create="true">收藏</a>
-            {{/favorited}}
-            <a data-action="repeat">评论({{comments_count}})</a>
-          </span>
-          <a href="/statuses/show/{{id}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
-        </p>
-      </div>
-      {{/status}}
+          {{#retweeted_status}}
+          <dl class="comment W_textc W_linecolor W_bgcolor">
+            <dt>
+              {{#user}}
+              <a href="/statuses/user_timeline/{{id}}" title="{{name}}">{{name}}</a>
+              {{#verified}}
+              <a target="_blank" href="http://verified.weibo.com/verify" title="新浪个人认证">V</a>
+              {{/verified}}：
+              {{/user}}{{{text}}}
+            </dt>
+            {{#unless deleted}}
+            {{#thumbnail_pic}}
+            <dd>
+              <ul class="piclist">
+                <li>
+                  <div class="chePicMin W_bgcolor_mini bigcursor">
+                    <img class="bigcursor" src="{{.}}" alt="" data-middle={{../bmiddle_pic}}>
+                    <img class="bigcursor_loading loading_gif" src="http://img.t.sinajs.cn/t4/style/images/common/loading.gif">
+                  </div>
+                </li>
+              </ul>
+            </dd>
+            {{/thumbnail_pic}}
+            <dd class="expand" style="display: none;" node-type="feed_list_media_disp"></dd>
+            <dd class="info W_linkb W_textb">
+                <span class="action_list" data-id={{id}}>
+                  <a data-action="repost">转发({{reposts_count}})</a>
+                  <a data-action="repeat">评论({{comments_count}})</a>
+                </span>
+              <a class="date" href="/statuses/show/{{mid}}">{{dateFormat created_at}}</a>来自 {{{source}}
+            </dd>
+            {{/unless}}
+          </dl>
+          {{/retweeted_status}}
+          <p class="info W_linkb W_textb">
+            <span class="action_list" data-id={{id}}>
+              <a data-action="repost">转发({{reposts_count}})</a>
+              {{#favorited}}已收藏{{/favorited}}
+              {{^favorited}}
+              <a data-action="favorite" data-create="true">收藏</a>
+              {{/favorited}}
+              <a data-action="repeat">评论({{comments_count}})</a>
+            </span>
+            <a href="/statuses/show/{{id}}" class="date">{{dateFormat created_at}}</a>来自 {{{source}}}
+          </p>
+        </div>
+        {{/with}}
+      {{/reply_comment}}
     </dd>
     <dd class="clear"></dd>
   </dl>

@@ -31,9 +31,9 @@ $ make dev
 ```
 
 ## 说明
-* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com 123456789```。也可以通过该帐号先登录微博，[并手动添加一个测试帐号](http://open.weibo.com/apps/2645619356/info/test)
-* 为了确保可以正常登录，在登录前请先退出[新浪微博](http://t.sina.com.cn/logout.php?backurl=/)
-
+* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com qa1234```。也可以通过该帐号先登录微博，[并手动添加一个测试帐号](http://open.weibo.com/apps/2645619356/info/test)
+* 为了确保可以正常登录，在登录前请先退出[新浪微博](http://t.sina.com.cn/logout.php?backurl=/)  
+* 请使用支持 WebSocket 的浏览器
 
 ## Resources  
 * [https://github.com/samxxu/node-sina-weibo](https://github.com/samxxu/node-sina-weibo)  

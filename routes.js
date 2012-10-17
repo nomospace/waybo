@@ -223,9 +223,9 @@ function callback(res, err, data) {
           data[i].forEach(function(d) {
             d.text = util.ubbCode(d.text);
             if (d['reply_comment']) {
-              d['reply_comment'].text = util.ubbCode(d.text);
+              d['reply_comment'].text = util.ubbCode(d['reply_comment'].text);
             } else if (d['retweeted_status']) {
-              d['retweeted_status'].text = util.ubbCode(d.text);
+              d['retweeted_status'].text = util.ubbCode(d['retweeted_status'].text);
             }
           });
         }
