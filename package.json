@@ -29,8 +29,8 @@
     "markdown-js": "~0.0.3",
     "socket.io": "~0.9.10",
     "needle":"~0.4.2",
-    "formidable":"*",
-    "underscore": "*"
+    "formidable":"~1.0.11",
+    "underscore": "~1.4.2"
   },
   "devDependencies": {},
   "scripts": {

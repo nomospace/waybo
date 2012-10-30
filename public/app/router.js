@@ -3,7 +3,6 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
 
   Handlebars.registerHelper('dateFormat', function(date) {
     return date && new Date(date).format('');
-//    return date && moment(date).format('LLL');
   });
   Handlebars.registerHelper('textFormat', function(text) {
     return text;
@@ -24,7 +23,7 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
   var $main = $('#main');
   var $profile = $('#J_profile');
   var $picUpload = $('#J_pic_upload'),
-    $picUploadFile = $('#J_pic_upload_file'),
+//    $picUploadFile = $('#J_pic_upload_file'),
     $picUploadForm = $('#J_pic_upload_form');
   var $userList = $('#J_user_list_con');
 //  var moreTpl = $('#J_more').html();
