@@ -1,16 +1,16 @@
-# waybo [![Build Status](https://secure.travis-ci.org/sdg-sysdev/waybo.png)](http://travis-ci.org/sdg-sysdev/waybo)  
+# waybo [![Build Status](https://secure.travis-ci.org/nomospace/waybo.png)](http://travis-ci.org/nomospace/waybo)  
 A simple web-weibo base on nodejs.  
-![logo](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/waybo.png)   
+![logo](https://raw.github.com/nomospace/waybo/master/public/assets/images/waybo.png)   
 
 ## 应用截图  
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot2.png)    
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot1.png)   
-![程序截图](https://raw.github.com/sdg-sysdev/waybo/master/public/assets/images/ScreenShot3.png)    
+![程序截图](https://raw.github.com/nomospace/waybo/master/public/assets/images/ScreenShot2.png)    
+![程序截图](https://raw.github.com/nomospace/waybo/master/public/assets/images/ScreenShot1.png)   
+![程序截图](https://raw.github.com/nomospace/waybo/master/public/assets/images/ScreenShot3.png)    
 
 ## 安装部署  
 
 ```sh  
-$ git clone https://github.com/sdg-sysdev/waybo.git   
+$ git clone https://github.com/nomospace/waybo.git   
 $ cd waybo  
 $ npm install  
 $ node app.js
@@ -24,7 +24,7 @@ $ node app.js
 或者  
 ```bash
 $ // 先安装 node-webkit https://github.com/rogerwang/node-webkit 
-$ git clone https://github.com/sdg-sysdev/waybo.git   
+$ git clone https://github.com/nomospace/waybo.git   
 $ cd waybo  
 $ npm install  
 $ make dev
