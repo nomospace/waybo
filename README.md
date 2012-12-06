@@ -43,6 +43,22 @@ $ make dev
 * [https://github.com/rockdai/WeiboAPI](https://github.com/rockdai/WeiboAPI)  
 
 
+## Authors
+Below is the output from `git-summary`.
+
+```
+project  : waybo
+ repo age : 3 months
+ active   : 27 days
+ commits  : 83
+ files    : 61
+ authors  :
+    81	nomospace               97.6%
+     1	Joe Xu                  1.2%
+     1	no more space           1.2%
+```
+
+
 ## License 
 
 (The MIT License)
