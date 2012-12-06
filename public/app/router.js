@@ -20,13 +20,13 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
     }
   });
 
+  var $body = $('body');
   var $main = $('#main');
   var $profile = $('#J_profile');
   var $picUpload = $('#J_pic_upload'),
 //    $picUploadFile = $('#J_pic_upload_file'),
     $picUploadForm = $('#J_pic_upload_form');
   var $userList = $('#J_user_list_con');
-//  var moreTpl = $('#J_more').html();
   var statusTpl = $('#J_status').html(),
     statusContext = Handlebars.compile(statusTpl);
   var commentTpl = $('#J_comment').html(),
@@ -55,6 +55,7 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
     userListContext = Handlebars.compile(userListTpl);
   var unreadTpl = $('#J_unread').html(),
     unreadContext = Handlebars.compile(unreadTpl);
+  var sendMailTpl = $('#J_send_mail').html();
 
   var fetch = function(url, options) {
     return $.get(api + url, options);
@@ -93,7 +94,8 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       'friendships/friends/:uid': 'friendships/friends',
       'friendships/followers/:uid': 'friendships/followers',
       'account/end_session': 'account/end_session',
-      'account/options': 'account/options'
+      'account/options': 'account/options',
+      'options/sendmail': 'options/sendmail'
     },
     index: function() {
       var user = User.getUser();
@@ -247,10 +249,21 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
           });
         });
       }
+    },
+    'options/sendmail': function() {
+      $profile.hide();
+      $btnMore.hide();
+      $main.html(sendMailTpl);
+      var $address = $('#J_mail_address');
+      var $send = $('#J_mail_send');
+      var $options = $('#J_mail_options');
+      $options.find(':checked').each(function() {
+
+      });
     }
   });
 
-  $(document).on("click", "img.bigcursor",function() {
+  $body.on("click", "img.bigcursor",function() {
     var $img = $(this),
       $next = $img.next(),
       murl = $img.data('middle');
@@ -400,10 +413,19 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       var $this = $(this),
         status = $statusUpdateTextarea.val();
       $statusUpdateTextarea.val(status + ' ' + $this.attr('title'));
+    }).on("click", "[data-action=send-mail]",
+    function() {
+      fetch('options/sendmail').done(function(result) {
+        if (result && result.error) {
+          alert(result.error);
+        } else {
+          alert('发送成功');
+        }
+      });
     });
 
   //  初始化本地提交图片预览
-  imagepreview($('#J_pic_upload_file')[0], $("#J_pic_preview")[0], function(info){
+  imagepreview($('#J_pic_upload_file')[0], $("#J_pic_preview")[0], function(info) {
     console.log("文件名:" + info.name + "\r\n图片原始高度:" + info.height + "\r\n图片原始宽度:" + info.width);
     isOnlinePic = false;
     //这里若return false则不预览图片
@@ -417,23 +439,25 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
      }, ".thumb");*/
   });
   //  初始化url图片预览
-  $J_pic_online.on('change', function(e){
+  $J_pic_online.on('change', function(e) {
     var $this = $(this),
       val = $.trim($this.val());
-    if(/^http/.test(val)){
+    if (/^http/.test(val)) {
       isOnlinePic = true;
-      $("#J_pic_preview").empty().html('<img src="' + val +'" />');
-    }else{
+      $('#J_pic_preview').empty().html('<img src="' + val + '" />');
+    } else {
       alert('请输入有效的图片在线地址');
     }
   });
+
   var isOnlinePic = false;
   $statusUpdate.click(function() {
-    var $pic = $pic_preview.find('img'), hasPic = $pic.length!=0;
-    if(hasPic){
-      if(!isOnlinePic){
+    var $pic = $pic_preview.find('img'),
+      hasPic = $pic.length != 0;
+    if (hasPic) {
+      if (!isOnlinePic) {
         $uploadPicForm.submit();
-      }else{
+      } else {
         fetch('statuses/upload_url_text', {status: $.trim($statusUpdateTextarea.val()), url: $.trim($J_pic_online.val()) })
           .done(
           function(result) {
@@ -445,8 +469,8 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
             }
           });
       }
-    }else{
-      fetch('statuses/update', {status: $.trim($statusUpdateTextarea.val()) })
+    } else {
+      fetch('statuses/update', {status: $.trim($statusUpdateTextarea.val())})
         .done(
         function(result) {
           var err = result.error;
@@ -461,15 +485,14 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
 
   $picUploadForm.change(function() {
     var status = $statusUpdateTextarea.val();
-
     fetch('statuses/upload', {status: status}).done(
       function(result) {
         console.log(result);
       });
     /*fetch('statuses/upload', {status: status, pic: $picUploadFile[0].files}).done(
-      function(result) {
-        console.log(result);
-      });*/
+     function(result) {
+     console.log(result);
+     });*/
 //    $.ajax({
 //      url: api + 'statuses/upload',
 //      data: 'abcd' || $picUploadFile[0].files,
@@ -481,11 +504,16 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
 //    });
   });
 
+  // todo BAD SMELL
   var socket = io.connect('http://localhost:3003/');
   socket.on('remind/unread_count', function(data) {
-    if (data.status || data.follower || data.cmt || data.mention_status || data.mention_cmt) {
-      $('.alert-success').remove();
-      $('body').append(unreadContext(data));
+    if (data.status ||
+      data.follower ||
+      data.cmt ||
+      data.mention_status ||
+      data.mention_cmt) {
+      $('.unread-alert').remove();
+      $body.append(unreadContext(data));
     }
   });
 

@@ -797,6 +797,11 @@ ul li {
   right: 10px;
   z-index: 100;
 }
+
 .unread-alert a {
   color: #468847;
+}
+
+.feed_list_content {
+  margin-bottom: 0;
 }

@@ -449,3 +449,40 @@
     {{#if follower}}<li><a href="/friendships/followers/<%=uid%>"><strong>{{follower}}</strong> 个新粉丝</a></li>{{/if}}
   </ul>
 </script>
+<script type="text/tpl" id="J_send_mail">
+  <div class="">
+    <h3 class="page-header">收集感兴趣的言论</h3>
+    <div class="control-group" id="J_mail_options">
+      <label class="control-label">内容选项</label>
+      <div class="controls">
+        <label class="checkbox">
+          <input type="checkbox" id="J_mail_at_me_statuses" data-type="statuses" data-value="me"> @我的微博
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="J_mail_at_me_comments" data-type="comments" data-value="me"> @我的评论
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="J_mail_favorites" data-type="favorites"> 我的收藏
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="J_mail_at_username_statuses" data-type="comments" data-value="">
+          <div class="input-prepend">
+            <span class="add-on">@</span><input class="span2" type="text" placeholder="用户名"> 的微博
+          </div>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="J_mail_username_statuses" data-type="comments" data-value=""><input type="text" class="span2"> 的微博
+        </label>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="J_mail_address">邮箱地址</label>
+      <div class="controls">
+        <input type="text" id="J_mail_address">
+      </div>
+    </div>
+    <div class="control-group">
+      <input type="button" class="btn btn-primary" value="发送" data-action="send-mail">
+    </div>
+  </div>
+</script>

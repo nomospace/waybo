@@ -72,6 +72,14 @@
           </ul>
         </li>
         <li><a href="/account/options">选项</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" data-action="popup-users">其他<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="/options/sendmail">发送邮件</a>
+            </li>
+          </ul>
+        </li>
         <!--<li><a href="/account/end_session">退出</a></li>-->
         <% } else { %>
         <li><a href='/signin'>登录</a></li>
@@ -113,11 +121,11 @@
           </ul>
           <div id="J_pic_upload" class="pic-upload" style="display: none;">
               <div class="alert alert-info alert-picture way-a fade in">
-                <span>图片URL&nbsp;&nbsp;</span>
+                <span>图片URL </span>
                 <input id="J_pic_online" class="pic_upload_file" type="text" value="" placeholder="type your picture url...">
               </div>
               <div class="alert alert-info alert-picture way-b fade in">
-                <span>点此选择图片，或直接将文件拖放至此框内&nbsp;&nbsp;</span>
+                <span>点此选择图片，或直接将文件拖放至此框内 </span>
                 <input name="pic"  id="J_pic_upload_file" class="pic_upload_file" type="file" placeholder="type your picture url...">
               </div>
               <div id="J_pic_preview" class="preview"></div>
