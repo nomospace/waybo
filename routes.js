@@ -10,6 +10,7 @@ var util = require('./util');
 
 var noop = function() {
 }
+var appRoot = __dirname || './';
 var appInstance;
 
 var app_key = config.app_key;
@@ -30,7 +31,7 @@ module.exports = function(app, io) {
   });
 
   appInstance = app;
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(appRoot, 'public')));
 
   // url routes
   app.get('/api/index', function(req, res) {
