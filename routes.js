@@ -4,9 +4,10 @@ var path = require('path');
 var Weibo = require('./libs/weibo-samxxu');
 var emotions = require('./libs/emotions');
 var config = require('./config');
-var _util = require('util');
+var util = require('util');
 var ip = require('./ip');
 var util = require('./util');
+var sendMail = require('./send-mail');
 
 var noop = function() {
 }
@@ -122,7 +123,7 @@ module.exports = function(app, io) {
 
   app.post('/api/statuses/upload', function(req, res) {
     // upload pic
-    console.log('uploaded: \n' + _util.inspect({fields: req.body, files: req.files}));
+    console.log('uploaded: \n' + util.inspect({fields: req.body, files: req.files}));
     weibo.POST_PIC('statuses/upload', req.body, req.files.pic.path, function(err, data) {
       res.redirect('/statuses/user_timeline/' + data.user.id);
     });

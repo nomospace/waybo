@@ -31,7 +31,8 @@
     "socket.io": "~0.9.10",
     "needle":"~0.4.2",
     "formidable":"~1.0.11",
-    "underscore": "~1.4.2"
+    "underscore": "~1.4.2",
+    "nodemailer": "~0.3.27"
   },
   "devDependencies": {},
   "scripts": {
