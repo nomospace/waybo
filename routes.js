@@ -215,6 +215,10 @@ module.exports = function(app, io) {
     weibo.GET('remind/unread_count', {}, callback.bind(null, res));
   });
 
+  app.get('/api/options/sendmail', function(req, res) {
+    res.json({'error': '!'});
+  });
+
   app.get('/', function(req, res) {
     res.render('index.html', {page: 'index'});
   });

@@ -413,7 +413,7 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       var $this = $(this),
         status = $statusUpdateTextarea.val();
       $statusUpdateTextarea.val(status + ' ' + $this.attr('title'));
-    }).on("click", ".j-send-mail",
+    }).on("click", "[data-action=send-mail]",
     function() {
       fetch('options/sendmail').done(function(result) {
         if (result && result.error) {
