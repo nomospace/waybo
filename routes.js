@@ -7,7 +7,7 @@ var config = require('./config');
 var _util = require('util');
 var ip = require('./ip');
 var util = require('./util');
-var sendMail = require('./send-mail');
+//var sendMail = require('./send-mail');
 
 var noop = function() {
 }
