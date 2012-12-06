@@ -1,8 +1,9 @@
 {
   "name": "waybo",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A simple web-weibo base on nodejs.",
   "author": "nomospace",
+  "participants": "rocketxujia",
   "main": "index.html",
   "window": {
     "icon": "public/assets/images/waybo.png",
@@ -30,7 +31,8 @@
     "socket.io": "~0.9.10",
     "needle":"~0.4.2",
     "formidable":"~1.0.11",
-    "underscore": "~1.4.2"
+    "underscore": "~1.4.2",
+    "nodemailer": "~0.3.35"
   },
   "devDependencies": {},
   "scripts": {
@@ -38,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sdg-sysdev/waybo.git"
+    "url": "https://github.com/nomospace/waybo.git"
   },
   "keywords": [
     "node",
@@ -46,6 +48,6 @@
     "weibo",
     "express"
   ],
-  "bugs": "https://github.com/sdg-sysdev/waybo/issues",
+  "bugs": "https://github.com/nomospace/waybo/issues",
   "license": "BSD"
 }

@@ -7,9 +7,11 @@ var config = require('./config');
 var _util = require('util');
 var ip = require('./ip');
 var util = require('./util');
+//var sendMail = require('./send-mail');
 
 var noop = function() {
 }
+var appRoot = __dirname || './';
 var appInstance;
 
 var app_key = config.app_key;
@@ -30,7 +32,7 @@ module.exports = function(app, io) {
   });
 
   appInstance = app;
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(appRoot, 'public')));
 
   // url routes
   app.get('/api/index', function(req, res) {
@@ -213,6 +215,10 @@ module.exports = function(app, io) {
 
   app.get('/api/remind/unread_count', function(req, res) {
     weibo.GET('remind/unread_count', {}, callback.bind(null, res));
+  });
+
+  app.get('/api/options/sendmail', function(req, res) {
+    res.json({'error': '!'});
   });
 
   app.get('/', function(req, res) {
