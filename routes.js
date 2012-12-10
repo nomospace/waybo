@@ -92,7 +92,7 @@ module.exports = function(app, io) {
 
   app.get('/api/statuses/home_timeline/:uid', function(req, res) {
     var uid = req.params.uid, page = req.query.page;
-    weibo.POST('remind/set_count', {type: 'status'}, noop);
+//    weibo.POST('remind/set_count', {type: 'status'}, noop);
     weibo.GET('statuses/home_timeline', {uid: uid, page: page}, callback.bind(null, res));
   });
 
@@ -151,7 +151,7 @@ module.exports = function(app, io) {
 
   app.get('/api/comments/to_me', function(req, res) {
     var page = req.query.page;
-    weibo.POST('remind/set_count', {type: 'cmt'}, noop);
+//    weibo.POST('remind/set_count', {type: 'cmt'}, noop);
     weibo.GET('comments/to_me', {page: page}, callback.bind(null, res));
   });
 
@@ -164,13 +164,13 @@ module.exports = function(app, io) {
 
   app.get('/api/comments/mentions', function(req, res) {
     var page = req.query.page;
-    weibo.POST('remind/set_count', {type: 'mention_cmt'}, noop);
+//    weibo.POST('remind/set_count', {type: 'mention_cmt'}, noop);
     weibo.GET('comments/mentions', {page: page}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/mentions', function(req, res) {
     var page = req.query.page;
-    weibo.POST('remind/set_count', {type: 'mention_status'}, noop);
+//    weibo.POST('remind/set_count', {type: 'mention_status'}, noop);
     weibo.GET('statuses/mentions', {page: page}, callback.bind(null, res));
   });
 
@@ -181,7 +181,7 @@ module.exports = function(app, io) {
 
   app.get('/api/friendships/followers/:uid', function(req, res) {
     var uid = req.params.uid, page = req.query.page;
-    weibo.POST('remind/set_count', {type: 'follower'}, noop);
+//    weibo.POST('remind/set_count', {type: 'follower'}, noop);
     weibo.GET('friendships/followers', {uid: uid, page: page}, callback.bind(null, res));
   });
 
