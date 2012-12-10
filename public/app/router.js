@@ -415,7 +415,12 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       $statusUpdateTextarea.val(status + ' ' + $this.attr('title'));
     }).on("click", "[data-action=send-mail]",
     function() {
-      fetch('options/sendmail').done(function(result) {
+      var $address = $('#J_mail_address'),
+        options = [];
+      $('#J_mail_options :checked').each(function() {
+        options.push($(this).data());
+      });
+      fetch('options/sendmail', {address: $address.val(), options: options}).done(function(result) {
         if (result && result.error) {
           alert(result.error);
         } else {

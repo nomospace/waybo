@@ -1,5 +1,9 @@
-var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer'), userAddress;
 
+exports.setAddress = function(address) {
+  userAddress = address;
+};
+return;
 var transport = nodemailer.createTransport("SMTP", {
   // service: "Gmail",
   host: "smtp.163.com",

@@ -7,7 +7,7 @@ var config = require('./config');
 var _util = require('util');
 var ip = require('./ip');
 var util = require('./util');
-//var sendMail = require('./send-mail');
+var mail = require('./mail');
 
 var noop = function() {
 }
@@ -98,7 +98,8 @@ module.exports = function(app, io) {
 
   app.get('/api/statuses/user_timeline/:uid', function(req, res) {
     var uid = req.params.uid, page = req.query.page;
-    weibo.GET('statuses/user_timeline', {uid: uid, page: page}, callback.bind(null, res));
+    getStatusesByUser({uid: uid, page: page, cb: callback.bind(null, res)});
+//    weibo.GET('statuses/user_timeline', {uid: uid, page: page}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/show/:id', function(req, res) {
@@ -141,7 +142,8 @@ module.exports = function(app, io) {
 
   app.get('/api/favorites/:id', function(req, res) {
     var id = req.params.id, page = req.query.page;
-    weibo.GET('favorites', {id: id, page: page}, callback.bind(null, res));
+    getFavorites({id: id, page: page, cb: callback.bind(null, res)});
+//    weibo.GET('favorites', {id: id, page: page}, callback.bind(null, res));
   });
 
   app.get('/api/comments/by_me', function(req, res) {
@@ -165,13 +167,15 @@ module.exports = function(app, io) {
   app.get('/api/comments/mentions', function(req, res) {
     var page = req.query.page;
 //    weibo.POST('remind/set_count', {type: 'mention_cmt'}, noop);
-    weibo.GET('comments/mentions', {page: page}, callback.bind(null, res));
+    getCommentsAtMe({page: page, cb: callback.bind(null, res)});
+//    weibo.GET('comments/mentions', {page: page}, callback.bind(null, res));
   });
 
   app.get('/api/statuses/mentions', function(req, res) {
     var page = req.query.page;
 //    weibo.POST('remind/set_count', {type: 'mention_status'}, noop);
-    weibo.GET('statuses/mentions', {page: page}, callback.bind(null, res));
+    getStatusesAtMe({page: page, cb: callback.bind(null, res)});
+//    weibo.GET('statuses/mentions', {page: page}, callback.bind(null, res));
   });
 
   app.get('/api/friendships/friends/:uid', function(req, res) {
@@ -218,6 +222,34 @@ module.exports = function(app, io) {
   });
 
   app.get('/api/options/sendmail', function(req, res) {
+    var address = req.query.address,
+      options = req.query.options || [];
+    console.log(address, options);
+    getCommentsAtMe({
+      page: 1,
+      cb: function() {
+        console.log('getCommentsAtMe!');
+      }
+    });
+    getStatusesAtMe({
+      page: 1,
+      cb: function() {
+        console.log('getStatusesAtMe!');
+      }
+    });
+    getStatusesByUser({
+      uid: 1657921345,
+      page: 1,
+      cb: function() {
+        console.log('getStatusesByUser!');
+      }
+    });
+    getFavorites({
+      page: 1,
+      cb: function() {
+        console.log('getFavorites!');
+      }
+    });
     res.json({'error': '!'});
   });
 
@@ -287,4 +319,20 @@ function getUnreadCount(socket) {
   weibo.GET('remind/unread_count', {}, function(err, data) {
     socket.emit('remind/unread_count', data);
   });
+}
+
+function getCommentsAtMe(options) {
+  weibo.GET('comments/mentions', {page: options.page}, options.cb);
+}
+
+function getStatusesAtMe(options) {
+  weibo.GET('statuses/mentions', {page: options.page}, options.cb);
+}
+
+function getStatusesByUser(options) {
+  weibo.GET('statuses/user_timeline', {uid: options.uid, page: options.page}, options.cb);
+}
+
+function getFavorites(options) {
+  weibo.GET('favorites', {id: options.id, page: options.page}, options.cb);
 }
