@@ -29,10 +29,11 @@
     "moment": "~1.7.0",
     "markdown-js": "~0.0.3",
     "socket.io": "~0.9.10",
-    "needle":"~0.4.2",
-    "formidable":"~1.0.11",
+    "needle": "~0.4.2",
+    "formidable": "~1.0.11",
     "underscore": "~1.4.2",
-    "nodemailer": "~0.3.35"
+    "nodemailer": "~0.3.35",
+    "async": "~0.1.22"
   },
   "devDependencies": {},
   "scripts": {
