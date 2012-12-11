@@ -226,6 +226,7 @@ module.exports = function(app, io) {
     var address = req.query.address,
       options = req.query.options || [];
     console.log(address, options);
+
     async.parallel([
       function(cb) {
         getCommentsAtMe({
@@ -261,7 +262,6 @@ module.exports = function(app, io) {
         });
       }
     ], function(err, results) {
-      console.log(results);
       mail.setMail({address: address, content: results});
     });
 

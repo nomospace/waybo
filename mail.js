@@ -1,15 +1,28 @@
-var nodemailer = require('nodemailer');
-var address;
-var content;
+var fs = require('fs');
+var $ = require('jquery');
+var mailer = require('nodemailer');
+var Handlebars = require('handlebars');
+var helper = require('./public/app/helper');
+var address, content, favoritesContext;
 
 exports.setMail = function(options) {
   address = options.address;
   content = options.content;
-  send();
+  fs.readFile('./views/index.html', 'utf8', function(err, data) {
+    if (err) throw err;
+    $('body').append(data);
+    favoritesContext = Handlebars.compile($('#J_favorites').html());
+    send();
+  });
 };
 
+function generateHtml() {
+  // TODO bad smell
+  return favoritesContext(content[3].favorites);
+}
+
 function send() {
-  var transport = nodemailer.createTransport("SMTP", {
+  var transport = mailer.createTransport("SMTP", {
     // service: "Gmail",
     host: 'smtp.163.com',
     // hostname
@@ -34,7 +47,7 @@ function send() {
     // plaintext body
     text: '您感兴趣的言论',
     // HTML body
-    html: content.toString()
+    html: generateHtml()
   };
 
   console.log('Sending Mail');

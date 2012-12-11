@@ -1,6 +1,7 @@
 define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
   'use strict';
 
+  // TODO 与 node.js 共用 helper
   Handlebars.registerHelper('dateFormat', function(date) {
     return date && new Date(date).format('');
   });
