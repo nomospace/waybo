@@ -56,6 +56,7 @@ var WeiboError = SinaWeibo.WeiboError = function(message, statusCode) {
 
   if (message.constructor === Object) {
     this.statusCode = message.statusCode;
+    console.log(message.data);
     this.data = JSON.parse(message.data);
 
     Error.call(this, this.data['error']);
