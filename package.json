@@ -33,7 +33,9 @@
     "formidable": "~1.0.11",
     "underscore": "~1.4.2",
     "nodemailer": "~0.3.35",
-    "async": "~0.1.22"
+    "async": "~0.1.22",
+    "handlebars": "~1.0.7",
+    "jquery": "~1.8.3"
   },
   "devDependencies": {},
   "scripts": {
