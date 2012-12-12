@@ -2,7 +2,7 @@ var fs = require('fs');
 var $ = require('jquery');
 var mailer = require('nodemailer');
 var Handlebars = require('handlebars');
-var helper = require('./public/app/helper');
+var helper = require('./helper');
 var address, content, favoritesContext;
 
 exports.setMail = function(options) {
