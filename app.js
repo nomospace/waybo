@@ -2,12 +2,12 @@ var path = require('path');
 var express = require('express');
 var http = require('http');
 var sio = require('socket.io');
-var config = require('./config');
-var routes = require('./routes');
 var partials = require('express-partials');
 var ejs = require('ejs');
 var markdown = require('markdown-js');
 var fs = require('fs');
+var config = require('./server/config');
+var routes = require('./server/routes');
 
 var appRoot = './';
 var app = express();
