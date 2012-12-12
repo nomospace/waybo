@@ -255,12 +255,6 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       $profile.hide();
       $btnMore.hide();
       $main.html(sendMailTpl);
-      var $address = $('#J_mail_address');
-      var $send = $('#J_mail_send');
-      var $options = $('#J_mail_options');
-      $options.find(':checked').each(function() {
-
-      });
     }
   });
 
@@ -419,7 +413,12 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       var $address = $('#J_mail_address'),
         options = [];
       $('#J_mail_options :checked').each(function() {
-        options.push($(this).data());
+        var $t = $(this), data = $t.data();
+        if (data.type == 'comments' && data.value == '') {
+          data.value = $t.closest('label').find(':text').val();
+        }
+        options.push(data);
+        // reset
       });
       fetch('options/sendmail', {address: $address.val(), options: options}).done(function(result) {
         if (result && result.error) {

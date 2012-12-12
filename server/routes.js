@@ -3,6 +3,7 @@ var crypto = require('crypto');
 var path = require('path');
 var Util = require('util');
 var async = require('async');
+var $ = require('jquery');
 var config = require('./config');
 var Weibo = require('../libs/weibo-samxxu');
 var emotions = require('../libs/emotions');
@@ -27,9 +28,9 @@ var authorize_url = weibo.getAuthorizeUrl({
 module.exports = function(app, io) {
   var timeout = 5000;
   io.sockets.on('connection', function(socket) {
-    setInterval(function() {
-      getUnreadCount(socket);
-    }, timeout);
+//    setInterval(function() {
+//      getUnreadCount(socket);
+//    }, timeout);
   });
 
   appInstance = app;
@@ -245,8 +246,11 @@ module.exports = function(app, io) {
         });
       },
       function(cb) {
+        var o = $.grep(options, function(d) {
+          return d.type == 'comments' && d.value != '';
+        })[0];
         getStatusesByUser({
-          uid: 1657921345,
+          name: o.value,
           page: 1,
           cb: function(err, data) {
             cb(null, {statusesByUser: data});
@@ -330,11 +334,11 @@ function encrypt(str, secret) {
   return enc;
 }
 
-function getUnreadCount(socket) {
-  weibo.GET('remind/unread_count', {}, function(err, data) {
-    socket.emit('remind/unread_count', data);
-  });
-}
+//function getUnreadCount(socket) {
+//  weibo.GET('remind/unread_count', {}, function(err, data) {
+//    socket.emit('remind/unread_count', data);
+//  });
+//}
 
 function getCommentsAtMe(options) {
   weibo.GET('comments/mentions', {page: options.page}, options.cb);
@@ -345,9 +349,17 @@ function getStatusesAtMe(options) {
 }
 
 function getStatusesByUser(options) {
-  weibo.GET('statuses/user_timeline', {uid: options.uid, page: options.page}, options.cb);
+  var uid = options.uid,
+    config = {page: options.page, count: 10 || 100};
+  if (uid) {
+    config.uid = uid;
+  } else {
+    config.screen_name = options.name;
+  }
+  console.log(config);
+  weibo.GET('statuses/user_timeline', config, options.cb);
 }
 
 function getFavorites(options) {
-  weibo.GET('favorites', {id: options.id, page: options.page}, options.cb);
+  weibo.GET('favorites', {id: options.id, page: options.page, count: 10 || 50}, options.cb);
 }

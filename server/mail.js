@@ -3,14 +3,16 @@ var $ = require('jquery');
 var mailer = require('nodemailer');
 var Handlebars = require('handlebars');
 var helper = require('./helper');
-var address, content, favoritesContext;
+var address, content, statusContext, favoritesContext;
 
 exports.setMail = function(options) {
   address = options.address;
   content = options.content;
+//  console.log(content);
   fs.readFile('./views/index.html', 'utf8', function(err, data) {
     if (err) throw err;
     $('body').append(data);
+    statusContext = Handlebars.compile($('#J_status').html());
     favoritesContext = Handlebars.compile($('#J_favorites').html());
     send();
   });
@@ -18,7 +20,7 @@ exports.setMail = function(options) {
 
 function generateHtml() {
   // TODO bad smell
-  return favoritesContext(content[3].favorites);
+  return  statusContext(content[2].statusesByUser) + favoritesContext(content[3].favorites);
 }
 
 function send() {
