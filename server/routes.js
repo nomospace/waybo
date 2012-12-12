@@ -2,13 +2,13 @@ var express = require('express');
 var crypto = require('crypto');
 var path = require('path');
 var Util = require('util');
+var async = require('async');
 var config = require('./config');
-var Weibo = require('./libs/weibo-samxxu');
-var emotions = require('./libs/emotions');
-var ip = require('./ip');
+var Weibo = require('../libs/weibo-samxxu');
+var emotions = require('../libs/emotions');
+//var ip = require('./ip');
 var util = require('./util');
 var mail = require('./mail');
-var async = require('async');
 
 var noop = function() {
 }
