@@ -2,25 +2,39 @@ var fs = require('fs');
 var $ = require('jquery');
 var mailer = require('nodemailer');
 var Handlebars = require('handlebars');
+var UglifyJS = require('uglify-js');
+var YUICompressor = require('yuicompressor');
 var helper = require('./helper');
-var address, content, statusContext, favoritesContext;
+var address, content, statusContext, favoritesContext, csses;
 
 exports.setMail = function(options) {
   address = options.address;
   content = options.content;
 //  console.log(content);
   fs.readFile('./views/index.html', 'utf8', function(err, data) {
+    // 将涉及到的样式表打包撑
     if (err) throw err;
-    $('body').append(data);
-    statusContext = Handlebars.compile($('#J_status').html());
-    favoritesContext = Handlebars.compile($('#J_favorites').html());
-    send();
+//    var csses = UglifyJS.minify([
+//      './server/config.js'
+//    ]);
+    collectCssFiles('./public/assets/css/',
+      function(out) {
+        csses = '<style>' + out + '</style>';
+//        console.log(data);
+        $('body').append(data);
+        statusContext = Handlebars.compile($('#J_status').html());
+        favoritesContext = Handlebars.compile($('#J_favorites').html());
+        send();
+      });
   });
 };
 
 function generateHtml() {
-  // TODO bad smell
-  return  statusContext(content[2].statusesByUser) + favoritesContext(content[3].favorites);
+  // TODO BAD SMELL
+  var html = csses +
+    statusContext(content[2].statusesByUser) +
+    favoritesContext(content[3].favorites);
+  return html;
 }
 
 function send() {
@@ -62,5 +76,18 @@ function send() {
     }
     console.log('Message sent successfully!');
     transport.close(); // close the connection pool
+  });
+}
+
+function collectCssFiles(path, callback) {
+  var files = fs.readdirSync(path);
+  files.forEach(function(item, index) {
+    YUICompressor.compress(path + item, {
+      type: 'css',
+      charset: 'utf8'
+    }, function(err, out) {
+      if (err) throw err;
+      index == files.length - 1 && callback(out);
+    });
   });
 }
