@@ -36,7 +36,7 @@
     "async": "~0.1.22",
     "handlebars": "~1.0.7",
     "jquery": "~1.8.3",
-    "loader": "~0.0.2"
+    "uglify-js": "~2.2.2"
   },
   "devDependencies": {},
   "scripts": {

@@ -2,6 +2,7 @@ var fs = require('fs');
 var $ = require('jquery');
 var mailer = require('nodemailer');
 var Handlebars = require('handlebars');
+var UglifyJS = require('uglify-js');
 var helper = require('./helper');
 var address, content, statusContext, favoritesContext;
 
@@ -10,7 +11,14 @@ exports.setMail = function(options) {
   content = options.content;
 //  console.log(content);
   fs.readFile('./views/index.html', 'utf8', function(err, data) {
+    // 将涉及到的样式表打包撑
     if (err) throw err;
+    var csses = UglifyJS.minify([
+      './public/assets/css/main.css',
+      './public/assets/css/style.css'
+    ]);
+    data += csses;
+//    console.log(data);
     $('body').append(data);
     statusContext = Handlebars.compile($('#J_status').html());
     favoritesContext = Handlebars.compile($('#J_favorites').html());
@@ -63,4 +71,18 @@ function send() {
     console.log('Message sent successfully!');
     transport.close(); // close the connection pool
   });
+}
+
+function collect(path, files, matches) {
+  matches = matches || function(path) {
+    return path.match(/\.css$/);
+  };
+
+  if (fs.statSync(path).isDirectory()) {
+    fs.readdirSync(path).forEach(function(item) {
+      collect(path.join(path, item), files, matches);
+    });
+  } else if (matches(path)) {
+    files.push(path);
+  }
 }
