@@ -8,10 +8,10 @@
   "window": {
     "icon": "public/assets/images/waybo.png",
     "toolbar": false,
-    "width": 770,
+    "width": 830,
     "height": 630,
     "position": "center",
-    "min_width": 770,
+    "min_width": 830,
     "min_height": 630,
     "as_desktop": true
   },

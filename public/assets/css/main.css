@@ -86,10 +86,6 @@ body {
 	margin: 0;
 }
 
-@media screen and(max-width: 1060px) {
-
-}
-
 .navbar .nav.pull-right{
   margin-right: 10px;
 }
