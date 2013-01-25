@@ -115,6 +115,10 @@ body {
   z-index: 10;
 }
 
+.navbar-inner {
+  background: url('../images/nav-bgs.png') repeat-x;
+}
+
 .mail-page .btn a {
   color: #333;
   text-decoration: none;
