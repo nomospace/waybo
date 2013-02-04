@@ -57,7 +57,7 @@ module.exports = function(app, io) {
     res.send();
   });
 
-  app.get('/api/code/:code', function(req, res) {
+  app.get('/api/sina/code/:code', function(req, res) {
     weibo.getAccessToken({
         code: req.params.code,
         grant_type: 'authorization_code',
