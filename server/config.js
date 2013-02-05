@@ -6,7 +6,7 @@ module.exports = {
 
   app_key: '2645619356',
   app_secret: 'e5f5d38eaa777f00924408686841b5dd',
-  redirect_uri: 'http://nomospace.github.com/weibo/',
+  redirect_uri: 'http://nomospace.github.com/weibo/sina/',
 
   session_secret: 'waybo',
   auth_cookie_name: 'waybo',
