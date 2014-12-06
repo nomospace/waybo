@@ -31,8 +31,8 @@ $ make dev
 ```
 
 ## 说明
-* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com qa1234```。也可以通过该帐号先登录微博，[并手动添加一个测试帐号](http://open.weibo.com/apps/2645619356/info/test)
-* 为了确保可以正常登录，在登录前请先退出[新浪微博](http://t.sina.com.cn/logout.php?backurl=/)  
+* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com qa1234```。也可以通过提 [issue](https://github.com/nomospace/waybo/issues/new) 通知我来手动添加一个测试帐号
+* 为了确保可以正常登录，在登录前请先[退出新浪微博](http://t.sina.com.cn/logout.php?backurl=/)
 * 请使用支持 WebSocket 的浏览器
 
 ## Resources  
@@ -47,15 +47,15 @@ $ make dev
 Below is the output from `git-summary`.
 
 ```
-project  : waybo
- repo age : 3 months
- active   : 27 days
- commits  : 83
- files    : 61
+ project  : waybo
+ repo age : 2 years, 3 months
+ active   : 39 days
+ commits  : 103
+ files    : 63
  authors  :
-    81	nomospace               97.6%
-     1	Joe Xu                  1.2%
-     1	no more space           1.2%
+   101	nomospace               98.1%
+     1	Joe Xu                  1.0%
+     1	no more space           1.0%
 ```
 
 
@@ -63,7 +63,7 @@ project  : waybo
 
 (The MIT License)
 
-Copyright (c) 2011-2012 nomospace
+Copyright (c) 2011-2014 nomospace
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
