@@ -111,11 +111,11 @@ define(['app', 'user', 'patch', 'imagepreview'], function(App, User, patch) {
       });
     },
     'statuses/public_timeline': function() {
-      if (uid && token) {
-        var user = {uid: uid, token: token};
-        User.setUser(user);
-        User.saveUser(user);
-      }
+//      if (uid && token) {
+//        var user = {uid: uid, token: token};
+//        User.setUser(user);
+//        User.saveUser(user);
+//      }
       $profile.hide();
       fetch('statuses/public_timeline').done(function(result) {
         if (!result.error) $btnMore.show();

@@ -2,8 +2,7 @@ define(['exports', 'const', 'patch'], function(exports, CONST) {
   'use strict';
 
   function getUser() {
-    var user = localStorage.getObject(CONST.CURRENT_USER_KEY);
-    return user;
+    return localStorage.getObject(CONST.CURRENT_USER_KEY);
   }
 
   function setUser(user) {
