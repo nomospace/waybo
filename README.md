@@ -31,7 +31,7 @@ $ make dev
 ```
 
 ## 说明
-* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com qa1234```。也可以通过提 [issue](https://github.com/nomospace/waybo/issues/new) 通知我来手动添加一个测试帐号
+* 应用目前还未通过审核，不能大范围推广（无法随意使用自己的帐号），在此提供一个测试帐号来测试：```qatest2@163.com qa1234```。也可以通过提 [issue](https://github.com/nomospace/waybo/issues/new) 来通知我手动添加一个测试帐号
 * 为了确保可以正常登录，在登录前请先[退出新浪微博](http://t.sina.com.cn/logout.php?backurl=/)
 * 请使用支持 WebSocket 的浏览器
 
