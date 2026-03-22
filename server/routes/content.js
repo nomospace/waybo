@@ -12,27 +12,36 @@ router.post('/fetch', requireAuth, async (req, res) => {
     if (vips.length === 0) return res.json({ fetched: 0, message: '没有跟踪的大V' });
 
     const weibo = new WeiboAPI(req.session.accessToken);
+    const vipUids = new Set(vips.map(v => v.weibo_uid));
+    const vipMap = {};
+    for (const v of vips) vipMap[v.weibo_uid] = v;
+
     let fetched = 0;
 
-    for (const vip of vips) {
-      try {
-        await new Promise(r => setTimeout(r, 1000));
-        const timeline = await weibo.getUserTimeline(vip.weibo_uid, 1, 50);
-        const statuses = timeline.statuses || [];
+    // 从首页timeline获取，筛选跟踪的大V
+    try {
+      const home = await weibo.client.get('statuses/home_timeline.json', {
+        params: { access_token: req.session.accessToken, count: 100 }
+      });
+      const statuses = home.data.statuses || [];
 
-        for (const status of statuses) {
-          const existing = prepare(`SELECT id FROM weibo_posts WHERE weibo_id = ?`).get(status.id);
-          if (existing) continue;
+      for (const status of statuses) {
+        const uid = status.user?.idstr;
+        if (!vipUids.has(uid)) continue; // 只处理跟踪的大V
 
-          const result = prepare(`INSERT INTO weibo_posts (weibo_id, vip_id, content, posted_at, reposts_count, comments_count, attitudes_count, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`).run(status.id, vip.id, status.text, status.created_at, status.reposts_count || 0, status.comments_count || 0, status.attitudes_count || 0);
-          fetched++;
-          processDehydration(result.lastInsertRowid, vip.screen_name, status.created_at, status.text);
-        }
-      } catch (e) {
-        console.error(`拉取大V ${vip.screen_name} 失败:`, e.message);
+        const existing = prepare(`SELECT id FROM weibo_posts WHERE weibo_id = ?`).get(status.id);
+        if (existing) continue;
+
+        const vip = vipMap[uid];
+        const result = prepare(`INSERT INTO weibo_posts (weibo_id, vip_id, content, posted_at, reposts_count, comments_count, attitudes_count, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`).run(status.id, vip.id, status.text, status.created_at, status.reposts_count || 0, status.comments_count || 0, status.attitudes_count || 0);
+        fetched++;
+        processDehydration(result.lastInsertRowid, vip.screen_name, status.created_at, status.text);
       }
+    } catch (e) {
+      console.error('拉取首页timeline失败:', e.message);
     }
-    res.json({ fetched, message: '拉取完成，正在后台处理' });
+
+    res.json({ fetched, message: fetched > 0 ? '拉取完成，正在后台处理' : '没有新内容' });
   } catch (error) {
     console.error('拉取失败:', error);
     res.status(500).json({ error: '拉取失败' });

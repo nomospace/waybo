@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen pb-20 sm:pb-0">
-    <header class="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b">
+    <header class="sticky top-0 z-40 bg-white border-b">
       <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <span class="text-2xl">🦞</span>
-          <h1 class="font-bold text-gray-900 dark:text-white">脱水投研</h1>
+          <h1 class="font-bold text-gray-900">脱水投研</h1>
         </div>
         <div class="flex items-center gap-2">
           <button @click="handleFetch" :disabled="contentStore.fetching" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium disabled:opacity-50">
@@ -16,15 +16,15 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-4">
-      <div v-if="showFilter" class="bg-gray-50 dark:bg-gray-800 p-4 mb-4 rounded-lg">
+      <div v-if="showFilter" class="bg-gray-50 p-4 mb-4 rounded-lg border">
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <select v-model="filters.vip_id" class="px-3 py-2 border rounded-lg dark:bg-gray-700">
+          <select v-model="filters.vip_id" class="px-3 py-2 border rounded-lg bg-white">
             <option :value="null">全部大V</option>
             <option v-for="v in vipStore.list" :key="v.id" :value="v.id">{{ v.screen_name }}</option>
           </select>
-          <input v-model="filters.keyword" @keyup.enter="applyFilters" placeholder="关键词" class="px-3 py-2 border rounded-lg dark:bg-gray-700" />
-          <input v-model="filters.start_date" type="date" class="px-3 py-2 border rounded-lg dark:bg-gray-700" />
-          <input v-model="filters.end_date" type="date" class="px-3 py-2 border rounded-lg dark:bg-gray-700" />
+          <input v-model="filters.keyword" @keyup.enter="applyFilters" placeholder="关键词" class="px-3 py-2 border rounded-lg bg-white" />
+          <input v-model="filters.start_date" type="date" class="px-3 py-2 border rounded-lg bg-white" />
+          <input v-model="filters.end_date" type="date" class="px-3 py-2 border rounded-lg bg-white" />
         </div>
         <div class="mt-3 flex justify-end gap-2">
           <button @click="resetFilters" class="px-4 py-2 text-gray-500">重置</button>
@@ -44,7 +44,7 @@
       </div>
 
       <template v-else>
-        <article v-for="item in contentStore.list" :key="item.id" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border p-4 mb-4">
+        <article v-for="item in contentStore.list" :key="item.id" class="bg-white rounded-xl shadow-sm border p-4 mb-4">
           <header class="flex items-center gap-3 mb-3">
             <img :src="item.vip_avatar" class="w-10 h-10 rounded-full" />
             <div class="flex-1 min-w-0">
@@ -70,7 +70,7 @@
       </template>
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t sm:hidden z-40">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t sm:hidden z-40">
       <div class="flex justify-around py-2">
         <router-link to="/" class="flex flex-col items-center py-2 px-4" :class="$route.path === '/' ? 'text-primary' : 'text-gray-500'">
           <span class="text-xl">🏠</span><span class="text-xs mt-1">首页</span>

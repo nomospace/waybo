@@ -7,10 +7,23 @@ const requireAuth = require('../middleware/auth');
 
 router.get('/followings', requireAuth, async (req, res) => {
   try {
-    const { page = 1 } = req.query;
     const weibo = new WeiboAPI(req.session.accessToken);
-    const data = await weibo.getFollowings(req.session.uid, page);
-    res.json({ users: data.users || [], total: data.total_number || 0, page });
+    const allUsers = [];
+    let page = 1;
+    let total = 0;
+
+    // 循环加载所有关注（每页50条，最多20页=1000条）
+    while (page <= 20) {
+      const data = await weibo.getFollowings(req.session.uid, page, 50);
+      const users = data.users || [];
+      if (users.length === 0) break;
+      allUsers.push(...users);
+      total = data.total_number || allUsers.length;
+      if (allUsers.length >= total) break;
+      page++;
+    }
+
+    res.json({ users: allUsers, total, page: 'all' });
   } catch (error) {
     console.error('获取关注列表失败:', error.response?.data || error.message);
     res.status(500).json({ error: '获取失败' });
