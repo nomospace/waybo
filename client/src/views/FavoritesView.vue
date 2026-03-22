@@ -20,10 +20,9 @@
     </main>
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t sm:hidden z-40">
       <div class="flex justify-around py-2">
-        <router-link to="/" class="flex flex-col items-center py-2 px-4 text-gray-500"><span class="text-xl">🏠</span><span class="text-xs mt-1">首页</span></router-link>
-        <router-link to="/vip" class="flex flex-col items-center py-2 px-4 text-gray-500"><span class="text-xl">👥</span><span class="text-xs mt-1">大V</span></router-link>
-        <router-link to="/favorites" class="flex flex-col items-center py-2 px-4 text-primary"><span class="text-xl">❤️</span><span class="text-xs mt-1">收藏</span></router-link>
-        <router-link to="/settings" class="flex flex-col items-center py-2 px-4 text-gray-500"><span class="text-xl">⚙️</span><span class="text-xs mt-1">设置</span></router-link>
+        <router-link to="/" class="flex flex-col items-center py-2 px-6 text-gray-500"><span class="text-xl">🏠</span><span class="text-xs mt-1">首页</span></router-link>
+        <router-link to="/vip" class="flex flex-col items-center py-2 px-6 text-gray-500"><span class="text-xl">👥</span><span class="text-xs mt-1">大V</span></router-link>
+        <router-link to="/favorites" class="flex flex-col items-center py-2 px-6 text-primary"><span class="text-xl">❤️</span><span class="text-xs mt-1">收藏</span></router-link>
       </div>
     </nav>
   </div>

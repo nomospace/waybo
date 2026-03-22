@@ -4,7 +4,7 @@
       <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <span class="text-2xl">🦞</span>
-          <h1 class="font-bold text-gray-900">脱水投研</h1>
+          <h1 class="font-bold text-gray-900">脱水微博</h1>
         </div>
         <div class="flex items-center gap-2">
           <button @click="handleFetch" :disabled="contentStore.fetching" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium disabled:opacity-50">
@@ -72,17 +72,14 @@
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t sm:hidden z-40">
       <div class="flex justify-around py-2">
-        <router-link to="/" class="flex flex-col items-center py-2 px-4" :class="$route.path === '/' ? 'text-primary' : 'text-gray-500'">
+        <router-link to="/" class="flex flex-col items-center py-2 px-6" :class="$route.path === '/' ? 'text-primary' : 'text-gray-500'">
           <span class="text-xl">🏠</span><span class="text-xs mt-1">首页</span>
         </router-link>
-        <router-link to="/vip" class="flex flex-col items-center py-2 px-4" :class="$route.path === '/vip' ? 'text-primary' : 'text-gray-500'">
+        <router-link to="/vip" class="flex flex-col items-center py-2 px-6" :class="$route.path === '/vip' ? 'text-primary' : 'text-gray-500'">
           <span class="text-xl">👥</span><span class="text-xs mt-1">大V</span>
         </router-link>
-        <router-link to="/favorites" class="flex flex-col items-center py-2 px-4" :class="$route.path === '/favorites' ? 'text-primary' : 'text-gray-500'">
+        <router-link to="/favorites" class="flex flex-col items-center py-2 px-6" :class="$route.path === '/favorites' ? 'text-primary' : 'text-gray-500'">
           <span class="text-xl">❤️</span><span class="text-xs mt-1">收藏</span>
-        </router-link>
-        <router-link to="/settings" class="flex flex-col items-center py-2 px-4" :class="$route.path === '/settings' ? 'text-primary' : 'text-gray-500'">
-          <span class="text-xl">⚙️</span><span class="text-xs mt-1">设置</span>
         </router-link>
       </div>
     </nav>
