@@ -28,7 +28,7 @@
       
       <div v-else>
         <article v-for="vip in vipStore.list" :key="vip.id" class="card card-row">
-          <img :src="vip.avatar_url || 'https://via.placeholder.com/48'" class="avatar" />
+          <img :src="vip.avatar_url || '/default-avatar.svg'" class="avatar" />
           <div class="flex-1" style="min-width: 0;">
             <div class="font-bold truncate">{{ vip.screen_name }}</div>
             <div class="text-xs text-muted">UID: {{ vip.weibo_uid }}</div>
@@ -107,13 +107,13 @@
           <span class="nav-icon">🏠</span>
           <span>首页</span>
         </router-link>
+        <router-link to="/summary" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span>摘要</span>
+        </router-link>
         <router-link to="/vip" class="nav-item active">
           <span class="nav-icon">👥</span>
           <span>大V</span>
-        </router-link>
-        <router-link to="/favorites" class="nav-item">
-          <span class="nav-icon">❤️</span>
-          <span>收藏</span>
         </router-link>
       </div>
     </nav>

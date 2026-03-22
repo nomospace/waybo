@@ -146,7 +146,7 @@ router.get('/list', requireAuth, (req, res) => {
   const { vip_id, keyword, date, page = 1, page_size = 20 } = req.query;
   const offset = (page - 1) * page_size;
 
-  let sql = `SELECT d.id, d.post_id, d.core_viewpoint, d.targets, d.logic, d.time_frame, d.risk_warning, d.comment_sentiment, d.comment_summary, w.content as original_content, w.posted_at, v.screen_name as vip_name, v.avatar_url as vip_avatar, m.is_favorite, m.is_starred FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id JOIN vip_list v ON w.vip_id = v.id LEFT JOIN user_marks m ON m.content_id = d.id WHERE 1=1`;
+  let sql = `SELECT d.id, d.post_id, d.core_viewpoint, d.targets, d.logic, d.time_frame, d.risk_warning, d.comment_sentiment, d.comment_summary, w.content as original_content, w.posted_at, v.screen_name as vip_name, v.avatar_url as vip_avatar FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id JOIN vip_list v ON w.vip_id = v.id WHERE 1=1`;
   const params = [];
 
   if (vip_id) { sql += ` AND w.vip_id = ?`; params.push(vip_id); }
@@ -162,12 +162,130 @@ router.get('/list', requireAuth, (req, res) => {
   res.json({ list, total, page: Number(page), page_size: Number(page_size) });
 });
 
+// 每日摘要 - 必须在 /:id 之前
+router.get('/summary', requireAuth, (req, res) => {
+  const { date } = req.query;
+  const targetDate = date || new Date().toISOString().split('T')[0];
+  
+  // 获取所有脱水内容，然后按日期筛选
+  const contents = prepare(`
+    SELECT d.*, w.posted_at, v.id as vip_id, v.screen_name as vip_nickname, v.avatar_url as vip_avatar
+    FROM dehydrated_content d
+    JOIN weibo_posts w ON d.post_id = w.id
+    JOIN vip_list v ON w.vip_id = v.id
+    ORDER BY w.posted_at DESC
+  `).all();
+  
+  // 按日期筛选（微博日期格式：Sun Mar 22 10:26:16 +0800 2026）
+  const filteredContents = contents.filter(c => {
+    if (!c.posted_at) return false;
+    const d = new Date(c.posted_at);
+    const contentDate = d.toISOString().split('T')[0];
+    return contentDate === targetDate;
+  });
+  
+  // 按大V分组
+  const vipMap = {};
+  filteredContents.forEach(c => {
+    if (!vipMap[c.vip_id]) {
+      vipMap[c.vip_id] = {
+        vip_id: c.vip_id,
+        vip_nickname: c.vip_nickname,
+        vip_avatar: c.vip_avatar,
+        post_count: 0,
+        emotion_change: '中性',
+        attitude_distribution: { '看多': 0, '看空': 0, '中性': 0 },
+        emotion_trajectory: [],
+        key_findings: [],
+        related_stocks: [],
+        core_insight: ''
+      };
+    }
+    
+    const vip = vipMap[c.vip_id];
+    vip.post_count++;
+    
+    // 根据评论情绪或默认判断态度
+    const sentiment = c.comment_sentiment || '中性';
+    vip.attitude_distribution[sentiment] = (vip.attitude_distribution[sentiment] || 0) + 1;
+    
+    // 情绪轨迹
+    if (c.core_viewpoint) {
+      vip.emotion_trajectory.push({
+        time: formatTime(c.posted_at),
+        content: c.core_viewpoint.substring(0, 50),
+        attitude: sentiment,
+        viewpoint: c.core_viewpoint.substring(0, 80)
+      });
+    }
+    
+    // 关键发现
+    if (c.logic) {
+      vip.key_findings.push(c.logic.substring(0, 100));
+    }
+    
+    // 相关标的
+    if (c.targets) {
+      try {
+        const targets = JSON.parse(c.targets);
+        targets.forEach(t => {
+          if (t && !vip.related_stocks.find(s => s.name === t)) {
+            vip.related_stocks.push({ name: t, sentiment: sentiment });
+          }
+        });
+      } catch {}
+    }
+    
+    // 核心观点（取最新的）
+    if (!vip.core_insight && c.core_viewpoint) {
+      vip.core_insight = c.core_viewpoint;
+    }
+  });
+  
+  // 计算每个大V的整体情绪
+  Object.values(vipMap).forEach(vip => {
+    const total = vip.attitude_distribution['看多'] + vip.attitude_distribution['看空'] + vip.attitude_distribution['中性'];
+    if (total > 0) {
+      if (vip.attitude_distribution['看多'] > vip.attitude_distribution['看空']) {
+        vip.emotion_change = '看多';
+      } else if (vip.attitude_distribution['看空'] > vip.attitude_distribution['看多']) {
+        vip.emotion_change = '看空';
+      }
+    }
+    
+    // 限制数量
+    vip.emotion_trajectory = vip.emotion_trajectory.slice(0, 3);
+    vip.key_findings = vip.key_findings.slice(0, 2);
+    vip.related_stocks = vip.related_stocks.slice(0, 5);
+  });
+  
+  const summaries = Object.values(vipMap);
+  
+  // 计算总数
+  const totalPosts = filteredContents.length;
+  const totalVips = summaries.length;
+  
+  res.json({
+    date: targetDate,
+    collect_time: new Date().toISOString(),
+    total_posts: totalPosts,
+    total_vips: totalVips,
+    summaries
+  });
+});
+
 router.get('/:id', requireAuth, (req, res) => {
   const { id } = req.params;
-  const item = prepare(`SELECT d.*, w.content as original_content, w.weibo_id, w.posted_at, v.screen_name as vip_name, v.avatar_url as vip_avatar, m.is_favorite, m.is_starred FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id JOIN vip_list v ON w.vip_id = v.id LEFT JOIN user_marks m ON m.content_id = d.id WHERE d.id = ?`).get(id);
+  const item = prepare(`SELECT d.*, w.content as original_content, w.weibo_id, w.posted_at, v.screen_name as vip_name, v.avatar_url as vip_avatar FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id JOIN vip_list v ON w.vip_id = v.id WHERE d.id = ?`).get(id);
   if (!item) return res.status(404).json({ error: '内容不存在' });
   const comments = prepare(`SELECT * FROM weibo_comments WHERE post_id = ? ORDER BY likes_count DESC`).all(item.post_id);
   res.json({ ...item, comments });
 });
+
+function formatTime(time) {
+  if (!time) return '';
+  const d = new Date(time);
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
 
 module.exports = router;

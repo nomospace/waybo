@@ -7,13 +7,12 @@
           <h1 class="header-title">脱水微博</h1>
         </div>
         <div class="flex gap-2 items-center">
-          <input type="date" v-model="selectedDate" @change="applyDateFilter" class="input" style="width: 140px; padding: 6px 8px; font-size: 13px;" />
+          <input type="date" v-model="selectedDate" @change="applyDateFilter" class="input" style="width: 130px; padding: 6px 8px; font-size: 13px;" />
           <button v-if="selectedDate" @click="clearDateFilter" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;">✕</button>
-          <span v-if="authStore.isLoggedIn" class="text-sm text-muted">UID: {{ authStore.uid }}</span>
           <button @click="handleFetch" :disabled="contentStore.fetching" class="btn btn-primary">
             {{ contentStore.fetching ? '拉取中...' : '拉取' }}
           </button>
-          <button v-if="authStore.uid" @click="handleLogout" class="btn btn-secondary" style="padding: 8px 12px;">🚪</button>
+          <button @click="handleLogout" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">退出</button>
         </div>
       </div>
     </header>
@@ -34,7 +33,7 @@
         <article v-for="item in contentStore.list" :key="item.id" class="card" style="padding: 0; overflow: hidden;">
           <!-- 头部：大V信息 -->
           <div class="flex items-center gap-3 p-4" style="border-bottom: 1px solid var(--border);">
-            <img :src="item.vip_avatar || 'https://via.placeholder.com/40'" class="avatar avatar-sm" />
+            <img :src="item.vip_avatar || '/default-avatar.svg'" class="avatar avatar-sm" />
             <div class="flex-1" style="min-width: 0;">
               <div class="font-bold truncate">{{ item.vip_name }}</div>
               <div class="text-xs text-muted">{{ formatTime(item.posted_at) }}</div>
@@ -82,12 +81,15 @@
                 <span style="color: #E53935;">{{ item.risk_warning }}</span>
               </div>
             </div>
-          </div>
-          
-          <!-- 操作栏 -->
-          <div class="flex gap-4 p-3" style="border-top: 1px solid var(--border); font-size: 14px; background: #FFF;">
-            <button @click="handleFavorite(item)" :style="{ color: item.is_favorite ? '#E53935' : '#999' }" style="padding: 4px 8px; background: none; border: none; cursor: pointer;">❤️ 收藏</button>
-            <button @click="handleStar(item)" :style="{ color: item.is_starred ? '#F5A623' : '#999' }" style="padding: 4px 8px; background: none; border: none; cursor: pointer;">⭐ 标记</button>
+            
+            <!-- 评论分析 -->
+            <div v-if="item.comment_sentiment || item.comment_summary" class="mt-3 pt-3" style="border-top: 1px dashed var(--border);">
+              <div class="text-xs text-muted mb-1">💬 评论分析</div>
+              <div v-if="item.comment_sentiment" class="mb-1">
+                <span class="text-xs" :class="getSentimentClass(item.comment_sentiment)">{{ item.comment_sentiment }}</span>
+              </div>
+              <div v-if="item.comment_summary" class="text-sm text-muted">{{ item.comment_summary }}</div>
+            </div>
           </div>
         </article>
 
@@ -105,13 +107,13 @@
           <span class="nav-icon">🏠</span>
           <span>首页</span>
         </router-link>
+        <router-link to="/summary" class="nav-item" :class="{ active: $route.path === '/summary' }">
+          <span class="nav-icon">📊</span>
+          <span>摘要</span>
+        </router-link>
         <router-link to="/vip" class="nav-item" :class="{ active: $route.path === '/vip' }">
           <span class="nav-icon">👥</span>
           <span>大V</span>
-        </router-link>
-        <router-link to="/favorites" class="nav-item" :class="{ active: $route.path === '/favorites' }">
-          <span class="nav-icon">❤️</span>
-          <span>收藏</span>
         </router-link>
       </div>
     </nav>
@@ -124,7 +126,6 @@ import { useRouter } from 'vue-router'
 import { useContentStore } from '@/stores/content'
 import { useVipStore } from '@/stores/vip'
 import { useAuthStore } from '@/stores/auth'
-import api from '@/api'
 
 const router = useRouter()
 const contentStore = useContentStore()
@@ -165,17 +166,11 @@ function clearDateFilter() {
   contentStore.updateFilters({ date: null })
 }
 
-async function handleFavorite(item) {
-  try {
-    if (item.is_favorite) { await api.unfavorite(item.id); item.is_favorite = 0 }
-    else { await api.favorite(item.id); item.is_favorite = 1 }
-  } catch (e) { console.error(e) }
-}
-
-async function handleStar(item) {
-  try {
-    if (item.is_starred) { await api.unstar(item.id); item.is_starred = 0 }
-    else { await api.star(item.id); item.is_starred = 1 }
-  } catch (e) { console.error(e) }
+function getSentimentClass(sentiment) {
+  switch (sentiment) {
+    case '看多': return 'text-red-600'
+    case '看空': return 'text-green-600'
+    default: return 'text-gray-600'
+  }
 }
 </script>

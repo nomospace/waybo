@@ -4,8 +4,8 @@ import { useAuthStore } from '@/stores/auth'
 const routes = [
   { path: '/login', name: 'Login', component: () => import('@/views/LoginView.vue'), meta: { guest: true } },
   { path: '/', name: 'Home', component: () => import('@/views/HomeView.vue'), meta: { requiresAuth: true } },
-  { path: '/vip', name: 'Vip', component: () => import('@/views/VipView.vue'), meta: { requiresAuth: true } },
-  { path: '/favorites', name: 'Favorites', component: () => import('@/views/FavoritesView.vue'), meta: { requiresAuth: true } }
+  { path: '/summary', name: 'Summary', component: () => import('@/views/SummaryView.vue'), meta: { requiresAuth: true } },
+  { path: '/vip', name: 'Vip', component: () => import('@/views/VipView.vue'), meta: { requiresAuth: true } }
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })
