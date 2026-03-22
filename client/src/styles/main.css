@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { line-height: 1.6; }
+
+@media (max-width: 768px) {
+  html { font-size: 17px; }
+  button, a { min-height: 44px; min-width: 44px; }
+}

@@ -1,16 +1,20 @@
+// server/config.js
+require('dotenv').config();
+
 module.exports = {
-  debug: true,
-  name: 'waybo',
-  description: 'Another weibo base on nodejs.',
-  version: '0.2.4',
-
-  app_key: '2645619356',
-  app_secret: 'e5f5d38eaa777f00924408686841b5dd',
-  redirect_uri: 'http://nomospace.com/weibo/sina/',
-
-  session_secret: 'waybo',
-  auth_cookie_name: 'waybo',
-  host: 'localhost',
-  port: 3002,
-  socketPort: 3003
+  weibo: {
+    appKey: process.env.WEIBO_APP_KEY,
+    appSecret: process.env.WEIBO_APP_SECRET,
+    redirectUri: process.env.WEIBO_REDIRECT_URI
+  },
+  session: {
+    secret: process.env.SESSION_SECRET || 'waybo-secret'
+  },
+  server: {
+    port: process.env.INTERNAL_PORT || 4005,
+    externalPort: process.env.PORT || 3005
+  },
+  openclaw: {
+    apiUrl: process.env.OPENCLAW_API_URL
+  }
 };
