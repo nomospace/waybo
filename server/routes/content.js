@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const WeiboAPI = require('../services/weibo');
-const { dehydrate } = require('../services/ai');
+const { dehydrate, analyzeComments } = require('../services/ai');
 const { prepare, saveDb } = require('../db');
 const requireAuth = require('../middleware/auth');
 
@@ -29,19 +29,32 @@ router.post('/fetch', requireAuth, async (req, res) => {
         const uid = status.user?.idstr;
         if (!vipUids.has(uid)) continue; // 只处理跟踪的大V
 
-        const existing = prepare(`SELECT id FROM weibo_posts WHERE weibo_id = ?`).get(status.id);
-        if (existing) continue;
+        // 检查是否已存在（比对weibo_id）
+        const existing = prepare(`SELECT id, process_status FROM weibo_posts WHERE weibo_id = ?`).get(status.id);
+        
+        let postId;
+        if (existing) {
+          postId = existing.id;
+          // 已存在且已处理完成，跳过
+          if (existing.process_status === 'done') continue;
+        } else {
+          // 新微博，插入
+          const result = prepare(`INSERT INTO weibo_posts (weibo_id, vip_id, content, posted_at, reposts_count, comments_count, attitudes_count, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`).run(status.id, vipMap[uid].id, status.text, status.created_at, status.reposts_count || 0, status.comments_count || 0, status.attitudes_count || 0);
+          postId = result.lastInsertRowid;
+          fetched++;
+        }
 
-        const vip = vipMap[uid];
-        const result = prepare(`INSERT INTO weibo_posts (weibo_id, vip_id, content, posted_at, reposts_count, comments_count, attitudes_count, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`).run(status.id, vip.id, status.text, status.created_at, status.reposts_count || 0, status.comments_count || 0, status.attitudes_count || 0);
-        fetched++;
-        processDehydration(result.lastInsertRowid, vip.screen_name, status.created_at, status.text);
+        // 处理脱水（如果是新的或未完成的）
+        await processDehydration(postId, vipMap[uid].screen_name, status.created_at, status.text);
+        
+        // 拉取评论并分析
+        await fetchAndAnalyzeComments(postId, status.id, weibo, req.session.accessToken);
       }
     } catch (e) {
       console.error('拉取首页timeline失败:', e.message);
     }
 
-    res.json({ fetched, message: fetched > 0 ? '拉取完成，正在后台处理' : '没有新内容' });
+    res.json({ fetched, message: fetched > 0 ? '拉取完成' : '没有新内容' });
   } catch (error) {
     console.error('拉取失败:', error);
     res.status(500).json({ error: '拉取失败' });
@@ -58,13 +71,54 @@ async function processDehydration(postId, screenName, postedAt, content) {
       saveDb();
       return;
     }
-    prepare(`INSERT INTO dehydrated_content (post_id, core_viewpoint, targets, logic, time_frame, risk_warning) VALUES (?, ?, ?, ?, ?, ?)`).run(postId, result.core_viewpoint, JSON.stringify(result.targets), result.logic, result.time_frame, result.risk_warning);
+    
+    // 检查是否已有脱水内容
+    const existing = prepare(`SELECT id FROM dehydrated_content WHERE post_id = ?`).get(postId);
+    if (existing) {
+      prepare(`UPDATE dehydrated_content SET core_viewpoint = ?, targets = ?, logic = ?, time_frame = ?, risk_warning = ? WHERE post_id = ?`).run(result.core_viewpoint, JSON.stringify(result.targets), result.logic, result.time_frame, result.risk_warning, postId);
+    } else {
+      prepare(`INSERT INTO dehydrated_content (post_id, core_viewpoint, targets, logic, time_frame, risk_warning) VALUES (?, ?, ?, ?, ?, ?)`).run(postId, result.core_viewpoint, JSON.stringify(result.targets), result.logic, result.time_frame, result.risk_warning);
+    }
+    
     prepare(`UPDATE weibo_posts SET process_status = 'done' WHERE id = ?`).run(postId);
     saveDb();
   } catch (error) {
     prepare(`UPDATE weibo_posts SET process_status = 'failed' WHERE id = ?`).run(postId);
     saveDb();
     console.error('脱水处理失败:', error.message);
+  }
+}
+
+async function fetchAndAnalyzeComments(postId, weiboId, weibo, accessToken) {
+  try {
+    // 拉取评论
+    const comments = await weibo.getComments(weiboId, 50);
+    if (!comments || comments.length === 0) return;
+
+    // 保存评论原文
+    for (const c of comments) {
+      const existing = prepare(`SELECT id FROM weibo_comments WHERE post_id = ? AND content = ?`).get(postId, c.text);
+      if (!existing) {
+        prepare(`INSERT INTO weibo_comments (post_id, content, author_name, likes_count, created_at) VALUES (?, ?, ?, ?, ?)`).run(postId, c.text, c.user?.screen_name || '', c.like_count || 0, c.created_at);
+      }
+    }
+    saveDb();
+
+    // AI分析评论
+    const commentTexts = comments.slice(0, 20).map(c => c.text).join('\n---\n');
+    const analysis = await analyzeComments(commentTexts);
+    
+    if (analysis && !analysis.invalid) {
+      // 更新脱水内容的评论分析
+      prepare(`UPDATE dehydrated_content SET comment_sentiment = ?, comment_summary = ? WHERE post_id = ?`).run(
+        analysis.sentiment,
+        analysis.summary,
+        postId
+      );
+      saveDb();
+    }
+  } catch (e) {
+    console.error('评论分析失败:', e.message);
   }
 }
 
@@ -89,22 +143,21 @@ router.post('/fetch-comments/:postId', requireAuth, async (req, res) => {
 });
 
 router.get('/list', requireAuth, (req, res) => {
-  const { vip_id, keyword, start_date, end_date, page = 1, page_size = 20 } = req.query;
+  const { vip_id, keyword, date, page = 1, page_size = 20 } = req.query;
   const offset = (page - 1) * page_size;
 
-  let sql = `SELECT d.id, d.post_id, d.core_viewpoint, d.targets, d.logic, w.content as original_content, w.posted_at, v.screen_name as vip_name, v.avatar_url as vip_avatar, m.is_favorite, m.is_starred FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id JOIN vip_list v ON w.vip_id = v.id LEFT JOIN user_marks m ON m.content_id = d.id WHERE 1=1`;
+  let sql = `SELECT d.id, d.post_id, d.core_viewpoint, d.targets, d.logic, d.time_frame, d.risk_warning, d.comment_sentiment, d.comment_summary, w.content as original_content, w.posted_at, v.screen_name as vip_name, v.avatar_url as vip_avatar, m.is_favorite, m.is_starred FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id JOIN vip_list v ON w.vip_id = v.id LEFT JOIN user_marks m ON m.content_id = d.id WHERE 1=1`;
   const params = [];
 
   if (vip_id) { sql += ` AND w.vip_id = ?`; params.push(vip_id); }
   if (keyword) { sql += ` AND (d.core_viewpoint LIKE ? OR d.targets LIKE ?)`; params.push(`%${keyword}%`, `%${keyword}%`); }
-  if (start_date) { sql += ` AND date(w.posted_at) >= ?`; params.push(start_date); }
-  if (end_date) { sql += ` AND date(w.posted_at) <= ?`; params.push(end_date); }
+  if (date) { sql += ` AND date(w.posted_at) = date(?)`; params.push(date); }
 
   sql += ` ORDER BY w.posted_at DESC LIMIT ? OFFSET ?`;
   params.push(Number(page_size), Number(offset));
 
   const list = prepare(sql).all(...params);
-  const { total } = prepare(`SELECT COUNT(*) as total FROM dehydrated_content`).get() || { total: 0 };
+  const { total } = prepare(`SELECT COUNT(*) as total FROM dehydrated_content d JOIN weibo_posts w ON d.post_id = w.id WHERE 1=1${date ? ' AND date(w.posted_at) = date(?)' : ''}${vip_id ? ' AND w.vip_id = ?' : ''}`).get(...(date ? [date] : []).concat(vip_id ? [vip_id] : [])) || { total: 0 };
 
   res.json({ list, total, page: Number(page), page_size: Number(page_size) });
 });

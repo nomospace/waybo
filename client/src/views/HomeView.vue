@@ -6,32 +6,19 @@
           <span style="font-size: 24px;">🦞</span>
           <h1 class="header-title">脱水微博</h1>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
+          <input type="date" v-model="selectedDate" @change="applyDateFilter" class="input" style="width: 140px; padding: 6px 8px; font-size: 13px;" />
+          <button v-if="selectedDate" @click="clearDateFilter" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;">✕</button>
+          <span v-if="authStore.isLoggedIn" class="text-sm text-muted">UID: {{ authStore.uid }}</span>
           <button @click="handleFetch" :disabled="contentStore.fetching" class="btn btn-primary">
             {{ contentStore.fetching ? '拉取中...' : '拉取' }}
           </button>
-          <button @click="showFilter = !showFilter" class="btn btn-secondary" style="padding: 8px 12px;">🔍</button>
+          <button v-if="authStore.uid" @click="handleLogout" class="btn btn-secondary" style="padding: 8px 12px;">🚪</button>
         </div>
       </div>
     </header>
 
     <main class="main">
-      <div v-if="showFilter" class="filter-panel">
-        <div class="filter-grid">
-          <select v-model="filters.vip_id" class="input">
-            <option :value="null">全部大V</option>
-            <option v-for="v in vipStore.list" :key="v.id" :value="v.id">{{ v.screen_name }}</option>
-          </select>
-          <input v-model="filters.keyword" @keyup.enter="applyFilters" placeholder="关键词" class="input" />
-          <input v-model="filters.start_date" type="date" class="input" />
-          <input v-model="filters.end_date" type="date" class="input" />
-        </div>
-        <div class="filter-actions">
-          <button @click="resetFilters" class="btn btn-secondary">重置</button>
-          <button @click="applyFilters" class="btn btn-primary">筛选</button>
-        </div>
-      </div>
-
       <div v-if="contentStore.loading && !contentStore.list.length" class="empty">
         <div class="spinner" style="font-size: 40px;">🌀</div>
         <p class="text-muted">加载中...</p>
@@ -44,26 +31,63 @@
       </div>
 
       <template v-else>
-        <article v-for="item in contentStore.list" :key="item.id" class="card">
-          <div class="flex items-center gap-3 mb-3">
-            <img :src="item.vip_avatar" class="avatar avatar-sm" />
+        <article v-for="item in contentStore.list" :key="item.id" class="card" style="padding: 0; overflow: hidden;">
+          <!-- 头部：大V信息 -->
+          <div class="flex items-center gap-3 p-4" style="border-bottom: 1px solid var(--border);">
+            <img :src="item.vip_avatar || 'https://via.placeholder.com/40'" class="avatar avatar-sm" />
             <div class="flex-1" style="min-width: 0;">
               <div class="font-bold truncate">{{ item.vip_name }}</div>
               <div class="text-xs text-muted">{{ formatTime(item.posted_at) }}</div>
             </div>
           </div>
           
-          <div class="mb-3">
-            <div style="font-weight: 500;">{{ item.core_viewpoint }}</div>
+          <!-- 原始微博内容 -->
+          <div class="p-4" style="background: #FAFAFA; border-bottom: 1px solid var(--border);">
+            <div class="text-xs text-muted mb-2" style="font-weight: 500;">📝 原文</div>
+            <div class="original-text">{{ item.original_content }}</div>
           </div>
           
-          <div v-if="parseTargets(item.targets)?.length" class="mb-3">
-            <span v-for="t in parseTargets(item.targets)" :key="t" class="tag">{{ t }}</span>
+          <!-- AI脱水解读 -->
+          <div class="p-4" style="background: linear-gradient(135deg, #FFF5F5 0%, #FFF 100%);">
+            <div class="text-xs mb-3" style="font-weight: 600; color: var(--primary);">🤖 AI脱水</div>
+            
+            <!-- 核心观点 -->
+            <div class="mb-3">
+              <div class="text-xs text-muted mb-1">💡 核心观点</div>
+              <div style="font-weight: 500; line-height: 1.6;">{{ item.core_viewpoint }}</div>
+            </div>
+            
+            <!-- 标的 -->
+            <div v-if="parseTargets(item.targets)?.length" class="mb-3">
+              <div class="text-xs text-muted mb-1">🎯 相关标的</div>
+              <div class="flex flex-wrap gap-1">
+                <span v-for="t in parseTargets(item.targets)" :key="t" class="tag">{{ t }}</span>
+              </div>
+            </div>
+            
+            <!-- 逻辑 -->
+            <div v-if="item.logic" class="mb-3">
+              <div class="text-xs text-muted mb-1">📊 逻辑分析</div>
+              <div class="text-sm" style="color: var(--text-secondary); line-height: 1.6;">{{ item.logic }}</div>
+            </div>
+            
+            <!-- 时间框架 + 风险提示 -->
+            <div class="flex gap-4 text-xs">
+              <div v-if="item.time_frame">
+                <span class="text-muted">⏱️ 时间：</span>
+                <span>{{ item.time_frame }}</span>
+              </div>
+              <div v-if="item.risk_warning">
+                <span class="text-muted">⚠️ 风险：</span>
+                <span style="color: #E53935;">{{ item.risk_warning }}</span>
+              </div>
+            </div>
           </div>
           
-          <div class="flex gap-4 pt-3" style="border-top: 1px solid var(--border); font-size: 14px;">
-            <button @click="handleFavorite(item)" :style="{ color: item.is_favorite ? '#E53935' : '#999' }" style="padding: 0; background: none; border: none; cursor: pointer;">❤️ 收藏</button>
-            <button @click="handleStar(item)" :style="{ color: item.is_starred ? '#F5A623' : '#999' }" style="padding: 0; background: none; border: none; cursor: pointer;">⭐ 标记</button>
+          <!-- 操作栏 -->
+          <div class="flex gap-4 p-3" style="border-top: 1px solid var(--border); font-size: 14px; background: #FFF;">
+            <button @click="handleFavorite(item)" :style="{ color: item.is_favorite ? '#E53935' : '#999' }" style="padding: 4px 8px; background: none; border: none; cursor: pointer;">❤️ 收藏</button>
+            <button @click="handleStar(item)" :style="{ color: item.is_starred ? '#F5A623' : '#999' }" style="padding: 4px 8px; background: none; border: none; cursor: pointer;">⭐ 标记</button>
           </div>
         </article>
 
@@ -95,15 +119,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useContentStore } from '@/stores/content'
 import { useVipStore } from '@/stores/vip'
+import { useAuthStore } from '@/stores/auth'
 import api from '@/api'
 
+const router = useRouter()
 const contentStore = useContentStore()
 const vipStore = useVipStore()
-const showFilter = ref(false)
-const filters = reactive({ vip_id: null, keyword: '', start_date: '', end_date: '' })
+const authStore = useAuthStore()
+const selectedDate = ref('')
 
 onMounted(async () => {
   await vipStore.loadList()
@@ -123,6 +150,21 @@ function parseTargets(targets) {
 
 async function handleFetch() { await contentStore.fetchNew() }
 
+async function handleLogout() {
+  if (!confirm('确定退出登录？')) return
+  await authStore.logout()
+  router.push('/login')
+}
+
+function applyDateFilter() {
+  contentStore.updateFilters({ date: selectedDate.value || null })
+}
+
+function clearDateFilter() {
+  selectedDate.value = ''
+  contentStore.updateFilters({ date: null })
+}
+
 async function handleFavorite(item) {
   try {
     if (item.is_favorite) { await api.unfavorite(item.id); item.is_favorite = 0 }
@@ -136,7 +178,4 @@ async function handleStar(item) {
     else { await api.star(item.id); item.is_starred = 1 }
   } catch (e) { console.error(e) }
 }
-
-function applyFilters() { contentStore.updateFilters(filters) }
-function resetFilters() { Object.assign(filters, { vip_id: null, keyword: '', start_date: '', end_date: '' }); applyFilters() }
 </script>

@@ -91,4 +91,49 @@ async function dehydrate(screenName, postedAt, content, comments = '') {
   }
 }
 
-module.exports = { dehydrate, parseDehydratedContent };
+async function analyzeComments(commentsText) {
+  if (!commentsText || commentsText.length < 10) {
+    return { invalid: true };
+  }
+
+  try {
+    const response = await axios.post(config.openclaw.apiUrl, {
+      model: 'qwen-plus',
+      messages: [
+        {
+          role: 'system',
+          content: `你是一个投资评论分析助手。分析微博评论的情绪倾向和核心观点。
+输出格式（JSON）：
+{
+  "sentiment": "看多/看空/中性/分歧",
+  "summary": "评论核心观点总结（50字以内）"
+}`
+        },
+        {
+          role: 'user',
+          content: `分析以下评论：
+${commentsText}`
+        }
+      ],
+      max_tokens: 200
+    }, {
+      headers: {
+        'Authorization': `Bearer ${config.openclaw.apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      timeout: 30000
+    });
+
+    const text = response.data.choices?.[0]?.message?.content || '';
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { invalid: true };
+    }
+  } catch (error) {
+    console.error('评论分析失败:', error.message);
+    return { invalid: true };
+  }
+}
+
+module.exports = { dehydrate, analyzeComments, parseDehydratedContent };

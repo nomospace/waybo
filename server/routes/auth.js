@@ -29,15 +29,33 @@ router.get('/callback', async (req, res) => {
 });
 
 router.get('/status', (req, res) => {
+  // 先检查内存session
   if (req.session.uid && req.session.accessToken) {
-    res.json({ logged_in: true, uid: req.session.uid });
-  } else {
-    res.json({ logged_in: false });
+    return res.json({ logged_in: true, uid: req.session.uid });
   }
+  
+  // 内存没有，检查数据库
+  try {
+    const dbSession = prepare('SELECT * FROM user_session').get();
+    if (dbSession && new Date(dbSession.expires_at) > new Date()) {
+      // 恢复到内存session
+      req.session.uid = dbSession.uid;
+      req.session.accessToken = dbSession.access_token;
+      return res.json({ logged_in: true, uid: dbSession.uid });
+    }
+  } catch (e) {
+    console.error('Check session error:', e);
+  }
+  
+  res.json({ logged_in: false });
 });
 
 router.post('/logout', (req, res) => {
   req.session.destroy();
+  // 清除数据库中的session
+  try {
+    prepare('DELETE FROM user_session').run();
+  } catch (e) {}
   res.json({ message: '已退出' });
 });
 
