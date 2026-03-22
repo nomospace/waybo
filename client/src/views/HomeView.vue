@@ -1,18 +1,15 @@
 <template>
-  <div class="page">
+  <div>
     <header class="header">
       <div class="header-inner">
-        <div class="flex items-center gap-3">
-          <span style="font-size: 24px;">🦞</span>
-          <h1 class="header-title">脱水微博</h1>
-        </div>
+        <h1 class="header-title">🦞 脱水微博</h1>
         <div class="flex gap-2 items-center">
-          <input type="date" v-model="selectedDate" @change="applyDateFilter" class="input" style="width: 130px; padding: 6px 8px; font-size: 13px;" />
-          <button v-if="selectedDate" @click="clearDateFilter" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;">✕</button>
+          <input type="date" v-model="selectedDate" @change="applyDateFilter" class="input" style="width: 130px; padding: 8px 10px; font-size: 13px;" />
+          <button v-if="selectedDate" @click="clearDateFilter" class="btn btn-ghost" style="padding: 6px 10px; font-size: 16px;">✕</button>
           <button @click="handleFetch" :disabled="contentStore.fetching" class="btn btn-primary">
             {{ contentStore.fetching ? '拉取中...' : '拉取' }}
           </button>
-          <button @click="handleLogout" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">退出</button>
+          <button @click="handleLogout" class="btn btn-secondary">退出</button>
         </div>
       </div>
     </header>
@@ -30,34 +27,38 @@
       </div>
 
       <template v-else>
-        <article v-for="item in contentStore.list" :key="item.id" class="card" style="padding: 0; overflow: hidden;">
+        <article v-for="item in contentStore.list" :key="item.id" class="card">
           <!-- 头部：大V信息 -->
-          <div class="flex items-center gap-3 p-4" style="border-bottom: 1px solid var(--border);">
-            <img :src="item.vip_avatar || '/default-avatar.svg'" class="avatar avatar-sm" />
-            <div class="flex-1" style="min-width: 0;">
-              <div class="font-bold truncate">{{ item.vip_name }}</div>
-              <div class="text-xs text-muted">{{ formatTime(item.posted_at) }}</div>
+          <div class="card-body" style="border-bottom: 1px solid var(--border);">
+            <div class="flex items-center gap-3">
+              <img :src="item.vip_avatar || '/default-avatar.svg'" class="avatar avatar-sm" />
+              <div class="flex-1" style="min-width: 0;">
+                <div class="font-medium truncate">{{ item.vip_name }}</div>
+                <div class="text-xs text-muted">{{ formatTime(item.posted_at) }}</div>
+              </div>
             </div>
           </div>
           
           <!-- 原始微博内容 -->
-          <div class="p-4" style="background: #FAFAFA; border-bottom: 1px solid var(--border);">
-            <div class="text-xs text-muted mb-2" style="font-weight: 500;">📝 原文</div>
+          <div class="card-body" style="background: var(--bg-page);">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-medium text-muted">📝 原文</span>
+            </div>
             <div class="original-text">{{ item.original_content }}</div>
           </div>
           
           <!-- AI脱水解读 -->
-          <div class="p-4" style="background: linear-gradient(135deg, #FFF5F5 0%, #FFF 100%);">
-            <div class="text-xs mb-3" style="font-weight: 600; color: var(--primary);">🤖 AI脱水</div>
+          <div class="card-body" style="background: linear-gradient(135deg, #FFF5F5 0%, #FFF 100%);">
+            <div class="text-xs font-medium mb-3" style="color: var(--primary);">🤖 AI脱水</div>
             
             <!-- 核心观点 -->
-            <div class="mb-3">
+            <div class="mb-4">
               <div class="text-xs text-muted mb-1">💡 核心观点</div>
-              <div style="font-weight: 500; line-height: 1.6;">{{ item.core_viewpoint }}</div>
+              <div class="font-medium" style="line-height: 1.7;">{{ item.core_viewpoint }}</div>
             </div>
             
             <!-- 标的 -->
-            <div v-if="parseTargets(item.targets)?.length" class="mb-3">
+            <div v-if="parseTargets(item.targets)?.length" class="mb-4">
               <div class="text-xs text-muted mb-1">🎯 相关标的</div>
               <div class="flex flex-wrap gap-1">
                 <span v-for="t in parseTargets(item.targets)" :key="t" class="tag">{{ t }}</span>
@@ -65,20 +66,19 @@
             </div>
             
             <!-- 逻辑 -->
-            <div v-if="item.logic" class="mb-3">
+            <div v-if="item.logic" class="mb-4">
               <div class="text-xs text-muted mb-1">📊 逻辑分析</div>
-              <div class="text-sm" style="color: var(--text-secondary); line-height: 1.6;">{{ item.logic }}</div>
+              <div class="text-sm text-secondary" style="line-height: 1.7;">{{ item.logic }}</div>
             </div>
             
             <!-- 时间框架 + 风险提示 -->
-            <div class="flex gap-4 text-xs">
+            <div class="flex flex-wrap gap-4 text-xs mt-3 pt-3" style="border-top: 1px dashed var(--border);">
               <div v-if="item.time_frame">
-                <span class="text-muted">⏱️ 时间：</span>
-                <span>{{ item.time_frame }}</span>
+                <span class="text-muted">⏱️</span> {{ item.time_frame }}
               </div>
               <div v-if="item.risk_warning">
-                <span class="text-muted">⚠️ 风险：</span>
-                <span style="color: #E53935;">{{ item.risk_warning }}</span>
+                <span class="text-muted">⚠️</span> 
+                <span style="color: var(--primary);">{{ item.risk_warning }}</span>
               </div>
             </div>
             
@@ -86,15 +86,15 @@
             <div v-if="item.comment_sentiment || item.comment_summary" class="mt-3 pt-3" style="border-top: 1px dashed var(--border);">
               <div class="text-xs text-muted mb-1">💬 评论分析</div>
               <div v-if="item.comment_sentiment" class="mb-1">
-                <span class="text-xs" :class="getSentimentClass(item.comment_sentiment)">{{ item.comment_sentiment }}</span>
+                <span class="tag" :class="getTagClass(item.comment_sentiment)">{{ item.comment_sentiment }}</span>
               </div>
               <div v-if="item.comment_summary" class="text-sm text-muted">{{ item.comment_summary }}</div>
             </div>
           </div>
         </article>
 
-        <div v-if="contentStore.list.length < contentStore.total" class="text-center" style="padding: 16px;">
-          <button @click="contentStore.loadMore()" :disabled="contentStore.loading" style="color: var(--primary); background: none; border: none; cursor: pointer;">
+        <div v-if="contentStore.list.length < contentStore.total" class="text-center mt-4 mb-4">
+          <button @click="contentStore.loadMore()" :disabled="contentStore.loading" class="btn btn-secondary">
             {{ contentStore.loading ? '加载中...' : '加载更多' }}
           </button>
         </div>
@@ -103,15 +103,15 @@
 
     <nav class="bottom-nav">
       <div class="bottom-nav-inner">
-        <router-link to="/" class="nav-item" :class="{ active: $route.path === '/' }">
+        <router-link to="/" class="nav-item active">
           <span class="nav-icon">🏠</span>
           <span>首页</span>
         </router-link>
-        <router-link to="/summary" class="nav-item" :class="{ active: $route.path === '/summary' }">
+        <router-link to="/summary" class="nav-item">
           <span class="nav-icon">📊</span>
           <span>摘要</span>
         </router-link>
-        <router-link to="/vip" class="nav-item" :class="{ active: $route.path === '/vip' }">
+        <router-link to="/vip" class="nav-item">
           <span class="nav-icon">👥</span>
           <span>大V</span>
         </router-link>
@@ -141,7 +141,7 @@ onMounted(async () => {
 function formatTime(time) {
   if (!time) return ''
   const d = new Date(time)
-  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`
+  return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
 function parseTargets(targets) {
@@ -166,11 +166,11 @@ function clearDateFilter() {
   contentStore.updateFilters({ date: null })
 }
 
-function getSentimentClass(sentiment) {
+function getTagClass(sentiment) {
   switch (sentiment) {
-    case '看多': return 'text-red-600'
-    case '看空': return 'text-green-600'
-    default: return 'text-gray-600'
+    case '看多': return 'tag-bull'
+    case '看空': return 'tag-bear'
+    default: return ''
   }
 }
 </script>

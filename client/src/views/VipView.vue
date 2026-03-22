@@ -1,9 +1,9 @@
 <template>
-  <div class="page">
+  <div>
     <header class="header">
       <div class="header-inner">
-        <h1 class="header-title">大V管理</h1>
-        <div class="flex gap-2">
+        <h1 class="header-title">👥 大V管理</h1>
+        <div class="flex gap-2 items-center">
           <button @click="showBatchAdd = true" class="btn btn-secondary">批量导入</button>
           <button @click="showManualAdd = true" class="btn btn-secondary">手动添加</button>
           <button @click="showAdd = true; loadFollowings()" class="btn btn-primary">+ 从关注添加</button>
@@ -12,32 +12,78 @@
     </header>
 
     <main class="main">
+      <!-- 搜索框 -->
+      <div class="search-box mb-4" style="max-width: 100%;">
+        <input v-model="searchKeyword" placeholder="搜索用户名或UID..." class="input" style="padding-left: 36px;" />
+      </div>
+      
       <div v-if="vipStore.loading && !vipStore.list.length" class="empty">
         <div class="spinner" style="font-size: 40px;">🌀</div>
       </div>
       
-      <div v-else-if="!vipStore.list.length" class="empty">
+      <div v-else-if="!filteredVips.length" class="empty">
         <div class="empty-icon">👥</div>
-        <p class="empty-text">还没有跟踪任何大V</p>
-        <div class="flex gap-3 justify-center" style="margin-top: 16px; flex-wrap: wrap;">
+        <p class="empty-text">{{ searchKeyword ? '未找到匹配的大V' : '还没有跟踪任何大V' }}</p>
+        <div v-if="!searchKeyword" class="flex gap-3 justify-center mt-4" style="flex-wrap: wrap;">
           <button @click="showBatchAdd = true" class="btn btn-primary">批量导入</button>
           <button @click="showManualAdd = true" class="btn btn-secondary">手动添加</button>
           <button @click="showAdd = true; loadFollowings()" class="btn btn-secondary">从关注添加</button>
         </div>
       </div>
       
-      <div v-else>
-        <article v-for="vip in vipStore.list" :key="vip.id" class="card card-row">
-          <img :src="vip.avatar_url || '/default-avatar.svg'" class="avatar" />
-          <div class="flex-1" style="min-width: 0;">
-            <div class="font-bold truncate">{{ vip.screen_name }}</div>
-            <div class="text-xs text-muted">UID: {{ vip.weibo_uid }}</div>
+      <!-- 移动端卡片列表 -->
+      <div v-else class="vip-list-mobile">
+        <article v-for="vip in filteredVips" :key="vip.id" class="card" style="padding: 0;">
+          <div class="card-body flex items-center gap-3">
+            <img :src="vip.avatar_url || '/default-avatar.svg'" class="avatar" />
+            <div class="flex-1" style="min-width: 0;">
+              <div class="font-medium truncate">{{ vip.screen_name }}</div>
+              <div class="text-xs text-muted">UID: {{ vip.weibo_uid }}</div>
+            </div>
+            <button @click="vipStore.toggleTracking(vip)" 
+              :class="vip.is_tracking ? 'btn-primary' : 'btn-secondary'" 
+              class="btn" style="padding: 6px 14px; font-size: 13px;">
+              {{ vip.is_tracking ? '跟踪中' : '已暂停' }}
+            </button>
+            <button @click="removeVip(vip.id)" class="btn btn-ghost" style="padding: 8px; font-size: 16px;">🗑️</button>
           </div>
-          <button @click="vipStore.toggleTracking(vip)" :class="vip.is_tracking ? 'btn-primary' : 'btn-secondary'" class="btn" style="padding: 6px 12px;">
-            {{ vip.is_tracking ? '跟踪中' : '已暂停' }}
-          </button>
-          <button @click="removeVip(vip.id)" style="padding: 8px; background: none; border: none; cursor: pointer; color: #999;">🗑️</button>
         </article>
+      </div>
+      
+      <!-- PC端表格 -->
+      <div v-if="filteredVips.length" class="vip-list-pc table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>大V</th>
+              <th>UID</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="vip in filteredVips" :key="vip.id">
+              <td>
+                <div class="flex items-center gap-3">
+                  <img :src="vip.avatar_url || '/default-avatar.svg'" class="avatar avatar-sm" />
+                  <span class="font-medium">{{ vip.screen_name }}</span>
+                </div>
+              </td>
+              <td class="text-muted">{{ vip.weibo_uid }}</td>
+              <td>
+                <span class="tag" :class="vip.is_tracking ? 'tag-bull' : ''">
+                  {{ vip.is_tracking ? '跟踪中' : '已暂停' }}
+                </span>
+              </td>
+              <td>
+                <button @click="vipStore.toggleTracking(vip)" class="btn btn-ghost" style="padding: 4px 8px;">
+                  {{ vip.is_tracking ? '暂停' : '跟踪' }}
+                </button>
+                <button @click="removeVip(vip.id)" class="btn btn-ghost" style="padding: 4px 8px; color: var(--primary);">删除</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </main>
 
@@ -76,11 +122,9 @@
     <!-- 从关注列表添加弹窗 -->
     <div v-if="showAdd" class="modal-overlay" @click.self="showAdd = false">
       <div class="modal" style="max-width: 480px; max-height: 80vh;">
-        <div style="position: sticky; top: 0; background: white; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-          <div class="flex items-center justify-between">
-            <h2 class="modal-title" style="margin-bottom: 0;">从关注列表添加 {{ followingsList.length ? `(${followingsList.length}人)` : '' }}</h2>
-            <button @click="showAdd = false" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">✕</button>
-          </div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="modal-title" style="margin-bottom: 0;">从关注列表添加 {{ followingsList.length ? `(${followingsList.length}人)` : '' }}</h2>
+          <button @click="showAdd = false" class="btn btn-ghost" style="padding: 4px 8px; font-size: 18px;">✕</button>
         </div>
         
         <div v-if="loadingFollowings" class="empty" style="padding: 40px;">
@@ -88,13 +132,13 @@
           <p class="text-muted">正在加载全部关注...</p>
         </div>
         
-        <div v-else style="padding-top: 16px;">
-          <input v-model="searchKeyword" placeholder="搜索昵称..." class="input mb-3" />
+        <div v-else>
+          <input v-model="followingSearch" placeholder="搜索昵称..." class="input mb-3" />
           <div style="max-height: 400px; overflow-y: auto;">
             <div v-for="user in filteredFollowings" :key="user.idstr" @click="handleAdd(user)" class="list-item">
               <img :src="user.profile_image_url" class="avatar avatar-sm" />
               <span class="flex-1">{{ user.screen_name }}</span>
-              <span style="color: var(--primary);">+ 添加</span>
+              <span style="color: var(--primary); font-size: 13px;">+ 添加</span>
             </div>
           </div>
         </div>
@@ -131,15 +175,25 @@ const showManualAdd = ref(false)
 const showBatchAdd = ref(false)
 const followingsList = ref([])
 const loadingFollowings = ref(false)
-const searchKeyword = ref('')
+const followingSearch = ref('')
 const manualUid = ref('')
 const manualName = ref('')
 const batchInput = ref('')
 const adding = ref(false)
+const searchKeyword = ref('')
+
+const filteredVips = computed(() => {
+  if (!searchKeyword.value) return vipStore.list
+  const keyword = searchKeyword.value.toLowerCase()
+  return vipStore.list.filter(v => 
+    v.screen_name?.toLowerCase().includes(keyword) || 
+    v.weibo_uid?.includes(keyword)
+  )
+})
 
 const filteredFollowings = computed(() => {
-  if (!searchKeyword.value) return followingsList.value
-  return followingsList.value.filter(u => u.screen_name.includes(searchKeyword.value))
+  if (!followingSearch.value) return followingsList.value
+  return followingsList.value.filter(u => u.screen_name.includes(followingSearch.value))
 })
 
 const batchUids = computed(() => {
@@ -216,3 +270,13 @@ async function removeVip(id) {
   await vipStore.loadList()
 }
 </script>
+
+<style scoped>
+.vip-list-pc { display: none; }
+.vip-list-mobile { display: block; }
+
+@media (min-width: 768px) {
+  .vip-list-mobile { display: none; }
+  .vip-list-pc { display: block; }
+}
+</style>

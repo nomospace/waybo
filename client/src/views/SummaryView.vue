@@ -1,13 +1,10 @@
 <template>
-  <div class="page">
+  <div>
     <header class="header">
       <div class="header-inner">
-        <div class="flex items-center gap-3">
-          <span style="font-size: 24px;">🦞</span>
-          <h1 class="header-title">每日摘要</h1>
-        </div>
+        <h1 class="header-title">📊 每日摘要</h1>
         <div class="flex gap-2 items-center">
-          <input type="date" v-model="selectedDate" @change="loadSummary" class="input" style="width: 130px; padding: 6px 8px; font-size: 13px;" />
+          <input type="date" v-model="selectedDate" @change="loadSummary" class="input" style="width: 130px; padding: 8px 10px; font-size: 13px;" />
           <button @click="refreshSummary" :disabled="loading" class="btn btn-primary">
             {{ loading ? '刷新中...' : '刷新' }}
           </button>
@@ -21,7 +18,7 @@
         <p class="text-muted">加载中...</p>
       </div>
 
-      <div v-else-if="!summary" class="empty">
+      <div v-else-if="!summary || !summary.summaries?.length" class="empty">
         <div class="empty-icon">📭</div>
         <p class="empty-text">{{ selectedDate }} 暂无摘要数据</p>
         <p class="empty-hint">试试其他日期或点击刷新拉取最新内容</p>
@@ -29,83 +26,80 @@
 
       <template v-else>
         <!-- 统计卡片 -->
-        <section class="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
-          <div class="flex-shrink-0 w-24 bg-white rounded-xl shadow-sm border p-3 text-center">
-            <div class="text-xl mb-1">📝</div>
-            <div class="text-lg font-bold" style="color: var(--blue-text);">{{ summary.total_posts }}</div>
-            <div class="text-xs text-muted">今日新帖</div>
+        <section class="stats-scroll">
+          <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-value" style="color: var(--blue-text);">{{ summary.total_posts }}</div>
+            <div class="stat-label">今日新帖</div>
           </div>
-          <div class="flex-shrink-0 w-24 bg-white rounded-xl shadow-sm border p-3 text-center">
-            <div class="text-xl mb-1">👥</div>
-            <div class="text-lg font-bold" style="color: var(--blue-text);">{{ summary.total_vips }}</div>
-            <div class="text-xs text-muted">活跃大V</div>
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" style="color: var(--blue-text);">{{ summary.total_vips }}</div>
+            <div class="stat-label">活跃大V</div>
           </div>
-          <div class="flex-shrink-0 w-24 bg-white rounded-xl shadow-sm border p-3 text-center">
-            <div class="text-xl mb-1">📈</div>
-            <div class="text-lg font-bold" style="color: #E53935;">{{ bullCount }}</div>
-            <div class="text-xs text-muted">看多观点</div>
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" style="color: var(--primary);">{{ bullCount }}</div>
+            <div class="stat-label">看多观点</div>
           </div>
-          <div class="flex-shrink-0 w-24 bg-white rounded-xl shadow-sm border p-3 text-center">
-            <div class="text-xl mb-1">📉</div>
-            <div class="text-lg font-bold" style="color: #43A047;">{{ bearCount }}</div>
-            <div class="text-xs text-muted">看空观点</div>
+          <div class="stat-card">
+            <div class="stat-icon">📉</div>
+            <div class="stat-value" style="color: var(--green);">{{ bearCount }}</div>
+            <div class="stat-label">看空观点</div>
           </div>
-          <div class="flex-shrink-0 w-24 bg-white rounded-xl shadow-sm border p-3 text-center">
-            <div class="text-xl mb-1">➖</div>
-            <div class="text-lg font-bold" style="color: #757575;">{{ neutralCount }}</div>
-            <div class="text-xs text-muted">中性观点</div>
+          <div class="stat-card">
+            <div class="stat-icon">➖</div>
+            <div class="stat-value" style="color: var(--text-muted);">{{ neutralCount }}</div>
+            <div class="stat-label">中性观点</div>
           </div>
         </section>
 
-        <!-- 情绪筛选 -->
-        <section class="flex gap-2 overflow-x-auto pb-1 mt-3">
-          <button @click="filterAttitude = 'all'" class="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition"
-            :style="filterAttitude === 'all' ? 'background: var(--primary); color: white;' : 'background: white; border: 1px solid var(--border); color: var(--text-secondary);'">
-            全部
-          </button>
-          <button @click="filterAttitude = '看多'" class="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition"
-            :style="filterAttitude === '看多' ? 'background: #E53935; color: white;' : 'background: white; border: 1px solid var(--border); color: var(--text-secondary);'">
-            看多
-          </button>
-          <button @click="filterAttitude = '看空'" class="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition"
-            :style="filterAttitude === '看空' ? 'background: #43A047; color: white;' : 'background: white; border: 1px solid var(--border); color: var(--text-secondary);'">
-            看空
-          </button>
-          <button @click="filterAttitude = '中性'" class="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition"
-            :style="filterAttitude === '中性' ? 'background: #757575; color: white;' : 'background: white; border: 1px solid var(--border); color: var(--text-secondary);'">
-            中性
-          </button>
+        <!-- 筛选栏 -->
+        <section class="filter-pills">
+          <button @click="filterAttitude = 'all'" class="filter-pill" :class="{ active: filterAttitude === 'all' }">全部</button>
+          <button @click="filterAttitude = '看多'" class="filter-pill" :class="{ 'active-bull': filterAttitude === '看多' }">看多</button>
+          <button @click="filterAttitude = '看空'" class="filter-pill" :class="{ 'active-bear': filterAttitude === '看空' }">看空</button>
+          <button @click="filterAttitude = '中性'" class="filter-pill" :class="{ active: filterAttitude === '中性' }">中性</button>
         </section>
 
         <!-- 大V观点列表 -->
-        <section class="mt-4 space-y-3">
-          <article v-for="vip in filteredSummaries" :key="vip.vip_id" class="card" style="padding: 0; overflow: hidden;">
+        <section class="content-grid">
+          <article v-for="vip in filteredSummaries" :key="vip.vip_id" class="card">
             <!-- 大V头部 -->
-            <div class="flex items-center justify-between p-3" style="border-bottom: 1px solid var(--border); background: #FAFAFA;">
-              <div class="flex items-center gap-2">
-                <img :src="vip.vip_avatar || '/default-avatar.svg'" class="avatar" style="width: 32px; height: 32px;" />
-                <div>
-                  <div class="font-medium text-sm">{{ vip.vip_nickname }}</div>
-                  <div class="text-xs text-muted">今日 {{ vip.post_count }} 篇</div>
+            <div class="card-body" style="border-bottom: 1px solid var(--border); background: var(--bg-page);">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <img :src="vip.vip_avatar || '/default-avatar.svg'" class="avatar avatar-sm" />
+                  <div>
+                    <div class="font-medium">{{ vip.vip_nickname }}</div>
+                    <div class="text-xs text-muted">今日 {{ vip.post_count }} 篇</div>
+                  </div>
                 </div>
+                <span class="tag" :class="getTagClass(vip.emotion_change)">{{ vip.emotion_change }}</span>
               </div>
-              <span class="px-2 py-0.5 rounded text-xs font-medium" :class="getAttitudeClass(vip.emotion_change)">
-                {{ vip.emotion_change }}
-              </span>
             </div>
             
             <!-- 核心观点 -->
-            <div v-if="vip.core_insight" class="p-3">
-              <div class="text-xs text-muted mb-1">💡 核心观点</div>
-              <div class="text-sm" style="line-height: 1.6;">{{ vip.core_insight }}</div>
+            <div class="card-body" v-if="vip.core_insight">
+              <div class="text-xs text-muted mb-2">💡 核心观点</div>
+              <p class="text-sm" style="line-height: 1.7;">{{ vip.core_insight }}</p>
+            </div>
+            
+            <!-- 关键发现 -->
+            <div class="card-body" v-if="vip.key_findings?.length" style="border-top: 1px solid var(--border); background: var(--bg-page);">
+              <div class="text-xs text-muted mb-2">🔍 关键发现</div>
+              <ul style="list-style: none; font-size: 13px; line-height: 1.6;">
+                <li v-for="(f, i) in vip.key_findings.slice(0, 2)" :key="i" class="mb-1">
+                  <span style="color: var(--primary);">•</span> {{ f }}
+                </li>
+              </ul>
             </div>
             
             <!-- 相关标的 -->
-            <div v-if="vip.related_stocks?.length" class="px-3 pb-3">
+            <div class="card-body" v-if="vip.related_stocks?.length" style="border-top: 1px solid var(--border);">
               <div class="flex flex-wrap gap-1">
-                <span v-for="stock in vip.related_stocks.slice(0, 4)" :key="stock.name" 
-                  class="px-2 py-0.5 rounded text-xs border"
-                  :class="getStockClass(stock.sentiment)">
+                <span v-for="stock in vip.related_stocks.slice(0, 5)" :key="stock.name" 
+                  class="tag" :class="getTagClass(stock.sentiment)">
                   {{ stock.name }}
                 </span>
               </div>
@@ -114,8 +108,8 @@
         </section>
 
         <!-- 底部信息 -->
-        <div class="text-center text-xs text-muted py-4">
-          数据更新: {{ summary.collect_time || '--' }}
+        <div class="text-center text-xs text-muted mt-4 mb-4">
+          数据更新: {{ formatTime(summary.collect_time) }}
         </div>
       </template>
     </main>
@@ -182,19 +176,17 @@ async function refreshSummary() {
   }
 }
 
-function getAttitudeClass(attitude) {
+function getTagClass(attitude) {
   switch (attitude) {
-    case '看多': return 'bg-red-100 text-red-700'
-    case '看空': return 'bg-green-100 text-green-700'
-    default: return 'bg-gray-100 text-gray-700'
+    case '看多': return 'tag-bull'
+    case '看空': return 'tag-bear'
+    default: return ''
   }
 }
 
-function getStockClass(sentiment) {
-  switch (sentiment) {
-    case '看多': return 'border-red-200 text-red-600'
-    case '看空': return 'border-green-200 text-green-600'
-    default: return 'border-gray-200 text-gray-600'
-  }
+function formatTime(time) {
+  if (!time) return '--'
+  const d = new Date(time)
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
 }
 </script>
