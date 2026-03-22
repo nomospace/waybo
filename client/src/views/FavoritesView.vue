@@ -1,28 +1,45 @@
 <template>
-  <div class="min-h-screen pb-20 sm:pb-0">
-    <header class="sticky top-0 bg-white border-b p-4">
-      <div class="max-w-7xl mx-auto"><h1 class="font-bold text-lg">我的收藏</h1></div>
-    </header>
-    <main class="max-w-7xl mx-auto p-4">
-      <div v-if="!list.length" class="text-center py-20">
-        <div class="text-6xl mb-4">❤️</div>
-        <p class="text-gray-500">还没有收藏内容</p>
+  <div class="page">
+    <header class="header">
+      <div class="header-inner">
+        <h1 class="header-title">我的收藏</h1>
       </div>
-      <div v-else class="space-y-4">
-        <article v-for="item in list" :key="item.id" class="bg-white rounded-xl shadow-sm border p-4">
-          <header class="flex items-center gap-3 mb-3">
-            <img :src="item.vip_avatar" class="w-10 h-10 rounded-full" />
-            <div><div class="font-semibold">{{ item.vip_name }}</div><div class="text-xs text-gray-400">{{ item.posted_at }}</div></div>
-          </header>
-          <section class="font-medium">{{ item.core_viewpoint }}</section>
+    </header>
+    
+    <main class="main">
+      <div v-if="!list.length" class="empty">
+        <div class="empty-icon">❤️</div>
+        <p class="empty-text">还没有收藏内容</p>
+      </div>
+      
+      <div v-else>
+        <article v-for="item in list" :key="item.id" class="card">
+          <div class="flex items-center gap-3 mb-3">
+            <img :src="item.vip_avatar" class="avatar avatar-sm" />
+            <div>
+              <div class="font-bold">{{ item.vip_name }}</div>
+              <div class="text-xs text-muted">{{ item.posted_at }}</div>
+            </div>
+          </div>
+          <div style="font-weight: 500;">{{ item.core_viewpoint }}</div>
         </article>
       </div>
     </main>
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t sm:hidden z-40">
-      <div class="flex justify-around py-2">
-        <router-link to="/" class="flex flex-col items-center py-2 px-6 text-gray-500"><span class="text-xl">🏠</span><span class="text-xs mt-1">首页</span></router-link>
-        <router-link to="/vip" class="flex flex-col items-center py-2 px-6 text-gray-500"><span class="text-xl">👥</span><span class="text-xs mt-1">大V</span></router-link>
-        <router-link to="/favorites" class="flex flex-col items-center py-2 px-6 text-primary"><span class="text-xl">❤️</span><span class="text-xs mt-1">收藏</span></router-link>
+
+    <nav class="bottom-nav">
+      <div class="bottom-nav-inner">
+        <router-link to="/" class="nav-item">
+          <span class="nav-icon">🏠</span>
+          <span>首页</span>
+        </router-link>
+        <router-link to="/vip" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span>大V</span>
+        </router-link>
+        <router-link to="/favorites" class="nav-item active">
+          <span class="nav-icon">❤️</span>
+          <span>收藏</span>
+        </router-link>
       </div>
     </nav>
   </div>

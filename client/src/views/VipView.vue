@@ -1,52 +1,72 @@
 <template>
-  <div class="min-h-screen pb-20 sm:pb-0">
-    <header class="sticky top-0 bg-white border-b p-4 z-40">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <h1 class="font-bold text-lg">大V管理</h1>
+  <div class="page">
+    <header class="header">
+      <div class="header-inner">
+        <h1 class="header-title">大V管理</h1>
         <div class="flex gap-2">
-          <button @click="showManualAdd = true" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm">手动添加</button>
-          <button @click="showAdd = true; loadFollowings()" class="px-4 py-2 bg-primary text-white rounded-lg text-sm">+ 从关注添加</button>
+          <button @click="showBatchAdd = true" class="btn btn-secondary">批量导入</button>
+          <button @click="showManualAdd = true" class="btn btn-secondary">手动添加</button>
+          <button @click="showAdd = true; loadFollowings()" class="btn btn-primary">+ 从关注添加</button>
         </div>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4">
-      <div v-if="vipStore.loading && !vipStore.list.length" class="text-center py-10"><div class="animate-spin text-4xl">🌀</div></div>
-      <div v-else-if="!vipStore.list.length" class="text-center py-20">
-        <div class="text-6xl mb-4">👥</div>
-        <p class="text-gray-500 mb-4">还没有跟踪任何大V</p>
-        <div class="flex gap-3 justify-center">
-          <button @click="showManualAdd = true" class="px-4 py-2 bg-gray-200 rounded-lg text-sm">手动添加</button>
-          <button @click="showAdd = true; loadFollowings()" class="px-4 py-2 bg-primary text-white rounded-lg text-sm">从关注添加</button>
+    <main class="main">
+      <div v-if="vipStore.loading && !vipStore.list.length" class="empty">
+        <div class="spinner" style="font-size: 40px;">🌀</div>
+      </div>
+      
+      <div v-else-if="!vipStore.list.length" class="empty">
+        <div class="empty-icon">👥</div>
+        <p class="empty-text">还没有跟踪任何大V</p>
+        <div class="flex gap-3 justify-center" style="margin-top: 16px; flex-wrap: wrap;">
+          <button @click="showBatchAdd = true" class="btn btn-primary">批量导入</button>
+          <button @click="showManualAdd = true" class="btn btn-secondary">手动添加</button>
+          <button @click="showAdd = true; loadFollowings()" class="btn btn-secondary">从关注添加</button>
         </div>
       </div>
-      <div v-else class="space-y-3">
-        <article v-for="vip in vipStore.list" :key="vip.id" class="bg-white rounded-xl shadow-sm border p-4 flex items-center gap-3">
-          <img :src="vip.avatar_url" class="w-12 h-12 rounded-full" />
-          <div class="flex-1 min-w-0">
-            <div class="font-semibold truncate">{{ vip.screen_name }}</div>
-            <div class="text-xs text-gray-400">UID: {{ vip.weibo_uid }}</div>
+      
+      <div v-else>
+        <article v-for="vip in vipStore.list" :key="vip.id" class="card card-row">
+          <img :src="vip.avatar_url || 'https://via.placeholder.com/48'" class="avatar" />
+          <div class="flex-1" style="min-width: 0;">
+            <div class="font-bold truncate">{{ vip.screen_name }}</div>
+            <div class="text-xs text-muted">UID: {{ vip.weibo_uid }}</div>
           </div>
-          <button @click="vipStore.toggleTracking(vip)" :class="vip.is_tracking ? 'bg-primary text-white' : 'bg-gray-200'" class="px-3 py-1.5 rounded-lg text-sm">
+          <button @click="vipStore.toggleTracking(vip)" :class="vip.is_tracking ? 'btn-primary' : 'btn-secondary'" class="btn" style="padding: 6px 12px;">
             {{ vip.is_tracking ? '跟踪中' : '已暂停' }}
           </button>
-          <button @click="removeVip(vip.id)" class="p-2 text-gray-400 hover:text-red-500">🗑️</button>
+          <button @click="removeVip(vip.id)" style="padding: 8px; background: none; border: none; cursor: pointer; color: #999;">🗑️</button>
         </article>
       </div>
     </main>
 
-    <!-- 手动添加弹窗 -->
-    <div v-if="showManualAdd" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div class="bg-white w-full max-w-md mx-4 rounded-xl p-6">
-        <h2 class="font-bold text-lg mb-4">手动添加大V</h2>
-        <div class="space-y-3">
-          <input v-model="manualUid" placeholder="微博UID (如: 1234567890)" class="w-full px-3 py-2 border rounded-lg" />
-          <input v-model="manualName" placeholder="昵称 (可选)" class="w-full px-3 py-2 border rounded-lg" />
-          <p class="text-xs text-gray-400">提示：UID可以从微博个人主页URL中获取</p>
+    <!-- 批量导入弹窗 -->
+    <div v-if="showBatchAdd" class="modal-overlay" @click.self="showBatchAdd = false">
+      <div class="modal">
+        <h2 class="modal-title">批量导入大V</h2>
+        <p class="text-sm text-muted mb-3">每行一个UID，或用逗号分隔</p>
+        <textarea v-model="batchInput" placeholder="粘贴UID列表...&#10;1234567890&#10;2345678901" class="input" style="height: 160px; font-size: 14px;" />
+        <p class="text-xs text-muted mt-2">已识别 {{ batchUids.length }} 个UID</p>
+        <div class="modal-actions">
+          <button @click="showBatchAdd = false" class="btn btn-secondary">取消</button>
+          <button @click="handleBatchAdd" :disabled="batchUids.length === 0 || adding" class="btn btn-primary">
+            {{ adding ? '添加中...' : `添加 ${batchUids.length} 个` }}
+          </button>
         </div>
-        <div class="flex gap-3 mt-6">
-          <button @click="showManualAdd = false" class="flex-1 py-2 bg-gray-200 rounded-lg">取消</button>
-          <button @click="handleManualAdd" :disabled="!manualUid || adding" class="flex-1 py-2 bg-primary text-white rounded-lg disabled:opacity-50">
+      </div>
+    </div>
+
+    <!-- 手动添加弹窗 -->
+    <div v-if="showManualAdd" class="modal-overlay" @click.self="showManualAdd = false">
+      <div class="modal" style="max-width: 400px;">
+        <h2 class="modal-title">手动添加大V</h2>
+        <input v-model="manualUid" placeholder="微博UID (如: 1234567890)" class="input mb-3" />
+        <input v-model="manualName" placeholder="昵称 (可选)" class="input mb-3" />
+        <p class="text-xs text-muted">UID可从微博个人主页URL获取</p>
+        <div class="modal-actions">
+          <button @click="showManualAdd = false" class="btn btn-secondary">取消</button>
+          <button @click="handleManualAdd" :disabled="!manualUid || adding" class="btn btn-primary">
             {{ adding ? '添加中...' : '添加' }}
           </button>
         </div>
@@ -54,34 +74,47 @@
     </div>
 
     <!-- 从关注列表添加弹窗 -->
-    <div v-if="showAdd" class="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center">
-      <div class="bg-white w-full sm:max-w-lg sm:rounded-xl max-h-[80vh] overflow-auto">
-        <div class="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
-          <h2 class="font-bold">从关注列表添加 {{ followingsList.length ? `(${followingsList.length}人)` : '' }}</h2>
-          <button @click="showAdd = false" class="text-gray-400">✕</button>
-        </div>
-        <div class="p-4">
-          <div v-if="loadingFollowings" class="text-center py-10">
-            <div class="animate-spin text-4xl mb-2">🌀</div>
-            <p class="text-gray-500">正在加载全部关注...</p>
+    <div v-if="showAdd" class="modal-overlay" @click.self="showAdd = false">
+      <div class="modal" style="max-width: 480px; max-height: 80vh;">
+        <div style="position: sticky; top: 0; background: white; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+          <div class="flex items-center justify-between">
+            <h2 class="modal-title" style="margin-bottom: 0;">从关注列表添加 {{ followingsList.length ? `(${followingsList.length}人)` : '' }}</h2>
+            <button @click="showAdd = false" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #999;">✕</button>
           </div>
-          <div v-else class="space-y-2">
-            <input v-model="searchKeyword" placeholder="搜索昵称..." class="w-full px-3 py-2 border rounded-lg bg-white mb-3" />
-            <button v-for="user in filteredFollowings" :key="user.idstr" @click="handleAdd(user)" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
-              <img :src="user.profile_image_url" class="w-10 h-10 rounded-full" />
-              <span class="flex-1 text-left">{{ user.screen_name }}</span>
-              <span class="text-primary">+ 添加</span>
-            </button>
+        </div>
+        
+        <div v-if="loadingFollowings" class="empty" style="padding: 40px;">
+          <div class="spinner" style="font-size: 32px;">🌀</div>
+          <p class="text-muted">正在加载全部关注...</p>
+        </div>
+        
+        <div v-else style="padding-top: 16px;">
+          <input v-model="searchKeyword" placeholder="搜索昵称..." class="input mb-3" />
+          <div style="max-height: 400px; overflow-y: auto;">
+            <div v-for="user in filteredFollowings" :key="user.idstr" @click="handleAdd(user)" class="list-item">
+              <img :src="user.profile_image_url" class="avatar avatar-sm" />
+              <span class="flex-1">{{ user.screen_name }}</span>
+              <span style="color: var(--primary);">+ 添加</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t sm:hidden z-40">
-      <div class="flex justify-around py-2">
-        <router-link to="/" class="flex flex-col items-center py-2 px-6 text-gray-500"><span class="text-xl">🏠</span><span class="text-xs mt-1">首页</span></router-link>
-        <router-link to="/vip" class="flex flex-col items-center py-2 px-6 text-primary"><span class="text-xl">👥</span><span class="text-xs mt-1">大V</span></router-link>
-        <router-link to="/favorites" class="flex flex-col items-center py-2 px-6 text-gray-500"><span class="text-xl">❤️</span><span class="text-xs mt-1">收藏</span></router-link>
+    <nav class="bottom-nav">
+      <div class="bottom-nav-inner">
+        <router-link to="/" class="nav-item">
+          <span class="nav-icon">🏠</span>
+          <span>首页</span>
+        </router-link>
+        <router-link to="/vip" class="nav-item active">
+          <span class="nav-icon">👥</span>
+          <span>大V</span>
+        </router-link>
+        <router-link to="/favorites" class="nav-item">
+          <span class="nav-icon">❤️</span>
+          <span>收藏</span>
+        </router-link>
       </div>
     </nav>
   </div>
@@ -95,16 +128,24 @@ import api from '@/api'
 const vipStore = useVipStore()
 const showAdd = ref(false)
 const showManualAdd = ref(false)
+const showBatchAdd = ref(false)
 const followingsList = ref([])
 const loadingFollowings = ref(false)
 const searchKeyword = ref('')
 const manualUid = ref('')
 const manualName = ref('')
+const batchInput = ref('')
 const adding = ref(false)
 
 const filteredFollowings = computed(() => {
   if (!searchKeyword.value) return followingsList.value
   return followingsList.value.filter(u => u.screen_name.includes(searchKeyword.value))
+})
+
+const batchUids = computed(() => {
+  const text = batchInput.value
+  const uids = text.split(/[\n,，\s]+/).map(s => s.trim()).filter(s => /^\d{10,}$/.test(s))
+  return [...new Set(uids)]
 })
 
 onMounted(() => vipStore.loadList())
@@ -138,6 +179,32 @@ async function handleManualAdd() {
     manualName.value = ''
   } catch (e) {
     alert('添加失败: ' + (e.response?.data?.error || e.message))
+  } finally {
+    adding.value = false
+  }
+}
+
+async function handleBatchAdd() {
+  if (batchUids.value.length === 0) return
+  adding.value = true
+  let success = 0, failed = 0
+  try {
+    for (const uid of batchUids.value) {
+      try {
+        await api.addVip({
+          weibo_uid: uid,
+          screen_name: `用户${uid.slice(-4)}`,
+          avatar_url: ''
+        })
+        success++
+      } catch {
+        failed++
+      }
+    }
+    await vipStore.loadList()
+    showBatchAdd.value = false
+    batchInput.value = ''
+    alert(`添加完成！成功 ${success} 个，失败 ${failed} 个`)
   } finally {
     adding.value = false
   }

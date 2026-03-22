@@ -69,12 +69,17 @@ async function dehydrate(screenName, postedAt, content, comments = '') {
     const prompt = buildPrompt(screenName, postedAt, content, comments);
     
     const response = await axios.post(config.openclaw.apiUrl, {
+      model: 'qwen-plus',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: prompt }
       ],
       max_tokens: 1000
     }, {
+      headers: {
+        'Authorization': `Bearer ${config.openclaw.apiKey}`,
+        'Content-Type': 'application/json'
+      },
       timeout: 60000
     });
 

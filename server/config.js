@@ -15,6 +15,7 @@ module.exports = {
     externalPort: process.env.PORT || 3005
   },
   openclaw: {
-    apiUrl: process.env.OPENCLAW_API_URL
+    apiUrl: process.env.OPENCLAW_API_URL,
+    apiKey: process.env.OPENCLAW_API_KEY
   }
 };
