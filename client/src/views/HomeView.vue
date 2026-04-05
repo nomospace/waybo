@@ -2,7 +2,10 @@
   <div>
     <header class="header">
       <div class="header-inner">
-        <h1 class="header-title">🦞 脱水微博</h1>
+        <h1 class="header-title">
+          <img src="/logo.svg" alt="脱水微博" class="header-logo" />
+          脱水微博
+        </h1>
         <div class="flex gap-2 items-center">
           <input type="date" v-model="selectedDate" @change="applyDateFilter" class="input" style="width: 130px; padding: 8px 10px; font-size: 13px;" />
           <button v-if="selectedDate" @click="clearDateFilter" class="btn btn-ghost" style="padding: 6px 10px; font-size: 16px;">✕</button>
@@ -135,7 +138,7 @@ const selectedDate = ref('')
 
 onMounted(async () => {
   await vipStore.loadList()
-  await contentStore.loadList()
+  await contentStore.loadList(true)  // 强制重置列表
 })
 
 function formatTime(time) {

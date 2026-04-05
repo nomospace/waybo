@@ -12,54 +12,159 @@ router.post('/fetch', requireAuth, async (req, res) => {
     if (vips.length === 0) return res.json({ fetched: 0, message: '没有跟踪的大V' });
 
     const weibo = new WeiboAPI(req.session.accessToken);
-    const vipUids = new Set(vips.map(v => v.weibo_uid));
     const vipMap = {};
     for (const v of vips) vipMap[v.weibo_uid] = v;
 
     let fetched = 0;
+    const seenIds = new Set();
 
-    // 从首页timeline获取，筛选跟踪的大V
-    try {
-      const home = await weibo.client.get('statuses/home_timeline.json', {
-        params: { access_token: req.session.accessToken, count: 100 }
-      });
-      const statuses = home.data.statuses || [];
+    // 获取今天日期（用于筛选）
+    const today = new Date().toISOString().split('T')[0];
 
-      for (const status of statuses) {
-        const uid = status.user?.idstr;
-        if (!vipUids.has(uid)) continue; // 只处理跟踪的大V
-
-        // 检查是否已存在（比对weibo_id）
-        const existing = prepare(`SELECT id, process_status FROM weibo_posts WHERE weibo_id = ?`).get(status.id);
+    // 对每个大V单独拉取他们的微博时间线（参考雪球项目的做法）
+    for (const vip of vips) {
+      try {
+        console.log(`[Waybo] 拉取 ${vip.screen_name}(${vip.weibo_uid}) 的微博...`);
         
-        let postId;
-        if (existing) {
-          postId = existing.id;
-          // 已存在且已处理完成，跳过
-          if (existing.process_status === 'done') continue;
-        } else {
-          // 新微博，插入
-          const result = prepare(`INSERT INTO weibo_posts (weibo_id, vip_id, content, posted_at, reposts_count, comments_count, attitudes_count, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`).run(status.id, vipMap[uid].id, status.text, status.created_at, status.reposts_count || 0, status.comments_count || 0, status.attitudes_count || 0);
-          postId = result.lastInsertRowid;
-          fetched++;
+        // 分页拉取，直到拉到昨天的数据
+        let page = 1;
+        let hasMore = true;
+        let consecutiveOldPages = 0;
+        
+        while (hasMore && page <= 5) {  // 最多拉5页
+          const data = await weibo.getUserTimeline(vip.weibo_uid, page, 50);
+          const statuses = data.statuses || [];
+          
+          if (statuses.length === 0) {
+            hasMore = false;
+            break;
+          }
+          
+          let pageHasToday = false;
+          
+          for (const status of statuses) {
+            const statusId = status.idstr || status.id;
+            
+            // 去重
+            if (seenIds.has(statusId)) continue;
+            seenIds.add(statusId);
+            
+            // 检查日期
+            const statusDate = parseWeiboDate(status.created_at);
+            if (!statusDate) continue;
+            
+            if (statusDate === today) {
+              pageHasToday = true;
+            } else if (statusDate < today) {
+              // 昨天或更早，继续处理但标记
+              consecutiveOldPages++;
+              continue;
+            }
+            
+            // 检查是否已存在（按 weibo_id 或内容去重）
+            const existing = prepare(`SELECT id, process_status FROM weibo_posts WHERE weibo_id = ? OR content = ?`).get(statusId, status.text);
+            
+            let postId;
+            if (existing) {
+              postId = existing.id;
+              if (existing.process_status === 'done') continue;
+            } else {
+              // 新微博，插入
+              const result = prepare(`INSERT INTO weibo_posts (weibo_id, vip_id, content, posted_at, reposts_count, comments_count, attitudes_count, fetched_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))`).run(statusId, vip.id, status.text, status.created_at, status.reposts_count || 0, status.comments_count || 0, status.attitudes_count || 0);
+              postId = result.lastInsertRowid;
+              fetched++;
+              console.log(`[Waybo] 新微博: ${status.text.substring(0, 50)}...`);
+            }
+
+            // 处理脱水
+            await processDehydration(postId, vip.screen_name, status.created_at, status.text);
+            
+            // 拉取评论并分析
+            await fetchAndAnalyzeComments(postId, statusId, weibo, req.session.accessToken);
+          }
+          
+          // 如果这一页有今天的数据，重置计数
+          if (pageHasToday) {
+            consecutiveOldPages = 0;
+          }
+          
+          // 连续2页没有今天的数据，停止
+          if (consecutiveOldPages >= 2) {
+            console.log(`[Waybo] ${vip.screen_name} 连续 ${consecutiveOldPages} 页无今日数据，停止`);
+            hasMore = false;
+          }
+          
+          page++;
+          
+          // 随机延迟，避免被限流
+          await sleep(500 + Math.random() * 1000);
         }
-
-        // 处理脱水（如果是新的或未完成的）
-        await processDehydration(postId, vipMap[uid].screen_name, status.created_at, status.text);
         
-        // 拉取评论并分析
-        await fetchAndAnalyzeComments(postId, status.id, weibo, req.session.accessToken);
+      } catch (e) {
+        console.error(`[Waybo] 拉取 ${vip.screen_name} 失败:`, e.message);
       }
-    } catch (e) {
-      console.error('拉取首页timeline失败:', e.message);
     }
 
-    res.json({ fetched, message: fetched > 0 ? '拉取完成' : '没有新内容' });
+    res.json({ fetched, message: fetched > 0 ? `拉取完成，新增 ${fetched} 条` : '没有新内容' });
   } catch (error) {
     console.error('拉取失败:', error);
     res.status(500).json({ error: '拉取失败' });
   }
 });
+
+// 重新处理 pending 状态的微博
+router.post('/reprocess', requireAuth, async (req, res) => {
+  try {
+    // 查找所有 pending 状态的微博
+    const pendingPosts = prepare(`
+      SELECT wp.id, wp.content, wp.posted_at, v.screen_name 
+      FROM weibo_posts wp 
+      JOIN vip_list v ON wp.vip_id = v.id 
+      WHERE wp.process_status IN ('pending', 'failed')
+    `).all();
+    
+    if (pendingPosts.length === 0) {
+      return res.json({ processed: 0, message: '没有待处理的微博' });
+    }
+    
+    console.log(`[Waybo] 开始处理 ${pendingPosts.length} 条待处理微博...`);
+    
+    let processed = 0;
+    for (const post of pendingPosts) {
+      try {
+        await processDehydration(post.id, post.screen_name, post.posted_at, post.content);
+        processed++;
+        console.log(`[Waybo] 处理完成: ${post.content.substring(0, 30)}...`);
+        
+        // 随机延迟，避免 API 限流
+        await sleep(1000 + Math.random() * 2000);
+      } catch (e) {
+        console.error(`[Waybo] 处理失败:`, e.message);
+      }
+    }
+    
+    res.json({ processed, message: `处理完成 ${processed} 条` });
+  } catch (error) {
+    console.error('重新处理失败:', error);
+    res.status(500).json({ error: '重新处理失败' });
+  }
+});
+
+// 解析微博日期格式（如 "Sun Mar 22 10:26:16 +0800 2026"）
+function parseWeiboDate(weiboDate) {
+  if (!weiboDate) return null;
+  try {
+    const d = new Date(weiboDate);
+    return d.toISOString().split('T')[0];
+  } catch {
+    return null;
+  }
+}
+
+// 延迟函数
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function processDehydration(postId, screenName, postedAt, content) {
   try {
@@ -153,7 +258,7 @@ router.get('/list', requireAuth, (req, res) => {
   if (keyword) { sql += ` AND (d.core_viewpoint LIKE ? OR d.targets LIKE ?)`; params.push(`%${keyword}%`, `%${keyword}%`); }
   if (date) { sql += ` AND date(w.posted_at) = date(?)`; params.push(date); }
 
-  sql += ` ORDER BY w.posted_at DESC LIMIT ? OFFSET ?`;
+  sql += ` ORDER BY w.fetched_at DESC LIMIT ? OFFSET ?`;
   params.push(Number(page_size), Number(offset));
 
   const list = prepare(sql).all(...params);

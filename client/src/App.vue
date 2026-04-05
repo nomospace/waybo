@@ -3,7 +3,7 @@
     <!-- PC端侧边栏 -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <span>🦞</span>
+        <img src="/logo.svg" alt="脱水微博" class="logo-img" />
         <h1>脱水微博</h1>
       </div>
       <nav class="sidebar-nav">

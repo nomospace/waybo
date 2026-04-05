@@ -71,6 +71,8 @@ body {
   
   .sidebar-logo span { font-size: 28px; }
   .sidebar-logo h1 { font-size: 18px; font-weight: 700; }
+  .logo-img { width: 36px; height: 36px; }
+  .header-logo { width: 28px; height: 28px; margin-right: 8px; }
   
   .sidebar-nav {
     flex: 1;

@@ -1,8 +1,8 @@
 <template>
   <div class="page">
     <div class="empty">
-      <div class="empty-icon">🦞</div>
-      <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">微博脱水工具</h1>
+      <img src="/logo.svg" alt="脱水微博" style="width: 80px; height: 80px; margin-bottom: 16px;" />
+      <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">脱水微博</h1>
       <p class="text-muted">关注大V，AI脱水，投研更高效</p>
       
       <button @click="handleLogin" :disabled="loading" class="btn btn-primary" style="width: 100%; max-width: 300px; margin-top: 32px; padding: 14px;">
